@@ -14,12 +14,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lowerbackstretching.ui.calendar.CalendarScreen
 import com.lowerbackstretching.ui.home.HomeScreen
+import com.lowerbackstretching.ui.onboarding.OnboardingScreen
 import com.lowerbackstretching.ui.player.CustomRoutinePlayerScreen
 import com.lowerbackstretching.ui.player.PlayerScreen
 import com.lowerbackstretching.ui.player.SingleStretchPlayerScreen
@@ -29,6 +31,9 @@ import com.lowerbackstretching.ui.programs.ProgramsScreen
 import com.lowerbackstretching.ui.settings.SettingsScreen
 import com.lowerbackstretching.ui.stretches.StretchDetailScreen
 import com.lowerbackstretching.ui.stretches.StretchesScreen
+import com.lowerbackstretching.data.Prefs
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 
 sealed class Route(val path: String, val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector) {
     data object Home      : Route("home", "Home", Icons.Filled.Home)
@@ -42,6 +47,19 @@ private val BottomTabs = listOf(Route.Home, Route.Programs, Route.Stretches, Rou
 
 @Composable
 fun AppNav() {
+    val ctx = LocalContext.current
+    val prefs = remember(ctx) { Prefs(ctx) }
+    val onboardingDone by prefs.onboardingDone.collectAsState(initial = null)
+
+    when (onboardingDone) {
+        null -> Unit
+        false -> OnboardingScreen(onDone = { /* DataStore flow triggers recomposition */ })
+        true -> AppRoot()
+    }
+}
+
+@Composable
+private fun AppRoot() {
     val nav = rememberNavController()
     val entry by nav.currentBackStackEntryAsState()
     val currentRoute = entry?.destination?.route
