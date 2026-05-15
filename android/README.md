@@ -51,6 +51,28 @@ modern OS versions, swap to `WorkManager`'s periodic work request with a
 scheduled `OneTimeWorkRequest` chain — the API in `ReminderScheduler` is
 isolated so the call sites won't change.
 
+## Tests
+
+Two test source sets, both runnable from Studio (Run → Tests) or CLI:
+
+- `app/src/test/` — pure JVM unit tests (fast, no device needed):
+  ```sh
+  ./gradlew :app:testDebugUnitTest
+  ```
+  Covers: streak calculation (`ComputeStreakTest`), `CustomRoutineEntity` CSV
+  parsing, `CustomRoutineRepository` insert/update behaviour with a fake DAO.
+
+- `app/src/androidTest/` — instrumented tests on a device/emulator:
+  ```sh
+  ./gradlew :app:connectedDebugAndroidTest
+  ```
+  Covers: bundled content integrity (`ContentRepositoryTest` — every program
+  day references a valid stretch, every stretch has required fields), plus a
+  Compose-driven E2E flow for onboarding (`OnboardingE2ETest`).
+
+The E2E test clears the DataStore file before each run so onboarding always
+shows.
+
 ## YouTube playback
 
 `ui/components/YouTubePlayerView.kt` renders the YouTube iframe API inside a

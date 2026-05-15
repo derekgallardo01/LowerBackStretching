@@ -13,7 +13,7 @@ class SessionRepository(private val dao: SessionDao) {
 
     fun count(): Flow<Int> = dao.count()
 
-    fun streak(): Flow<Int> = completedDays().map { computeStreak(it) }
+    fun streak(): Flow<Int> = completedDays().map { computeStreak(it, LocalDate.now()) }
 
     fun recent(limit: Int = 20): Flow<List<SessionEntity>> =
         dao.recent(limit)
@@ -30,17 +30,20 @@ class SessionRepository(private val dao: SessionDao) {
             )
         )
     }
+}
 
-    private fun computeStreak(days: Set<LocalDate>): Int {
-        if (days.isEmpty()) return 0
-        var streak = 0
-        var cursor = LocalDate.now()
-        // Allow today to be missing (streak only breaks if yesterday is also missing)
-        if (cursor !in days) cursor = cursor.minusDays(1)
-        while (cursor in days) {
-            streak++
-            cursor = cursor.minusDays(1)
-        }
-        return streak
+/**
+ * Streak rule: today (or yesterday if today is missing — grace day) plus every
+ * consecutive prior day must be in [days]. The chain breaks on the first gap.
+ */
+internal fun computeStreak(days: Set<LocalDate>, today: LocalDate): Int {
+    if (days.isEmpty()) return 0
+    var streak = 0
+    var cursor = today
+    if (cursor !in days) cursor = cursor.minusDays(1)
+    while (cursor in days) {
+        streak++
+        cursor = cursor.minusDays(1)
     }
+    return streak
 }
