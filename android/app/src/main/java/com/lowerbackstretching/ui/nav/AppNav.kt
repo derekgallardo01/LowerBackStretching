@@ -20,8 +20,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lowerbackstretching.ui.calendar.CalendarScreen
 import com.lowerbackstretching.ui.home.HomeScreen
+import com.lowerbackstretching.ui.player.CustomRoutinePlayerScreen
 import com.lowerbackstretching.ui.player.PlayerScreen
 import com.lowerbackstretching.ui.player.SingleStretchPlayerScreen
+import com.lowerbackstretching.ui.routines.RoutineBuilderScreen
 import com.lowerbackstretching.ui.programs.ProgramDetailScreen
 import com.lowerbackstretching.ui.programs.ProgramsScreen
 import com.lowerbackstretching.ui.settings.SettingsScreen
@@ -80,7 +82,26 @@ fun AppNav() {
                 )
             }
             composable(Route.Programs.path) {
-                ProgramsScreen(onOpenProgram = { id -> nav.navigate("program/$id") })
+                ProgramsScreen(
+                    onOpenProgram = { id -> nav.navigate("program/$id") },
+                    onOpenCustomRoutine = { rid -> nav.navigate("routine/$rid/play") },
+                    onCreateRoutine = { nav.navigate("routine/new") },
+                )
+            }
+            composable("routine/new") {
+                RoutineBuilderScreen(
+                    onSaved = { nav.popBackStack() },
+                    onBack = { nav.popBackStack() },
+                )
+            }
+            composable("routine/{id}/play") { backStack ->
+                val id = backStack.arguments?.getString("id")?.toLongOrNull() ?: return@composable
+                CustomRoutinePlayerScreen(
+                    routineId = id,
+                    routineName = "Routine",
+                    onFinished = { nav.popBackStack(route = Route.Programs.path, inclusive = false) },
+                    onBack = { nav.popBackStack() },
+                )
             }
             composable("program/{id}") { backStack ->
                 val id = backStack.arguments?.getString("id").orEmpty()

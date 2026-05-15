@@ -35,6 +35,22 @@ struct SinglePlayerView: View {
     }
 }
 
+struct CustomRoutinePlayerView: View {
+    let routine: CustomRoutine
+
+    @EnvironmentObject private var content: ContentStore
+
+    var body: some View {
+        let stretches = routine.stretchIds.compactMap { content.stretch(id: $0) }
+        PlayerBody(
+            stretches: stretches,
+            title: routine.name,
+            programId: "routine-\(routine.id.uuidString)",
+            dayNumber: 0,
+        )
+    }
+}
+
 struct PlayerBody: View {
     let stretches: [Stretch]
     let title: String

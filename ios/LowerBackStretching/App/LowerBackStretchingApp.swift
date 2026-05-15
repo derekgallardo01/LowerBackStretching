@@ -12,7 +12,7 @@ struct LowerBackStretchingApp: App {
                 .environmentObject(content)
                 .onAppear { requestNotificationPermission() }
         }
-        .modelContainer(for: [SessionRecord.self])
+        .modelContainer(for: [SessionRecord.self, CustomRoutine.self])
     }
 
     private func requestNotificationPermission() {

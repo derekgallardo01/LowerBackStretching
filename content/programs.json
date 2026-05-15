@@ -62,5 +62,51 @@
     "days": [
       { "day": 1, "title": "Daily Routine", "stretchIds": ["cat-cow", "child-pose", "knee-to-chest", "supine-twist"] }
     ]
+  },
+  {
+    "id": "desk-worker-mobility",
+    "title": "Desk-Worker Mobility",
+    "category": "posture",
+    "summary": "Five days to undo the damage of sitting. Spine, hips, and hamstrings open up.",
+    "days": [
+      { "day": 1, "title": "Wake the Spine",  "stretchIds": ["cat-cow", "seated-twist", "thread-the-needle"] },
+      { "day": 2, "title": "Open the Hips",   "stretchIds": ["hip-flexor-lunge", "low-lunge", "butterfly"] },
+      { "day": 3, "title": "Lengthen Legs",   "stretchIds": ["wall-hamstring", "calf-stretch", "standing-forward-fold"] },
+      { "day": 4, "title": "Side Body",       "stretchIds": ["standing-side-bend", "it-band-cross", "seated-twist"] },
+      { "day": 5, "title": "Full Reset",      "stretchIds": ["cat-cow", "hip-flexor-lunge", "wall-hamstring", "thread-the-needle", "child-pose"] }
+    ]
+  },
+  {
+    "id": "post-run-cooldown",
+    "title": "Post-Run Cooldown",
+    "category": "legs",
+    "summary": "A single 10-minute routine to do right after a run.",
+    "days": [
+      { "day": 1, "title": "Cool Down", "stretchIds": ["calf-stretch", "wall-hamstring", "quad-stretch", "hip-flexor-lunge", "figure-four", "child-pose"] }
+    ]
+  },
+  {
+    "id": "before-bed-wind-down",
+    "title": "Before-Bed Wind-Down",
+    "category": "flexibility",
+    "summary": "Gentle floor stretches to relax the body and slow the mind before sleep.",
+    "days": [
+      { "day": 1, "title": "Wind Down", "stretchIds": ["child-pose", "happy-baby", "supine-twist", "reclined-hand-to-toe", "crocodile"] }
+    ]
+  },
+  {
+    "id": "hip-opener-7day",
+    "title": "Hip Opener",
+    "category": "hips",
+    "summary": "A week of progressive hip stretches for tight hips and IT bands.",
+    "days": [
+      { "day": 1, "title": "Gentle Start",    "stretchIds": ["butterfly", "figure-four", "happy-baby"] },
+      { "day": 2, "title": "Front of Hips",   "stretchIds": ["hip-flexor-lunge", "low-lunge", "quad-stretch"] },
+      { "day": 3, "title": "Outer Hips",      "stretchIds": ["figure-four", "it-band-cross", "pigeon"] },
+      { "day": 4, "title": "Inner Thighs",    "stretchIds": ["butterfly", "happy-baby", "low-lunge"] },
+      { "day": 5, "title": "Deep Hips",       "stretchIds": ["pigeon", "hip-flexor-lunge", "figure-four"] },
+      { "day": 6, "title": "Rest & Restore",  "stretchIds": ["child-pose", "happy-baby", "supine-twist"] },
+      { "day": 7, "title": "Full Hip Flow",   "stretchIds": ["butterfly", "low-lunge", "pigeon", "figure-four", "it-band-cross", "happy-baby"] }
+    ]
   }
 ]

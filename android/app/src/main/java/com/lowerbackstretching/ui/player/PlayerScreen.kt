@@ -85,6 +85,18 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         initState(listOf(stretch))
     }
 
+    fun loadCustomRoutine(routineId: Long) {
+        val pid = "routine-$routineId"
+        if (loaded && this.programId == pid) return
+        viewModelScope.launch {
+            val routine = appCtx.customRoutineRepository.byId(routineId) ?: return@launch
+            val stretches = routine.stretchIds.mapNotNull { appCtx.contentRepository.stretch(it) }
+            this@PlayerViewModel.programId = pid
+            this@PlayerViewModel.dayNumber = 0
+            initState(stretches)
+        }
+    }
+
     private fun initState(stretches: List<Stretch>) {
         loaded = true
         _state.value = PlayerState(
@@ -165,6 +177,19 @@ fun SingleStretchPlayerScreen(
     LaunchedEffect(stretchId) { vm.loadSingle(stretchId) }
     val title = vm.state.collectAsState().value.current?.name ?: "Practice"
     PlayerBody(title = title, onFinished = onFinished, onBack = onBack, vm = vm)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomRoutinePlayerScreen(
+    routineId: Long,
+    routineName: String,
+    onFinished: () -> Unit,
+    onBack: () -> Unit,
+    vm: PlayerViewModel = viewModel(),
+) {
+    LaunchedEffect(routineId) { vm.loadCustomRoutine(routineId) }
+    PlayerBody(title = routineName, onFinished = onFinished, onBack = onBack, vm = vm)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
