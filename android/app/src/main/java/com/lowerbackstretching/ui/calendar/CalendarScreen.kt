@@ -5,12 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,10 +37,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.data.db.SessionEntity
 import com.lowerbackstretching.ui.AppViewModel
 import java.time.DayOfWeek
+import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -48,31 +55,74 @@ fun CalendarScreen(vm: CalendarViewModel = viewModel()) {
     val completed by vm.sessions.completedDays().collectAsState(initial = emptySet())
     val streak by vm.sessions.streak().collectAsState(initial = 0)
     val total by vm.sessions.count().collectAsState(initial = 0)
+    val recent by vm.sessions.recent().collectAsState(initial = emptyList())
 
     var month by remember { mutableStateOf(YearMonth.now()) }
 
-    Column(
-        modifier = Modifier.padding(16.dp),
+    LazyColumn(
+        contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text("Calendar", style = MaterialTheme.typography.headlineMedium)
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-        ) {
-            Stat("$streak", "Streak")
-            Stat("$total", "Sessions")
-            Stat("${completed.size}", "Active days")
-        }
-
-        Card(shape = RoundedCornerShape(16.dp)) {
-            Column(Modifier.padding(12.dp)) {
-                MonthHeader(month, onPrev = { month = month.minusMonths(1) }, onNext = { month = month.plusMonths(1) })
-                Spacer(Modifier.height(8.dp))
-                WeekdayLabels()
-                MonthGrid(month = month, completed = completed)
+        item { Text("Calendar", style = MaterialTheme.typography.headlineMedium) }
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                Stat("$streak", "Streak")
+                Stat("$total", "Sessions")
+                Stat("${completed.size}", "Active days")
             }
+        }
+        item {
+            Card(shape = RoundedCornerShape(16.dp)) {
+                Column(Modifier.padding(12.dp)) {
+                    MonthHeader(month, onPrev = { month = month.minusMonths(1) }, onNext = { month = month.plusMonths(1) })
+                    Spacer(Modifier.height(8.dp))
+                    WeekdayLabels()
+                    MonthGrid(month = month, completed = completed)
+                }
+            }
+        }
+        if (recent.isNotEmpty()) {
+            item {
+                Text(
+                    "Recent sessions",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+            }
+            items(recent, key = { it.id }) { session ->
+                SessionRow(session = session, programTitle = vm.content.program(session.programId)?.title ?: session.programId)
+            }
+        } else {
+            item {
+                Text(
+                    "No sessions yet. Start a routine to track your progress.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SessionRow(session: SessionEntity, programTitle: String) {
+    val date = Instant.ofEpochMilli(session.completedAtEpochMillis)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
+    val formatted = date.format(DateTimeFormatter.ofPattern("MMM d · h:mm a", Locale.getDefault()))
+
+    Card(shape = RoundedCornerShape(12.dp), modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(12.dp)) {
+            Text("$programTitle · Day ${session.dayNumber}", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "$formatted · ${session.durationSeconds / 60} min",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+            )
         }
     }
 }

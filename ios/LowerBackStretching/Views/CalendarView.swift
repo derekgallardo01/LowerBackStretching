@@ -2,12 +2,14 @@ import SwiftUI
 import SwiftData
 
 struct CalendarView: View {
-    @Query private var sessions: [SessionRecord]
+    @EnvironmentObject private var content: ContentStore
+    @Query(sort: [SortDescriptor(\SessionRecord.completedAt, order: .reverse)]) private var sessions: [SessionRecord]
     @State private var displayedMonth: Date = Calendar.current.startOfMonth(for: .now)
 
     private var completedDays: Set<Date> { SessionStore.completedDays(from: sessions) }
     private var streak: Int { SessionStore.streak(from: completedDays) }
     private var total: Int { sessions.count }
+    private var recent: [SessionRecord] { Array(sessions.prefix(20)) }
 
     var body: some View {
         ScrollView {
@@ -23,10 +25,46 @@ struct CalendarView: View {
                     month: $displayedMonth,
                     completed: completedDays,
                 )
+
+                if recent.isEmpty {
+                    Text("No sessions yet. Start a routine to track your progress.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.top, 4)
+                } else {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Recent sessions").font(.headline)
+                        ForEach(recent) { session in
+                            SessionRow(
+                                session: session,
+                                programTitle: content.program(id: session.programId)?.title ?? session.programId,
+                            )
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
             .padding(16)
         }
         .navigationTitle("Calendar")
+    }
+}
+
+private struct SessionRow: View {
+    let session: SessionRecord
+    let programTitle: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("\(programTitle) · Day \(session.dayNumber)").font(.headline)
+            Text("\(session.completedAt.formatted(date: .abbreviated, time: .shortened)) · \(session.durationSeconds / 60) min")
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.tint)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
     }
 }
 

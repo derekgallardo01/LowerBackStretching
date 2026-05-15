@@ -14,6 +14,9 @@ interface SessionDao {
     @Query("SELECT * FROM sessions ORDER BY completedAtEpochMillis DESC")
     fun all(): Flow<List<SessionEntity>>
 
+    @Query("SELECT * FROM sessions ORDER BY completedAtEpochMillis DESC LIMIT :limit")
+    fun recent(limit: Int): Flow<List<SessionEntity>>
+
     @Query("SELECT * FROM sessions WHERE completedAtEpochDay = :epochDay")
     fun forDay(epochDay: Long): Flow<List<SessionEntity>>
 
