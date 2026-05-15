@@ -1,0 +1,66 @@
+[
+  {
+    "id": "lower-back-relief-7day",
+    "title": "Lower Back Relief",
+    "category": "lower-back",
+    "summary": "A gentle 7-day routine to ease tension in the lumbar spine. Start here if your back is sore or stiff.",
+    "days": [
+      { "day": 1, "title": "Gentle Start",       "stretchIds": ["cat-cow", "child-pose", "knee-to-chest"] },
+      { "day": 2, "title": "Open the Spine",     "stretchIds": ["cat-cow", "sphinx", "supine-twist", "child-pose"] },
+      { "day": 3, "title": "Hips Meet Back",     "stretchIds": ["pelvic-tilt", "knee-to-chest", "figure-four", "happy-baby"] },
+      { "day": 4, "title": "Rest & Restore",     "stretchIds": ["child-pose", "happy-baby", "supine-twist"] },
+      { "day": 5, "title": "Lengthen",           "stretchIds": ["cat-cow", "downward-dog", "sphinx", "child-pose"] },
+      { "day": 6, "title": "Mobilize",           "stretchIds": ["cat-cow", "thread-the-needle", "supine-twist", "knee-to-chest"] },
+      { "day": 7, "title": "Putting It Together", "stretchIds": ["cat-cow", "sphinx", "child-pose", "figure-four", "happy-baby", "supine-twist"] }
+    ]
+  },
+  {
+    "id": "leg-flexibility-14day",
+    "title": "Leg Flexibility",
+    "category": "legs",
+    "summary": "Two weeks of progressive stretches for hamstrings, quads, calves, and hips.",
+    "days": [
+      { "day": 1,  "title": "Hamstrings 1",   "stretchIds": ["seated-forward-fold", "wall-hamstring", "standing-forward-fold"] },
+      { "day": 2,  "title": "Quads & Calves", "stretchIds": ["quad-stretch", "calf-stretch", "low-lunge"] },
+      { "day": 3,  "title": "Hips Open",      "stretchIds": ["butterfly", "figure-four", "pigeon"] },
+      { "day": 4,  "title": "Full Legs 1",    "stretchIds": ["wall-hamstring", "quad-stretch", "calf-stretch", "butterfly"] },
+      { "day": 5,  "title": "Rest Day",       "stretchIds": ["child-pose", "happy-baby"] },
+      { "day": 6,  "title": "Deep Hips",      "stretchIds": ["pigeon", "low-lunge", "figure-four"] },
+      { "day": 7,  "title": "Hamstrings 2",   "stretchIds": ["seated-forward-fold", "standing-forward-fold", "downward-dog"] },
+      { "day": 8,  "title": "Mobility Flow",  "stretchIds": ["cat-cow", "downward-dog", "low-lunge", "pigeon"] },
+      { "day": 9,  "title": "Hips & Groin",   "stretchIds": ["butterfly", "happy-baby", "pigeon"] },
+      { "day": 10, "title": "Calves Focus",   "stretchIds": ["calf-stretch", "downward-dog", "standing-forward-fold"] },
+      { "day": 11, "title": "Rest Day",       "stretchIds": ["child-pose", "happy-baby"] },
+      { "day": 12, "title": "Full Legs 2",    "stretchIds": ["wall-hamstring", "quad-stretch", "calf-stretch", "pigeon", "butterfly"] },
+      { "day": 13, "title": "Long Holds",     "stretchIds": ["seated-forward-fold", "pigeon", "butterfly", "low-lunge"] },
+      { "day": 14, "title": "Full Routine",   "stretchIds": ["downward-dog", "low-lunge", "pigeon", "butterfly", "seated-forward-fold", "child-pose"] }
+    ]
+  },
+  {
+    "id": "sciatica-relief-10day",
+    "title": "Sciatica Relief",
+    "category": "sciatica",
+    "summary": "Targeted glute and lower-back stretches to ease sciatic nerve irritation.",
+    "days": [
+      { "day": 1,  "title": "Gentle Glutes",   "stretchIds": ["figure-four", "knee-to-chest", "child-pose"] },
+      { "day": 2,  "title": "Spinal Calm",     "stretchIds": ["cat-cow", "supine-twist", "child-pose"] },
+      { "day": 3,  "title": "Pigeon Prep",     "stretchIds": ["figure-four", "pigeon", "happy-baby"] },
+      { "day": 4,  "title": "Hamstring Ease",  "stretchIds": ["wall-hamstring", "seated-forward-fold", "knee-to-chest"] },
+      { "day": 5,  "title": "Rest Day",        "stretchIds": ["child-pose", "happy-baby"] },
+      { "day": 6,  "title": "Deep Glutes",     "stretchIds": ["pigeon", "figure-four", "thread-the-needle"] },
+      { "day": 7,  "title": "Spine + Hips",    "stretchIds": ["supine-twist", "knee-to-chest", "pigeon"] },
+      { "day": 8,  "title": "Lengthen",        "stretchIds": ["downward-dog", "low-lunge", "child-pose"] },
+      { "day": 9,  "title": "Mobility",        "stretchIds": ["cat-cow", "thread-the-needle", "supine-twist"] },
+      { "day": 10, "title": "Maintenance",     "stretchIds": ["figure-four", "pigeon", "wall-hamstring", "child-pose"] }
+    ]
+  },
+  {
+    "id": "daily-5min",
+    "title": "Daily 5-Minute",
+    "category": "lower-back",
+    "summary": "A short routine you can do every day — perfect when you're starting a habit.",
+    "days": [
+      { "day": 1, "title": "Daily Routine", "stretchIds": ["cat-cow", "child-pose", "knee-to-chest", "supine-twist"] }
+    ]
+  }
+]

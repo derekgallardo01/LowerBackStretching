@@ -1,0 +1,182 @@
+[
+  {
+    "id": "cat-cow",
+    "name": "Cat-Cow",
+    "bodyParts": ["lower-back", "spine"],
+    "durationSeconds": 45,
+    "difficulty": "easy",
+    "description": "On hands and knees, alternate arching your spine up toward the ceiling and dropping your belly while looking up. Move with your breath.",
+    "youtubeId": "PLACEHOLDER_CAT_COW"
+  },
+  {
+    "id": "child-pose",
+    "name": "Child's Pose",
+    "bodyParts": ["lower-back", "hips", "spine"],
+    "durationSeconds": 60,
+    "difficulty": "easy",
+    "description": "Kneel, sit back on your heels, and fold forward with arms extended. Rest your forehead on the mat and breathe.",
+    "youtubeId": "PLACEHOLDER_CHILD_POSE"
+  },
+  {
+    "id": "knee-to-chest",
+    "name": "Knee to Chest",
+    "bodyParts": ["lower-back", "glutes"],
+    "durationSeconds": 30,
+    "difficulty": "easy",
+    "description": "Lying on your back, pull one knee gently toward your chest. Hold, then switch sides.",
+    "youtubeId": "PLACEHOLDER_KNEE_TO_CHEST"
+  },
+  {
+    "id": "supine-twist",
+    "name": "Supine Spinal Twist",
+    "bodyParts": ["lower-back", "spine", "glutes"],
+    "durationSeconds": 45,
+    "difficulty": "easy",
+    "description": "Lying on your back, drop both knees to one side while keeping shoulders flat. Hold, then switch.",
+    "youtubeId": "PLACEHOLDER_SUPINE_TWIST"
+  },
+  {
+    "id": "pelvic-tilt",
+    "name": "Pelvic Tilt",
+    "bodyParts": ["lower-back", "core"],
+    "durationSeconds": 45,
+    "difficulty": "easy",
+    "description": "Lying on your back with knees bent, flatten your lower back into the floor by tilting your pelvis. Release and repeat.",
+    "youtubeId": "PLACEHOLDER_PELVIC_TILT"
+  },
+  {
+    "id": "sphinx",
+    "name": "Sphinx Pose",
+    "bodyParts": ["lower-back", "spine"],
+    "durationSeconds": 45,
+    "difficulty": "easy",
+    "description": "Lie on your stomach, prop yourself on your forearms with elbows under shoulders. Lengthen the spine.",
+    "youtubeId": "PLACEHOLDER_SPHINX"
+  },
+  {
+    "id": "seated-forward-fold",
+    "name": "Seated Forward Fold",
+    "bodyParts": ["hamstrings", "lower-back"],
+    "durationSeconds": 60,
+    "difficulty": "medium",
+    "description": "Sit with legs extended, hinge forward from the hips and reach toward your feet. Keep the spine long.",
+    "youtubeId": "PLACEHOLDER_SEATED_FORWARD_FOLD"
+  },
+  {
+    "id": "standing-forward-fold",
+    "name": "Standing Forward Fold",
+    "bodyParts": ["hamstrings", "lower-back", "calves"],
+    "durationSeconds": 45,
+    "difficulty": "medium",
+    "description": "Stand and hinge forward from the hips, letting the upper body hang. Soft knees if needed.",
+    "youtubeId": "PLACEHOLDER_STANDING_FORWARD_FOLD"
+  },
+  {
+    "id": "figure-four",
+    "name": "Figure-Four Stretch",
+    "bodyParts": ["glutes", "hips"],
+    "durationSeconds": 45,
+    "difficulty": "easy",
+    "description": "Lying on your back, cross one ankle over the opposite knee and pull the back of the bottom thigh toward you.",
+    "youtubeId": "PLACEHOLDER_FIGURE_FOUR"
+  },
+  {
+    "id": "pigeon",
+    "name": "Pigeon Pose",
+    "bodyParts": ["hips", "glutes"],
+    "durationSeconds": 60,
+    "difficulty": "medium",
+    "description": "From all fours, bring one shin forward parallel to the front of your mat. Square your hips and fold forward.",
+    "youtubeId": "PLACEHOLDER_PIGEON"
+  },
+  {
+    "id": "low-lunge",
+    "name": "Low Lunge",
+    "bodyParts": ["hips", "quads"],
+    "durationSeconds": 45,
+    "difficulty": "easy",
+    "description": "From a kneeling position, step one foot forward into a deep lunge. Sink the hips and lift the chest.",
+    "youtubeId": "PLACEHOLDER_LOW_LUNGE"
+  },
+  {
+    "id": "butterfly",
+    "name": "Butterfly Stretch",
+    "bodyParts": ["groin", "hips"],
+    "durationSeconds": 60,
+    "difficulty": "easy",
+    "description": "Sit with the soles of your feet together and knees out wide. Hold your feet and gently fold forward.",
+    "youtubeId": "PLACEHOLDER_BUTTERFLY"
+  },
+  {
+    "id": "happy-baby",
+    "name": "Happy Baby",
+    "bodyParts": ["lower-back", "hips", "groin"],
+    "durationSeconds": 45,
+    "difficulty": "easy",
+    "description": "Lying on your back, grab the outsides of your feet with knees wide. Gently rock side to side.",
+    "youtubeId": "PLACEHOLDER_HAPPY_BABY"
+  },
+  {
+    "id": "downward-dog",
+    "name": "Downward-Facing Dog",
+    "bodyParts": ["hamstrings", "calves", "spine"],
+    "durationSeconds": 45,
+    "difficulty": "medium",
+    "description": "From all fours, tuck the toes and lift the hips up and back into an inverted V.",
+    "youtubeId": "PLACEHOLDER_DOWN_DOG"
+  },
+  {
+    "id": "cobra",
+    "name": "Cobra Pose",
+    "bodyParts": ["lower-back", "spine"],
+    "durationSeconds": 30,
+    "difficulty": "easy",
+    "description": "Lie on your stomach, hands under shoulders, and gently press up to lift the chest off the floor.",
+    "youtubeId": "PLACEHOLDER_COBRA"
+  },
+  {
+    "id": "wall-hamstring",
+    "name": "Wall Hamstring Stretch",
+    "bodyParts": ["hamstrings"],
+    "durationSeconds": 60,
+    "difficulty": "easy",
+    "description": "Lie on your back near a doorway, rest one leg up the wall. Switch legs after the hold.",
+    "youtubeId": "PLACEHOLDER_WALL_HAMSTRING"
+  },
+  {
+    "id": "quad-stretch",
+    "name": "Standing Quad Stretch",
+    "bodyParts": ["quads"],
+    "durationSeconds": 30,
+    "difficulty": "easy",
+    "description": "Stand, grab one ankle, and pull the heel toward your glute. Keep knees together.",
+    "youtubeId": "PLACEHOLDER_QUAD_STRETCH"
+  },
+  {
+    "id": "calf-stretch",
+    "name": "Wall Calf Stretch",
+    "bodyParts": ["calves"],
+    "durationSeconds": 30,
+    "difficulty": "easy",
+    "description": "Place hands on a wall, step one foot back with the heel pressed down. Keep the back leg straight.",
+    "youtubeId": "PLACEHOLDER_CALF_STRETCH"
+  },
+  {
+    "id": "thread-the-needle",
+    "name": "Thread the Needle",
+    "bodyParts": ["upper-back", "spine"],
+    "durationSeconds": 45,
+    "difficulty": "easy",
+    "description": "From all fours, slide one arm under the other and rest the shoulder and side of the head on the mat.",
+    "youtubeId": "PLACEHOLDER_THREAD_NEEDLE"
+  },
+  {
+    "id": "glute-bridge",
+    "name": "Glute Bridge",
+    "bodyParts": ["glutes", "lower-back"],
+    "durationSeconds": 45,
+    "difficulty": "easy",
+    "description": "Lie on your back with knees bent. Press through your heels to lift your hips, squeeze the glutes, lower.",
+    "youtubeId": "PLACEHOLDER_GLUTE_BRIDGE"
+  }
+]
