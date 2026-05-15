@@ -9,6 +9,9 @@ struct RootView: View {
             NavigationStack { ProgramsView() }
                 .tabItem { Label("Programs", systemImage: "figure.flexibility") }
 
+            NavigationStack { StretchesView() }
+                .tabItem { Label("Stretches", systemImage: "figure.cooldown") }
+
             NavigationStack { CalendarView() }
                 .tabItem { Label("Calendar", systemImage: "calendar") }
 

@@ -1,0 +1,27 @@
+import SwiftUI
+
+struct StretchDetailView: View {
+    let stretch: Stretch
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                YouTubeView(videoId: stretch.youtubeId, autoplay: false)
+                    .aspectRatio(16.0 / 9.0, contentMode: .fit)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                Text("\(stretch.durationSeconds)s · \(stretch.difficulty)")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.tint)
+
+                Text(stretch.bodyParts.map { $0.replacingOccurrences(of: "-", with: " ") }.joined(separator: " · "))
+                    .font(.caption.weight(.medium))
+
+                Text(stretch.description).font(.body)
+            }
+            .padding(16)
+        }
+        .navigationTitle(stretch.name)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}

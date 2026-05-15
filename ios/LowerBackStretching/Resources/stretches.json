@@ -178,5 +178,59 @@
     "difficulty": "easy",
     "description": "Lie on your back with knees bent. Press through your heels to lift your hips, squeeze the glutes, lower.",
     "youtubeId": "PLACEHOLDER_GLUTE_BRIDGE"
+  },
+  {
+    "id": "hip-flexor-lunge",
+    "name": "Hip Flexor Lunge",
+    "bodyParts": ["hips", "quads"],
+    "durationSeconds": 45,
+    "difficulty": "easy",
+    "description": "Kneel on one knee with the other foot forward. Tuck your pelvis and lean gently into the front leg to feel a stretch in the back hip.",
+    "youtubeId": "PLACEHOLDER_HIP_FLEXOR_LUNGE"
+  },
+  {
+    "id": "reclined-hand-to-toe",
+    "name": "Reclined Hand-to-Big-Toe",
+    "bodyParts": ["hamstrings", "calves"],
+    "durationSeconds": 45,
+    "difficulty": "medium",
+    "description": "Lying on your back, loop a strap around the ball of one foot and gently straighten the leg toward the ceiling.",
+    "youtubeId": "PLACEHOLDER_RECLINED_HAND_TO_TOE"
+  },
+  {
+    "id": "standing-side-bend",
+    "name": "Standing Side Bend",
+    "bodyParts": ["spine", "lower-back"],
+    "durationSeconds": 30,
+    "difficulty": "easy",
+    "description": "Stand tall, reach one arm overhead, and lean gently to the opposite side. Keep both hips facing forward.",
+    "youtubeId": "PLACEHOLDER_STANDING_SIDE_BEND"
+  },
+  {
+    "id": "crocodile",
+    "name": "Crocodile Pose",
+    "bodyParts": ["lower-back", "spine"],
+    "durationSeconds": 60,
+    "difficulty": "easy",
+    "description": "Lie on your stomach, stack your forearms, and rest your forehead on top. Breathe deeply into your low back.",
+    "youtubeId": "PLACEHOLDER_CROCODILE"
+  },
+  {
+    "id": "it-band-cross",
+    "name": "Standing IT Band Stretch",
+    "bodyParts": ["hips", "glutes"],
+    "durationSeconds": 30,
+    "difficulty": "easy",
+    "description": "Cross one leg behind the other, reach the same-side arm overhead, and lean to the opposite side to open the outer hip.",
+    "youtubeId": "PLACEHOLDER_IT_BAND_CROSS"
+  },
+  {
+    "id": "seated-twist",
+    "name": "Seated Spinal Twist",
+    "bodyParts": ["spine", "lower-back", "glutes"],
+    "durationSeconds": 45,
+    "difficulty": "easy",
+    "description": "Sit with one leg crossed over the other. Twist toward the bent knee, lengthening through the spine on each inhale.",
+    "youtubeId": "PLACEHOLDER_SEATED_TWIST"
   }
 ]

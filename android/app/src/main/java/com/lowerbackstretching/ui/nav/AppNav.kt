@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.SelfImprovement
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -23,15 +24,18 @@ import com.lowerbackstretching.ui.player.PlayerScreen
 import com.lowerbackstretching.ui.programs.ProgramDetailScreen
 import com.lowerbackstretching.ui.programs.ProgramsScreen
 import com.lowerbackstretching.ui.settings.SettingsScreen
+import com.lowerbackstretching.ui.stretches.StretchDetailScreen
+import com.lowerbackstretching.ui.stretches.StretchesScreen
 
 sealed class Route(val path: String, val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector) {
-    data object Home     : Route("home", "Home", Icons.Filled.Home)
-    data object Programs : Route("programs", "Programs", Icons.Filled.FitnessCenter)
-    data object Calendar : Route("calendar", "Calendar", Icons.Filled.CalendarMonth)
-    data object Settings : Route("settings", "Settings", Icons.Filled.Settings)
+    data object Home      : Route("home", "Home", Icons.Filled.Home)
+    data object Programs  : Route("programs", "Programs", Icons.Filled.FitnessCenter)
+    data object Stretches : Route("stretches", "Stretches", Icons.Filled.SelfImprovement)
+    data object Calendar  : Route("calendar", "Calendar", Icons.Filled.CalendarMonth)
+    data object Settings  : Route("settings", "Settings", Icons.Filled.Settings)
 }
 
-private val BottomTabs = listOf(Route.Home, Route.Programs, Route.Calendar, Route.Settings)
+private val BottomTabs = listOf(Route.Home, Route.Programs, Route.Stretches, Route.Calendar, Route.Settings)
 
 @Composable
 fun AppNav() {
@@ -96,6 +100,13 @@ fun AppNav() {
                     },
                     onBack = { nav.popBackStack() },
                 )
+            }
+            composable(Route.Stretches.path) {
+                StretchesScreen(onOpenStretch = { id -> nav.navigate("stretch/$id") })
+            }
+            composable("stretch/{id}") { backStack ->
+                val id = backStack.arguments?.getString("id").orEmpty()
+                StretchDetailScreen(stretchId = id, onBack = { nav.popBackStack() })
             }
             composable(Route.Calendar.path) { CalendarScreen() }
             composable(Route.Settings.path) { SettingsScreen() }
