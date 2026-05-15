@@ -6,6 +6,41 @@ struct PlayerView: View {
     let dayNumber: Int
 
     @EnvironmentObject private var content: ContentStore
+
+    var body: some View {
+        let stretches: [Stretch] = {
+            guard let program = content.program(id: programId) else { return [] }
+            return content.stretches(for: program, day: dayNumber)
+        }()
+        PlayerBody(stretches: stretches, title: "Day \(dayNumber)", programId: programId, dayNumber: dayNumber)
+    }
+}
+
+struct SinglePlayerView: View {
+    let stretchId: String
+
+    @EnvironmentObject private var content: ContentStore
+
+    var body: some View {
+        if let stretch = content.stretch(id: stretchId) {
+            PlayerBody(
+                stretches: [stretch],
+                title: stretch.name,
+                programId: "single-\(stretchId)",
+                dayNumber: 0,
+            )
+        } else {
+            ProgressView()
+        }
+    }
+}
+
+struct PlayerBody: View {
+    let stretches: [Stretch]
+    let title: String
+    let programId: String
+    let dayNumber: Int
+
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
@@ -14,11 +49,6 @@ struct PlayerView: View {
     @State private var running: Bool = true
     @State private var finished: Bool = false
 
-    private var program: Program? { content.program(id: programId) }
-    private var stretches: [Stretch] {
-        guard let program else { return [] }
-        return content.stretches(for: program, day: dayNumber)
-    }
     private var current: Stretch? { stretches[safe: index] }
     private var progress: Double {
         guard let current, current.durationSeconds > 0 else { return 0 }
@@ -62,7 +92,7 @@ struct PlayerView: View {
                 ProgressView()
             }
         }
-        .navigationTitle("Day \(dayNumber)")
+        .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { if remaining == 0 { remaining = stretches.first?.durationSeconds ?? 0 } }
         .task {

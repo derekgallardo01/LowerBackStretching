@@ -3,6 +3,10 @@ import SwiftUI
 struct StretchDetailView: View {
     let stretch: Stretch
 
+    struct PracticeTarget: Hashable {
+        let stretchId: String
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
@@ -18,10 +22,22 @@ struct StretchDetailView: View {
                     .font(.caption.weight(.medium))
 
                 Text(stretch.description).font(.body)
+
+                NavigationLink(value: PracticeTarget(stretchId: stretch.id)) {
+                    Label("Practice this stretch", systemImage: "play.fill")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(RoundedRectangle(cornerRadius: 12).fill(Color.accentColor))
+                        .foregroundStyle(.white)
+                }
+                .padding(.top, 8)
             }
             .padding(16)
         }
         .navigationTitle(stretch.name)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(for: PracticeTarget.self) { target in
+            SinglePlayerView(stretchId: target.stretchId)
+        }
     }
 }

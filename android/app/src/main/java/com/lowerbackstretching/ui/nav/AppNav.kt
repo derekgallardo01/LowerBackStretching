@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.lowerbackstretching.ui.calendar.CalendarScreen
 import com.lowerbackstretching.ui.home.HomeScreen
 import com.lowerbackstretching.ui.player.PlayerScreen
+import com.lowerbackstretching.ui.player.SingleStretchPlayerScreen
 import com.lowerbackstretching.ui.programs.ProgramDetailScreen
 import com.lowerbackstretching.ui.programs.ProgramsScreen
 import com.lowerbackstretching.ui.settings.SettingsScreen
@@ -106,7 +107,19 @@ fun AppNav() {
             }
             composable("stretch/{id}") { backStack ->
                 val id = backStack.arguments?.getString("id").orEmpty()
-                StretchDetailScreen(stretchId = id, onBack = { nav.popBackStack() })
+                StretchDetailScreen(
+                    stretchId = id,
+                    onPractice = { nav.navigate("player/single/$id") },
+                    onBack = { nav.popBackStack() },
+                )
+            }
+            composable("player/single/{id}") { backStack ->
+                val id = backStack.arguments?.getString("id").orEmpty()
+                SingleStretchPlayerScreen(
+                    stretchId = id,
+                    onFinished = { nav.popBackStack() },
+                    onBack = { nav.popBackStack() },
+                )
             }
             composable(Route.Calendar.path) { CalendarScreen() }
             composable(Route.Settings.path) { SettingsScreen() }

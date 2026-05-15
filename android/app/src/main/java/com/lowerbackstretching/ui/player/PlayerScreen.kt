@@ -67,13 +67,26 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
 
     private var programId: String = ""
     private var dayNumber: Int = 1
+    private var loaded: Boolean = false
 
-    fun load(programId: String, dayNumber: Int) {
-        if (this.programId == programId && this.dayNumber == dayNumber && _state.value.stretches.isNotEmpty()) return
+    fun loadProgram(programId: String, dayNumber: Int) {
+        if (loaded && this.programId == programId && this.dayNumber == dayNumber) return
         this.programId = programId
         this.dayNumber = dayNumber
         val program = appCtx.contentRepository.program(programId) ?: return
-        val stretches = appCtx.contentRepository.stretchesFor(program, dayNumber)
+        initState(appCtx.contentRepository.stretchesFor(program, dayNumber))
+    }
+
+    fun loadSingle(stretchId: String) {
+        val stretch = appCtx.contentRepository.stretch(stretchId) ?: return
+        if (loaded && this.programId == "single-$stretchId") return
+        this.programId = "single-$stretchId"
+        this.dayNumber = 0
+        initState(listOf(stretch))
+    }
+
+    private fun initState(stretches: List<Stretch>) {
+        loaded = true
         _state.value = PlayerState(
             stretches = stretches,
             index = 0,
@@ -137,14 +150,38 @@ fun PlayerScreen(
     onBack: () -> Unit,
     vm: PlayerViewModel = viewModel(),
 ) {
-    LaunchedEffect(programId, dayNumber) { vm.load(programId, dayNumber) }
+    LaunchedEffect(programId, dayNumber) { vm.loadProgram(programId, dayNumber) }
+    PlayerBody(title = "Day $dayNumber", onFinished = onFinished, onBack = onBack, vm = vm)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SingleStretchPlayerScreen(
+    stretchId: String,
+    onFinished: () -> Unit,
+    onBack: () -> Unit,
+    vm: PlayerViewModel = viewModel(),
+) {
+    LaunchedEffect(stretchId) { vm.loadSingle(stretchId) }
+    val title = vm.state.collectAsState().value.current?.name ?: "Practice"
+    PlayerBody(title = title, onFinished = onFinished, onBack = onBack, vm = vm)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PlayerBody(
+    title: String,
+    onFinished: () -> Unit,
+    onBack: () -> Unit,
+    vm: PlayerViewModel,
+) {
     val state by vm.state.collectAsState()
     val current = state.current
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Day $dayNumber") },
+                title = { Text(title) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
