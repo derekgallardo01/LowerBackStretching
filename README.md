@@ -3,11 +3,17 @@
 Native Android (Kotlin / Jetpack Compose) and iOS (Swift / SwiftUI) stretching
 app focused on lower back, legs, hips, and hamstrings. Features:
 
-- Programs grouped by goal (lower back relief, sciatica, flexibility, etc.)
-- Per-day routines with sequential stretch player
+- First-launch onboarding that sets up a daily reminder
+- 9 built-in programs grouped by goal (lower-back relief, sciatica, hip
+  openers, post-run cooldown, before-bed wind-down, etc.)
+- 27-stretch library with body-part filters (lower-back, hamstrings, glutes,
+  hips, calves, ...)
+- Custom routines — pick any stretches and save them as your own
+- Practice a single stretch ad-hoc from the library
 - YouTube video demonstrations for each stretch
-- Calendar tracking with streaks and per-day completion history
-- Local push notifications for daily reminders
+- Sequential player with timers, pause/skip, and progress bar
+- Calendar tracking with streaks, active-days, and recent-sessions list
+- Local push notifications for daily reminders, time configurable
 - 100% local persistence — no accounts, no backend, no subscription
 
 ## Repo layout
@@ -53,12 +59,17 @@ them with curated real video IDs before publishing. See `content/README.md`.
 Done in this scaffold:
 
 - Project structure for both platforms
-- Navigation between Home / Programs / Player / Calendar / Settings
+- 5-tab navigation: Home / Programs / Stretches / Calendar / Settings
 - JSON content model + loaders on both platforms
 - Local persistence (Room on Android, SwiftData on iOS) for completed sessions
-- Streak calculation
-- Local notification scheduling (WorkManager + AlarmManager on Android,
+  and custom routines
+- Streak calculation + recent sessions list
+- Custom routine builder (name + body-part filter + stretch picker)
+- Single-stretch and custom-routine playback
+- Local notification scheduling (AlarmManager on Android,
   UNUserNotificationCenter on iOS)
+- Daily reminder with configurable time
+- Onboarding flow that sets up a default reminder
 - YouTube player embed on both platforms
 
 Next steps (left to you):
