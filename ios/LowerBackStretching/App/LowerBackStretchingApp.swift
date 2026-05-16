@@ -9,11 +9,11 @@ struct LowerBackStretchingApp: App {
     private let container: ModelContainer = {
         let config = ModelConfiguration(
             "main",
-            isStoredInMemoryOnly: TestLaunchArgs.isResetData,
+            isStoredInMemoryOnly: TestLaunchArgs.isResetData
         )
         return try! ModelContainer(
             for: SessionRecord.self, CustomRoutine.self,
-            configurations: config,
+            configurations: config
         )
     }()
 

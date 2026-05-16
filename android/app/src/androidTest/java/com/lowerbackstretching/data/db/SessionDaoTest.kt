@@ -10,7 +10,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.time.LocalDate
 
 @RunWith(AndroidJUnit4::class)
 class SessionDaoTest {

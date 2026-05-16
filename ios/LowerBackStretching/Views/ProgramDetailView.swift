@@ -18,7 +18,7 @@ struct ProgramDetailView: View {
                     NavigationLink(value: DayTarget(programId: program.id, day: day.day)) {
                         InfoRow(
                             title: day.headerTitle,
-                            subtitle: day.subtitle(totalSeconds: content.totalDurationSeconds(stretchIds: day.stretchIds)),
+                            subtitle: day.subtitle(totalSeconds: content.totalDurationSeconds(stretchIds: day.stretchIds))
                         )
                     }
                     .buttonStyle(.plain)

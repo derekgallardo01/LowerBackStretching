@@ -28,7 +28,7 @@ struct OnboardingView: View {
                         ReminderController.apply(
                             enabled: true,
                             hour: ReminderDefaults.hour,
-                            minute: ReminderDefaults.minute,
+                            minute: ReminderDefaults.minute
                         )
                         onboardingDone = true
                     } else {

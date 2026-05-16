@@ -10,7 +10,7 @@ struct CalendarMonth {
 
     /// Weekday symbols rotated so the calendar's `firstWeekday` is first.
     var weekdaySymbols: [String] {
-        var symbols = calendar.veryShortStandaloneWeekdaySymbols
+        let symbols = calendar.veryShortStandaloneWeekdaySymbols
         let offset = calendar.firstWeekday - 1
         return Array(symbols[offset...]) + Array(symbols[..<offset])
     }

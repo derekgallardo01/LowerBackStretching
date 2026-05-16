@@ -23,7 +23,7 @@ struct HomeView: View {
                         InfoRow(
                             title: program.title,
                             subtitle: program.subtitle,
-                            body: program.summary,
+                            body: program.summary
                         )
                     }
                     .buttonStyle(.plain)

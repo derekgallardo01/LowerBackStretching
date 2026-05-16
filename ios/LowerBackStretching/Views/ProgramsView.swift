@@ -26,7 +26,7 @@ struct ProgramsView: View {
                         NavigationLink(value: routine) {
                             InfoRow(
                                 title: routine.name,
-                                subtitle: routine.subtitle(totalSeconds: content.totalDurationSeconds(stretchIds: routine.stretchIds)),
+                                subtitle: routine.subtitle(totalSeconds: content.totalDurationSeconds(stretchIds: routine.stretchIds))
                             )
                         }
                         .buttonStyle(.plain)
@@ -41,7 +41,7 @@ struct ProgramsView: View {
                         InfoRow(
                             title: program.title,
                             subtitle: program.subtitle,
-                            body: program.summary,
+                            body: program.summary
                         )
                     }
                     .buttonStyle(.plain)

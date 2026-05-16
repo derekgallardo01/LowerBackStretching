@@ -33,7 +33,7 @@ final class PlayerEngine: ObservableObject {
             index: 0,
             remainingSeconds: stretches.first?.durationSeconds ?? 0,
             running: !stretches.isEmpty,
-            finished: stretches.isEmpty,
+            finished: stretches.isEmpty
         )
     }
 

@@ -27,7 +27,7 @@ struct SinglePlayerView: View {
                 stretches: [stretch],
                 title: stretch.name,
                 programId: SyntheticProgramId.single(stretchId),
-                dayNumber: 0,
+                dayNumber: 0
             )
         } else {
             ProgressView()
@@ -46,7 +46,7 @@ struct CustomRoutinePlayerView: View {
             stretches: stretches,
             title: routine.name,
             programId: SyntheticProgramId.routine(routine.id),
-            dayNumber: 0,
+            dayNumber: 0
         )
     }
 }
@@ -131,7 +131,7 @@ struct PlayerBody: View {
             programId: programId,
             day: dayNumber,
             durationSeconds: engine.totalDurationSeconds,
-            in: modelContext,
+            in: modelContext
         )
     }
 }

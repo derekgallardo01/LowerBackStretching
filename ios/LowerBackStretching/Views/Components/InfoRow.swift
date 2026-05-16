@@ -6,18 +6,18 @@ import SwiftUI
 struct InfoRow<Trailing: View>: View {
     let title: String
     let subtitle: String
-    var body: String?
+    var bodyText: String?
     var trailing: Trailing
 
     init(
         title: String,
         subtitle: String,
         body: String? = nil,
-        @ViewBuilder trailing: () -> Trailing = { EmptyView() },
+        @ViewBuilder trailing: () -> Trailing = { EmptyView() }
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.body = body
+        self.bodyText = body
         self.trailing = trailing()
     }
 
@@ -28,8 +28,8 @@ struct InfoRow<Trailing: View>: View {
                 Text(subtitle)
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.tint)
-                if let body {
-                    Text(body)
+                if let bodyText {
+                    Text(bodyText)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .padding(.top, 2)

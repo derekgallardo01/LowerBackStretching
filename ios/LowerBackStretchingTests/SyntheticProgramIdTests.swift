@@ -16,7 +16,7 @@ final class SyntheticProgramIdTests: XCTestCase {
         let uuid = UUID()
         XCTAssertNotEqual(
             SyntheticProgramId.single(uuid.uuidString),
-            SyntheticProgramId.routine(uuid),
+            SyntheticProgramId.routine(uuid)
         )
     }
 }

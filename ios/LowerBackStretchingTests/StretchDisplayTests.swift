@@ -6,12 +6,12 @@ final class StretchDisplayTests: XCTestCase {
     private func stretch(
         difficulty: String = "easy",
         seconds: Int = 30,
-        bodyParts: [String] = ["lower-back"],
+        bodyParts: [String] = ["lower-back"]
     ) -> Stretch {
         Stretch(
             id: "s", name: "s", bodyParts: bodyParts,
             durationSeconds: seconds, difficulty: difficulty,
-            description: "", youtubeId: "x",
+            description: "", youtubeId: "x"
         )
     }
 
@@ -49,7 +49,7 @@ final class StretchDisplayTests: XCTestCase {
             days: [
                 ProgramDay(day: 1, title: "d1", stretchIds: ["a"]),
                 ProgramDay(day: 2, title: "d2", stretchIds: ["a"]),
-            ],
+            ]
         )
         XCTAssertEqual(program.subtitle, "2-day · lower back")
     }

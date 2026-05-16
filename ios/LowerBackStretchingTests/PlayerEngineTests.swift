@@ -7,7 +7,7 @@ final class PlayerEngineTests: XCTestCase {
         Stretch(
             id: id, name: id, bodyParts: ["lower-back"],
             durationSeconds: seconds, difficulty: "easy",
-            description: "", youtubeId: "x",
+            description: "", youtubeId: "x"
         )
     }
 

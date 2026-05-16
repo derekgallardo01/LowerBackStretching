@@ -7,7 +7,7 @@ final class BodyPartsTests: XCTestCase {
         Stretch(
             id: id, name: id, bodyParts: parts,
             durationSeconds: 30, difficulty: "easy",
-            description: "", youtubeId: "x",
+            description: "", youtubeId: "x"
         )
     }
 

@@ -44,7 +44,7 @@ private struct RecentSessions: View {
                 ForEach(sessions) { session in
                     InfoRow(
                         title: "\(programTitle(session)) · Day \(session.dayNumber)",
-                        subtitle: "\(session.completedAt.formatted(date: .abbreviated, time: .shortened)) · \(session.durationSeconds / 60) min",
+                        subtitle: "\(session.completedAt.formatted(date: .abbreviated, time: .shortened)) · \(session.durationSeconds / 60) min"
                     )
                 }
             }
@@ -82,7 +82,7 @@ private struct MonthCard: View {
                         DayCell(
                             date: day,
                             isInMonth: grid.isInMonth(day),
-                            done: completed.contains(cal.startOfDay(for: day)),
+                            done: completed.contains(cal.startOfDay(for: day))
                         )
                     }
                 }
