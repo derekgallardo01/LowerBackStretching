@@ -16,21 +16,32 @@ object ReminderScheduler {
             AlarmManager.RTC_WAKEUP,
             nextOccurrence(hour, minute, Calendar.getInstance()),
             AlarmManager.INTERVAL_DAY,
-            pendingIntent(context, create = true),
+            createPendingIntent(context),
         )
     }
 
     fun cancel(context: Context) {
         val alarmManager = context.getSystemService(AlarmManager::class.java)
-        pendingIntent(context, create = false)?.let { alarmManager.cancel(it) }
+        existingPendingIntent(context)?.let { alarmManager.cancel(it) }
     }
 
-    private fun pendingIntent(context: Context, create: Boolean): PendingIntent? {
-        val intent = Intent(context, ReminderReceiver::class.java)
-        val flags = PendingIntent.FLAG_IMMUTABLE or
-            (if (create) PendingIntent.FLAG_UPDATE_CURRENT else PendingIntent.FLAG_NO_CREATE)
-        return PendingIntent.getBroadcast(context, REQUEST_CODE, intent, flags)
-    }
+    /** Creates or updates the broadcast PendingIntent. Never null. */
+    private fun createPendingIntent(context: Context): PendingIntent =
+        PendingIntent.getBroadcast(
+            context,
+            REQUEST_CODE,
+            Intent(context, ReminderReceiver::class.java),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+
+    /** Returns the existing PendingIntent (for cancellation) or null if none. */
+    private fun existingPendingIntent(context: Context): PendingIntent? =
+        PendingIntent.getBroadcast(
+            context,
+            REQUEST_CODE,
+            Intent(context, ReminderReceiver::class.java),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE,
+        )
 }
 
 /**
