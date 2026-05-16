@@ -25,11 +25,11 @@ final class CalendarMonthTests: XCTestCase {
         XCTAssertEqual(cells.filter { may2026.isInMonth($0) }.count, 31)
     }
 
-    func testWeekdaySymbolsRotateToFirstWeekday() {
+    func testWeekdaySymbolsHasSevenEntries() {
+        // English narrow weekday symbols collide (M T W T F S S) — so the
+        // labels are NOT all unique. Just verify the count.
         let m = CalendarMonth(month: date(2026, 5), calendar: cal)
-        // 7 symbols, all unique.
         XCTAssertEqual(m.weekdaySymbols.count, 7)
-        XCTAssertEqual(Set(m.weekdaySymbols).count, 7)
     }
 
     func testIsInMonthForBoundaryDays() {

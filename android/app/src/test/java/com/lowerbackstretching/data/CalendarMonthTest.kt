@@ -17,10 +17,11 @@ class CalendarMonthTest {
     }
 
     @Test
-    fun weekday_labels_are_seven_unique_strings() {
+    fun weekday_labels_has_seven_entries() {
+        // English narrow weekday symbols collide (M T W T F S S) — so labels
+        // are NOT all unique. Just verify the count.
         val labels = CalendarMonth(YearMonth.of(2026, 5)).weekdayLabels()
         assertThat(labels).hasSize(7)
-        assertThat(labels.toSet()).hasSize(7)
     }
 
     @Test
