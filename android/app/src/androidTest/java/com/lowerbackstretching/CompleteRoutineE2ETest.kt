@@ -2,6 +2,9 @@ package com.lowerbackstretching
 
 import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
@@ -46,12 +49,12 @@ class CompleteRoutineE2ETest {
 
     @Test
     fun complete_daily_5min_routine_shows_in_calendar() {
-        // Wait until the tab bar appears (AppNav is gated on a Flow with
-        // initial = null, so the first frames render nothing).
         rule.waitUntil(timeoutMillis = 5_000) {
             rule.onAllNodesWithText("Programs").fetchSemanticsNodes().isNotEmpty()
         }
-        rule.onNodeWithText("Programs").performClick()
+        // "Programs" text appears in both the bottom tab and the Home
+        // screen's section header. Target the clickable tab specifically.
+        rule.tapTab("Programs")
 
         rule.waitUntil(timeoutMillis = 5_000) {
             rule.onAllNodesWithText("Daily 5-Minute").fetchSemanticsNodes().isNotEmpty()
@@ -75,15 +78,23 @@ class CompleteRoutineE2ETest {
         rule.onNodeWithText("Nice work.").assertIsDisplayed()
         rule.onNodeWithText("Done").performClick()
 
-        // Calendar should now show the session.
         rule.waitUntil(timeoutMillis = 5_000) {
             rule.onAllNodesWithText("Calendar").fetchSemanticsNodes().isNotEmpty()
         }
-        rule.onNodeWithText("Calendar").performClick()
+        rule.tapTab("Calendar")
         rule.waitUntil(timeoutMillis = 5_000) {
             rule.onAllNodesWithText("Recent sessions").fetchSemanticsNodes().isNotEmpty()
         }
         rule.onNodeWithText("Recent sessions").assertIsDisplayed()
         rule.onNodeWithText("Daily 5-Minute · Day 1").assertIsDisplayed()
     }
+}
+
+/**
+ * Click a bottom-bar tab by label. Disambiguates from inline screen text
+ * with the same label (e.g. the Home screen's "Programs" section header)
+ * by requiring the node to have an onClick action — only the tab does.
+ */
+private fun AndroidComposeTestRule<*, *>.tapTab(label: String) {
+    onNode(hasText(label) and hasClickAction()).performClick()
 }

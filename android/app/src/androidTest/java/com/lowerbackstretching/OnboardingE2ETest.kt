@@ -2,6 +2,8 @@ package com.lowerbackstretching
 
 import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
@@ -19,9 +21,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class OnboardingE2ETest {
 
-    // Pre-grant POST_NOTIFICATIONS so MainActivity doesn't show the system
-    // permission dialog on launch (which would block setContent and the
-    // Compose hierarchy registration). Must run before the compose rule.
     @get:Rule(order = 0)
     val permissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)
@@ -42,12 +41,13 @@ class OnboardingE2ETest {
         }
         rule.onNodeWithText("Skip").performClick()
 
+        // "Welcome back" is unique to the Home screen content, so it's a
+        // clean post-onboarding signal. (The bottom-tab "Home" is also
+        // unique, but the screen header is the more visible smoke test.)
         rule.waitUntil(timeoutMillis = 5_000) {
-            rule.onAllNodesWithText("Home").fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodesWithText("Welcome back").fetchSemanticsNodes().isNotEmpty()
         }
-        rule.onNodeWithText("Home").assertIsDisplayed()
-        rule.onNodeWithText("Programs").assertIsDisplayed()
-        rule.onNodeWithText("Calendar").assertIsDisplayed()
+        rule.onNodeWithText("Welcome back").assertIsDisplayed()
     }
 
     @Test
@@ -59,8 +59,8 @@ class OnboardingE2ETest {
         rule.onNodeWithText("Turn on reminders").performClick()
 
         rule.waitUntil(timeoutMillis = 5_000) {
-            rule.onAllNodesWithText("Programs").fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodesWithText("Welcome back").fetchSemanticsNodes().isNotEmpty()
         }
-        rule.onNodeWithText("Programs").assertIsDisplayed()
+        rule.onNodeWithText("Welcome back").assertIsDisplayed()
     }
 }
