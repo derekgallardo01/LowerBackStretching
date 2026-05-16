@@ -3,6 +3,7 @@ package com.lowerbackstretching
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -39,22 +40,43 @@ class CompleteRoutineE2ETest {
 
     @Test
     fun complete_daily_5min_routine_shows_in_calendar() {
+        // Wait until the tab bar appears (AppNav is gated on a Flow with
+        // initial = null, so the first frames render nothing).
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Programs").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Programs").performClick()
+
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Daily 5-Minute").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Daily 5-Minute").performClick()
+
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Day 1 · Daily Routine").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Day 1 · Daily Routine").performClick()
 
         // Player loads with 4 stretches — tap Next 4 times to finish.
-        rule.waitUntil(timeoutMillis = 5_000) {
+        rule.waitUntil(timeoutMillis = 10_000) {
             rule.onAllNodesWithContentDescription("Next").fetchSemanticsNodes().isNotEmpty()
         }
         repeat(4) { rule.onNodeWithContentDescription("Next").performClick() }
 
-        // Finish screen.
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Nice work.").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Nice work.").assertIsDisplayed()
         rule.onNodeWithText("Done").performClick()
 
         // Calendar should now show the session.
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Calendar").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Calendar").performClick()
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Recent sessions").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Recent sessions").assertIsDisplayed()
         rule.onNodeWithText("Daily 5-Minute · Day 1").assertIsDisplayed()
     }

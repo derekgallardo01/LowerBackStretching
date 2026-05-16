@@ -3,6 +3,7 @@ package com.lowerbackstretching.ui
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -29,6 +30,9 @@ class SettingsScreenTest {
     @Test
     fun renders_reminder_section_and_about() {
         rule.setContent { AppTheme { SettingsScreen() } }
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Settings").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Settings").assertIsDisplayed()
         rule.onNodeWithText("Daily reminder").assertIsDisplayed()
         rule.onNodeWithText("Reminder time").assertIsDisplayed()

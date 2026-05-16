@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -42,6 +43,9 @@ class ProgramsScreenTest {
                 )
             }
         }
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Lower Back Relief").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Programs").assertIsDisplayed()
         rule.onNodeWithText("Lower Back Relief").assertIsDisplayed()
     }
@@ -58,10 +62,12 @@ class ProgramsScreenTest {
                 )
             }
         }
-        // The FAB has both the text and the click handler; target the clickable
-        // ancestor specifically so the click event reaches the button itself
-        // (not the inner Text node).
-        rule.onNode(hasText("New routine") and hasClickAction()).performClick()
+        // The FAB's text node lives in the unmerged semantic tree (Material 3
+        // FloatingActionButton hides it from the merged tree). Search there.
+        rule.onNode(
+            hasText("New routine") and hasClickAction(),
+            useUnmergedTree = true,
+        ).performClick()
         assert(clicked) { "expected onCreateRoutine to fire" }
     }
 
@@ -76,7 +82,13 @@ class ProgramsScreenTest {
                 )
             }
         }
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("legs").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("legs").performClick()
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Leg Flexibility").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Leg Flexibility").assertIsDisplayed()
     }
 }

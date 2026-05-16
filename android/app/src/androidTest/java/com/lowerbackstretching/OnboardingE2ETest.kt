@@ -2,6 +2,7 @@ package com.lowerbackstretching
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -22,15 +23,22 @@ class OnboardingE2ETest {
     @Before
     fun reset() = runBlocking {
         val ctx = InstrumentationRegistry.getInstrumentation().targetContext
-        // Clear DataStore in-memory state too — file delete alone isn't enough.
         Prefs(ctx).resetForTests()
     }
 
     @Test
     fun tapping_skip_lands_on_home_tab() {
-        rule.onNodeWithText("Skip").assertIsDisplayed()
+        // AppNav reads onboardingDone as a Flow with `initial = null`, so it
+        // renders nothing for a frame or two before the OnboardingScreen
+        // appears. Wait for the Skip button to show up before tapping it.
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Skip").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Skip").performClick()
 
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Home").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Home").assertIsDisplayed()
         rule.onNodeWithText("Programs").assertIsDisplayed()
         rule.onNodeWithText("Calendar").assertIsDisplayed()
@@ -38,9 +46,15 @@ class OnboardingE2ETest {
 
     @Test
     fun stepping_through_all_pages_completes_onboarding() {
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Next").fetchSemanticsNodes().isNotEmpty()
+        }
         repeat(3) { rule.onNodeWithText("Next").performClick() }
         rule.onNodeWithText("Turn on reminders").performClick()
 
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Programs").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Programs").assertIsDisplayed()
     }
 }

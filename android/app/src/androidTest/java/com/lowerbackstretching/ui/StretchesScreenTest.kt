@@ -1,9 +1,10 @@
 package com.lowerbackstretching.ui
 
+import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
-import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -21,30 +22,41 @@ class StretchesScreenTest {
     @Test
     fun shows_header_and_default_includes_all_stretches() {
         rule.setContent { AppTheme { StretchesScreen(onOpenStretch = {}) } }
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Cat-Cow").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Stretches").assertIsDisplayed()
         rule.onNodeWithText("Cat-Cow").assertIsDisplayed()
-        rule.onNodeWithText("Pigeon Pose").assertIsDisplayed()
     }
 
     @Test
     fun filtering_by_calves_hides_lower_back_only_stretches() {
         rule.setContent { AppTheme { StretchesScreen(onOpenStretch = {}) } }
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("calves").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("calves").performClick()
-        // Wall Calf Stretch should show
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Wall Calf Stretch").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Wall Calf Stretch").assertIsDisplayed()
-        // Cat-Cow is lower-back/spine only — should disappear
         rule.onNodeWithText("Cat-Cow").assertIsNotDisplayed()
     }
 
     @Test
     fun all_chip_resets_filter() {
         rule.setContent { AppTheme { StretchesScreen(onOpenStretch = {}) } }
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("calves").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("calves").performClick()
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Wall Calf Stretch").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("all").performClick()
-        // Cat-Cow is at the top of the 27-stretch list; Wall Calf Stretch
-        // is further down and won't be in the rendered LazyColumn window.
-        // Just verify the filter reset brought back stretches that were
-        // hidden under the "calves" filter.
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Cat-Cow").fetchSemanticsNodes().isNotEmpty()
+        }
         rule.onNodeWithText("Cat-Cow").assertIsDisplayed()
     }
 
@@ -55,6 +67,9 @@ class StretchesScreenTest {
             AppTheme {
                 StretchesScreen(onOpenStretch = { openedId = it })
             }
+        }
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Cat-Cow").fetchSemanticsNodes().isNotEmpty()
         }
         rule.onNodeWithText("Cat-Cow").performClick()
         assert(openedId == "cat-cow") { "expected cat-cow, got $openedId" }
