@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.ManagedVirtualDevice
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -41,6 +43,35 @@ android {
 
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
+    }
+
+    // Gradle Managed Devices: declarative phone + tablet AVDs that Gradle
+    // downloads, boots, runs tests on, and tears down.
+    //
+    //   ./gradlew :app:pixel6Api34DebugAndroidTest        — phone only
+    //   ./gradlew :app:pixelTabletApi34DebugAndroidTest   — tablet only
+    //   ./gradlew :app:phoneAndTabletGroupDebugAndroidTest — both, in parallel
+    testOptions {
+        managedDevices {
+            devices {
+                maybeCreate<ManagedVirtualDevice>("pixel6Api34").apply {
+                    device = "Pixel 6"
+                    apiLevel = 34
+                    systemImageSource = "aosp-atd"
+                }
+                maybeCreate<ManagedVirtualDevice>("pixelTabletApi34").apply {
+                    device = "Pixel Tablet"
+                    apiLevel = 34
+                    systemImageSource = "aosp-atd"
+                }
+            }
+            groups {
+                maybeCreate("phoneAndTablet").apply {
+                    targetDevices.add(devices["pixel6Api34"])
+                    targetDevices.add(devices["pixelTabletApi34"])
+                }
+            }
+        }
     }
 }
 

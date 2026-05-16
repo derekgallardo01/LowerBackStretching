@@ -76,9 +76,29 @@ Two test source sets, both runnable from Studio (Run → Tests) or CLI.
 
 ### Instrumented (Compose UI + Room DAO + full-app E2E)
 
+Two ways to run these — pick whichever fits.
+
+**Against a device you already have connected** (USB-debugged phone or a
+running emulator):
 ```sh
 ./gradlew :app:connectedDebugAndroidTest
 ```
+
+**Against managed virtual devices** (Gradle downloads the system image,
+boots the AVD, runs the tests, and tears it down — no manual emulator
+setup):
+```sh
+./gradlew :app:pixel6Api34DebugAndroidTest          # phone only
+./gradlew :app:pixelTabletApi34DebugAndroidTest     # tablet only
+./gradlew :app:phoneAndTabletGroupDebugAndroidTest  # both, in parallel
+```
+
+The managed-device profiles are declared in `app/build.gradle.kts` and
+target API 34 with the AOSP ATD (automated test device) system image,
+which boots faster than the standard emulator.
+
+The "phone and tablet" group is the one to run before shipping; it
+confirms the layout works on both form factors.
 
 | File | Covers |
 |------|--------|

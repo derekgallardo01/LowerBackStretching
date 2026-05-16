@@ -57,9 +57,18 @@ Xcode project once:
 Then `Cmd-U` to run, or:
 
 ```sh
+# Single simulator
 xcodebuild test -scheme LowerBackStretching \
   -destination 'platform=iOS Simulator,name=iPhone 15'
+
+# Phone + tablet in one invocation (parallel)
+./scripts/test-phone-and-tablet.sh
 ```
+
+The script runs the bundle on both an iPhone and an iPad simulator and
+writes a combined `.xcresult` bundle. Edit the script if your local
+simulator names differ from the defaults (`iPhone 15` / `iPad Pro
+(11-inch) (M4)`) — `xcrun simctl list devices` shows what you have.
 
 Coverage:
 
