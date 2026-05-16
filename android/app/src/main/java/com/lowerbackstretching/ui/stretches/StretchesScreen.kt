@@ -17,11 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.BodyParts
-import com.lowerbackstretching.data.model.Stretch
+import com.lowerbackstretching.data.filteredBy
+import com.lowerbackstretching.data.shortSubtitle
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.ChipsRow
 import com.lowerbackstretching.ui.components.InfoRow
-
 
 @Composable
 fun StretchesScreen(
@@ -47,16 +47,10 @@ fun StretchesScreen(
             items(visible, key = { it.id }) { stretch ->
                 InfoRow(
                     title = stretch.name,
-                    subtitle = stretch.shortSubtitle(),
+                    subtitle = stretch.shortSubtitle,
                     onClick = { onOpenStretch(stretch.id) },
                 )
             }
         }
     }
 }
-
-internal fun List<Stretch>.filteredBy(bodyPart: String): List<Stretch> =
-    if (bodyPart == BodyParts.ALL) this else filter { bodyPart in it.bodyParts }
-
-internal fun Stretch.shortSubtitle(): String =
-    "${durationSeconds}s · $difficulty · ${BodyParts.displayList(bodyParts)}"

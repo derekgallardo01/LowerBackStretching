@@ -18,11 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.data.model.Program
-import com.lowerbackstretching.data.model.ProgramDay
+import com.lowerbackstretching.data.headerTitle
+import com.lowerbackstretching.data.subtitle
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.InfoRow
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,20 +52,14 @@ fun ProgramDetailScreen(
         ) {
             item { Text(program.summary, style = MaterialTheme.typography.bodyLarge) }
             items(program.days, key = { it.day }) { day ->
+                val totalSeconds = vm.content.stretchesFor(program, day.day)
+                    .sumOf { it.durationSeconds }
                 InfoRow(
-                    title = day.headerTitle(),
-                    subtitle = day.subtitle(secondsFor(program, day)),
+                    title = day.headerTitle,
+                    subtitle = day.subtitle(totalSeconds),
                     onClick = { onStartDay(day.day) },
                 )
             }
         }
     }
 }
-
-private fun AppViewModel.secondsFor(program: Program, day: ProgramDay): Int =
-    content.stretchesFor(program, day.day).sumOf { it.durationSeconds }
-
-internal fun ProgramDay.headerTitle(): String = "Day $day · $title"
-
-internal fun ProgramDay.subtitle(totalSeconds: Int): String =
-    "${stretchIds.size} stretches · ${totalSeconds / 60} min"

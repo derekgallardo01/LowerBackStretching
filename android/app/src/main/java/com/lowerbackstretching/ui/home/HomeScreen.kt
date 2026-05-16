@@ -21,7 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.InfoRow
 import com.lowerbackstretching.ui.components.Stat
-import com.lowerbackstretching.ui.programs.subtitle
+import com.lowerbackstretching.data.subtitle
 
 
 @Composable
@@ -48,7 +48,7 @@ fun HomeScreen(
         items(vm.content.programs, key = { it.id }) { program ->
             InfoRow(
                 title = program.title,
-                subtitle = program.subtitle(),
+                subtitle = program.subtitle,
                 body = program.summary,
                 onClick = { onOpenProgram(program.id) },
             )

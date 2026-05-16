@@ -21,10 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.notifications.ReminderScheduler
+import com.lowerbackstretching.notifications.applyReminder
 import com.lowerbackstretching.ui.AppViewModel
+import com.lowerbackstretching.ui.util.formatTime
 import kotlinx.coroutines.launch
-
 
 @Composable
 fun SettingsScreen(vm: AppViewModel = viewModel()) {
@@ -34,6 +34,10 @@ fun SettingsScreen(vm: AppViewModel = viewModel()) {
     val hour by vm.prefs.reminderHour.collectAsState(initial = 8)
     val minute by vm.prefs.reminderMinute.collectAsState(initial = 0)
 
+    fun applyReminder(enabled: Boolean, hour: Int, minute: Int) {
+        scope.launch { vm.prefs.applyReminder(ctx, enabled, hour, minute) }
+    }
+
     Column(
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -42,55 +46,64 @@ fun SettingsScreen(vm: AppViewModel = viewModel()) {
 
         Card(shape = RoundedCornerShape(16.dp)) {
             Column(Modifier.padding(16.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column(Modifier.padding(end = 12.dp)) {
-                        Text("Daily reminder", style = MaterialTheme.typography.titleMedium)
-                        Text("A nudge to do your routine.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
-                    }
-                    Switch(
-                        checked = enabled,
-                        onCheckedChange = { on ->
-                            scope.launch {
-                                vm.prefs.setReminder(on, hour, minute)
-                                if (on) ReminderScheduler.schedule(ctx, hour, minute)
-                                else ReminderScheduler.cancel(ctx)
-                            }
-                        }
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 12.dp)
-                        .clickable {
-                            TimePickerDialog(ctx, { _, h, m ->
-                                scope.launch {
-                                    vm.prefs.setReminder(enabled, h, m)
-                                    if (enabled) ReminderScheduler.schedule(ctx, h, m)
-                                }
-                            }, hour, minute, true).show()
-                        },
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text("Reminder time", style = MaterialTheme.typography.titleMedium)
-                    Text(String.format("%02d:%02d", hour, minute), style = MaterialTheme.typography.titleMedium)
-                }
+                ReminderToggleRow(
+                    enabled = enabled,
+                    onToggle = { on -> applyReminder(on, hour, minute) },
+                )
+                ReminderTimeRow(
+                    formatted = formatTime(hour, minute),
+                    onClick = {
+                        TimePickerDialog(ctx, { _, h, m -> applyReminder(enabled, h, m) },
+                            hour, minute, true).show()
+                    },
+                )
             }
         }
 
-        Card(shape = RoundedCornerShape(16.dp)) {
-            Column(Modifier.padding(16.dp)) {
-                Text("About", style = MaterialTheme.typography.titleMedium)
-                Text("Lower Back Stretching · v0.1",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
-            }
+        AboutCard()
+    }
+}
+
+@Composable
+private fun ReminderToggleRow(enabled: Boolean, onToggle: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.padding(end = 12.dp)) {
+            Text("Daily reminder", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "A nudge to do your routine.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            )
+        }
+        Switch(checked = enabled, onCheckedChange = onToggle)
+    }
+}
+
+@Composable
+private fun ReminderTimeRow(formatted: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(top = 12.dp).clickable(onClick = onClick),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text("Reminder time", style = MaterialTheme.typography.titleMedium)
+        Text(formatted, style = MaterialTheme.typography.titleMedium)
+    }
+}
+
+@Composable
+private fun AboutCard() {
+    Card(shape = RoundedCornerShape(16.dp)) {
+        Column(Modifier.padding(16.dp)) {
+            Text("About", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "Lower Back Stretching · v0.1",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            )
         }
     }
 }

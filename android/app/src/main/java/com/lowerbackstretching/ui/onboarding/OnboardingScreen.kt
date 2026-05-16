@@ -37,7 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.notifications.ReminderScheduler
+import com.lowerbackstretching.notifications.applyReminder
 import com.lowerbackstretching.ui.AppViewModel
 import kotlinx.coroutines.launch
 
@@ -109,8 +109,7 @@ fun OnboardingScreen(
             Button(onClick = {
                 scope.launch {
                     if (isLast) {
-                        vm.prefs.setReminder(enabled = true, hour = 8, minute = 0)
-                        ReminderScheduler.schedule(ctx, 8, 0)
+                        vm.prefs.applyReminder(ctx, enabled = true, hour = 8, minute = 0)
                         vm.prefs.markOnboardingDone()
                         onDone()
                     } else {

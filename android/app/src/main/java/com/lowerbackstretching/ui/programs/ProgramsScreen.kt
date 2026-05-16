@@ -19,15 +19,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.BodyParts.ALL
-import com.lowerbackstretching.data.db.CustomRoutineEntity
-import com.lowerbackstretching.data.model.Program
+import com.lowerbackstretching.data.subtitle
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.ChipsRow
 import com.lowerbackstretching.ui.components.InfoRow
-
 
 @Composable
 fun ProgramsScreen(
@@ -62,9 +61,11 @@ fun ProgramsScreen(
             if (customRoutines.isNotEmpty()) {
                 item { SectionHeader("My routines", topPadding = 4.dp) }
                 items(customRoutines, key = { "custom-${it.id}" }) { routine ->
+                    val totalSeconds = routine.stretchIds
+                        .sumOf { vm.content.stretch(it)?.durationSeconds ?: 0 }
                     InfoRow(
                         title = routine.name,
-                        subtitle = routine.subtitle(vm.totalSecondsFor(routine)),
+                        subtitle = routine.subtitle(totalSeconds),
                         onClick = { onOpenCustomRoutine(routine.id) },
                     )
                 }
@@ -76,7 +77,7 @@ fun ProgramsScreen(
             items(visiblePrograms, key = { "prog-${it.id}" }) { program ->
                 InfoRow(
                     title = program.title,
-                    subtitle = program.subtitle(),
+                    subtitle = program.subtitle,
                     body = program.summary,
                     onClick = { onOpenProgram(program.id) },
                 )
@@ -86,15 +87,6 @@ fun ProgramsScreen(
 }
 
 @Composable
-private fun SectionHeader(text: String, topPadding: androidx.compose.ui.unit.Dp) {
+private fun SectionHeader(text: String, topPadding: Dp) {
     Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = topPadding))
 }
-
-internal fun Program.subtitle(): String =
-    "${days.size}-day · ${category.replace('-', ' ')}"
-
-internal fun CustomRoutineEntity.subtitle(totalSeconds: Int): String =
-    "${stretchIds.size} stretches · ${totalSeconds / 60} min"
-
-internal fun com.lowerbackstretching.ui.AppViewModel.totalSecondsFor(routine: CustomRoutineEntity): Int =
-    routine.stretchIds.sumOf { content.stretch(it)?.durationSeconds ?: 0 }

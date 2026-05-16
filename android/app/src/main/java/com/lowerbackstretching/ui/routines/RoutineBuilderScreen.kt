@@ -30,11 +30,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.BodyParts
+import com.lowerbackstretching.data.filteredBy
+import com.lowerbackstretching.data.shortSubtitle
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.ChipsRow
 import com.lowerbackstretching.ui.components.InfoRow
-import com.lowerbackstretching.ui.stretches.filteredBy
-import com.lowerbackstretching.ui.stretches.shortSubtitle
 import kotlinx.coroutines.launch
 
 
@@ -105,7 +105,7 @@ fun RoutineBuilderScreen(
                     val isSelected = stretch.id in selected
                     InfoRow(
                         title = stretch.name,
-                        subtitle = stretch.shortSubtitle(),
+                        subtitle = stretch.shortSubtitle,
                         onClick = {
                             if (isSelected) selected.remove(stretch.id) else selected.add(stretch.id)
                         },

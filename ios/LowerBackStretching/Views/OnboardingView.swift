@@ -2,10 +2,6 @@ import SwiftUI
 
 struct OnboardingView: View {
     @AppStorage("onboarding_done") private var onboardingDone: Bool = false
-    @AppStorage(ReminderDefaults.enabledKey) private var reminderEnabled: Bool = false
-    @AppStorage(ReminderDefaults.hourKey) private var reminderHour: Int = 8
-    @AppStorage(ReminderDefaults.minuteKey) private var reminderMinute: Int = 0
-
     @State private var page: Int = 0
 
     private struct Page: Hashable {
@@ -65,10 +61,7 @@ struct OnboardingView: View {
 
                 Button(page == pages.count - 1 ? "Turn on reminders" : "Next") {
                     if page == pages.count - 1 {
-                        reminderEnabled = true
-                        reminderHour = 8
-                        reminderMinute = 0
-                        ReminderManager.schedule(hour: 8, minute: 0)
+                        ReminderController.apply(enabled: true, hour: 8, minute: 0)
                         onboardingDone = true
                     } else {
                         withAnimation { page += 1 }

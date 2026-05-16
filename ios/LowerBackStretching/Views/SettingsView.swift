@@ -5,23 +5,22 @@ struct SettingsView: View {
     @AppStorage(ReminderDefaults.hourKey) private var hour: Int = 8
     @AppStorage(ReminderDefaults.minuteKey) private var minute: Int = 0
 
-    @State private var pickerDate: Date = {
-        var c = DateComponents(); c.hour = 8; c.minute = 0
-        return Calendar.current.date(from: c) ?? .now
-    }()
+    @State private var pickerDate: Date = .now
 
     var body: some View {
         Form {
             Section(header: Text("Daily reminder")) {
                 Toggle("Enabled", isOn: $enabled)
-                    .onChange(of: enabled) { _, on in applyReminder(on: on) }
+                    .onChange(of: enabled) { _, on in
+                        ReminderController.apply(enabled: on, hour: hour, minute: minute)
+                    }
 
                 DatePicker("Time", selection: $pickerDate, displayedComponents: .hourAndMinute)
                     .onChange(of: pickerDate) { _, value in
                         let comps = Calendar.current.dateComponents([.hour, .minute], from: value)
-                        hour = comps.hour ?? 8
-                        minute = comps.minute ?? 0
-                        applyReminder(on: enabled)
+                        let h = comps.hour ?? 8
+                        let m = comps.minute ?? 0
+                        ReminderController.apply(enabled: enabled, hour: h, minute: m)
                     }
             }
 
@@ -31,23 +30,11 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("Settings")
-        .onAppear { syncPickerFromStorage() }
+        .onAppear { pickerDate = makeTime(hour: hour, minute: minute) }
     }
 
-    private func syncPickerFromStorage() {
-        var comps = DateComponents()
-        comps.hour = hour
-        comps.minute = minute
-        if let date = Calendar.current.date(from: comps) {
-            pickerDate = date
-        }
-    }
-
-    private func applyReminder(on: Bool) {
-        if on {
-            ReminderManager.schedule(hour: hour, minute: minute)
-        } else {
-            ReminderManager.cancel()
-        }
+    private func makeTime(hour: Int, minute: Int) -> Date {
+        let comps = DateComponents(hour: hour, minute: minute)
+        return Calendar.current.date(from: comps) ?? .now
     }
 }

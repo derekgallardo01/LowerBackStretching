@@ -1,49 +1,34 @@
 package com.lowerbackstretching.ui.nav
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.SelfImprovement
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.lowerbackstretching.data.Prefs
 import com.lowerbackstretching.ui.calendar.CalendarScreen
 import com.lowerbackstretching.ui.home.HomeScreen
 import com.lowerbackstretching.ui.onboarding.OnboardingScreen
 import com.lowerbackstretching.ui.player.CustomRoutinePlayerScreen
 import com.lowerbackstretching.ui.player.PlayerScreen
 import com.lowerbackstretching.ui.player.SingleStretchPlayerScreen
-import com.lowerbackstretching.ui.routines.RoutineBuilderScreen
 import com.lowerbackstretching.ui.programs.ProgramDetailScreen
 import com.lowerbackstretching.ui.programs.ProgramsScreen
+import com.lowerbackstretching.ui.routines.RoutineBuilderScreen
 import com.lowerbackstretching.ui.settings.SettingsScreen
 import com.lowerbackstretching.ui.stretches.StretchDetailScreen
 import com.lowerbackstretching.ui.stretches.StretchesScreen
-import com.lowerbackstretching.data.Prefs
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.platform.LocalContext
-
-sealed class Route(val path: String, val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector) {
-    data object Home      : Route("home", "Home", Icons.Filled.Home)
-    data object Programs  : Route("programs", "Programs", Icons.Filled.FitnessCenter)
-    data object Stretches : Route("stretches", "Stretches", Icons.Filled.SelfImprovement)
-    data object Calendar  : Route("calendar", "Calendar", Icons.Filled.CalendarMonth)
-    data object Settings  : Route("settings", "Settings", Icons.Filled.Settings)
-}
-
-private val BottomTabs = listOf(Route.Home, Route.Programs, Route.Stretches, Route.Calendar, Route.Settings)
 
 @Composable
 fun AppNav() {
@@ -66,22 +51,22 @@ private fun AppRoot() {
 
     Scaffold(
         bottomBar = {
-            if (BottomTabs.any { it.path == currentRoute }) {
+            if (Tab.all.any { it.path == currentRoute }) {
                 NavigationBar {
-                    BottomTabs.forEach { route ->
+                    Tab.all.forEach { tab ->
                         NavigationBarItem(
-                            selected = currentRoute == route.path,
+                            selected = currentRoute == tab.path,
                             onClick = {
-                                if (currentRoute != route.path) {
-                                    nav.navigate(route.path) {
-                                        popUpTo(Route.Home.path) { saveState = true }
+                                if (currentRoute != tab.path) {
+                                    nav.navigate(tab.path) {
+                                        popUpTo(Tab.Home.path) { saveState = true }
                                         launchSingleTop = true
                                         restoreState = true
                                     }
                                 }
                             },
-                            icon = { Icon(route.icon, contentDescription = route.label) },
-                            label = { Text(route.label) },
+                            icon = { Icon(tab.icon, contentDescription = tab.label) },
+                            label = { Text(tab.label) },
                         )
                     }
                 }
@@ -90,66 +75,64 @@ private fun AppRoot() {
     ) { inner ->
         NavHost(
             navController = nav,
-            startDestination = Route.Home.path,
-            modifier = androidx.compose.ui.Modifier.padding(inner),
+            startDestination = Tab.Home.path,
+            modifier = Modifier.padding(inner),
         ) {
-            composable(Route.Home.path) {
-                HomeScreen(onOpenProgram = { id -> nav.navigate("program/$id") })
+            composable(Tab.Home.path) {
+                HomeScreen(onOpenProgram = { id -> nav.navigate(Dest.program(id)) })
             }
-            composable(Route.Programs.path) {
+            composable(Tab.Programs.path) {
                 ProgramsScreen(
-                    onOpenProgram = { id -> nav.navigate("program/$id") },
-                    onOpenCustomRoutine = { rid -> nav.navigate("routine/$rid/play") },
-                    onCreateRoutine = { nav.navigate("routine/new") },
+                    onOpenProgram = { id -> nav.navigate(Dest.program(id)) },
+                    onOpenCustomRoutine = { rid -> nav.navigate(Dest.routinePlayer(rid)) },
+                    onCreateRoutine = { nav.navigate(Dest.routineNew) },
                 )
             }
-            composable("routine/new") {
+            composable(Dest.routineNew) {
                 RoutineBuilderScreen(
                     onSaved = { nav.popBackStack() },
                     onBack = { nav.popBackStack() },
                 )
             }
-            composable("routine/{id}/play") { backStack ->
+            composable(Dest.routinePlayerTemplate) { backStack ->
                 val id = backStack.arguments?.getString("id")?.toLongOrNull() ?: return@composable
                 CustomRoutinePlayerScreen(
                     routineId = id,
                     routineName = "Routine",
-                    onFinished = { nav.popBackStack(route = Route.Programs.path, inclusive = false) },
+                    onFinished = { nav.popBackStack(route = Tab.Programs.path, inclusive = false) },
                     onBack = { nav.popBackStack() },
                 )
             }
-            composable("program/{id}") { backStack ->
+            composable(Dest.programTemplate) { backStack ->
                 val id = backStack.arguments?.getString("id").orEmpty()
                 ProgramDetailScreen(
                     programId = id,
-                    onStartDay = { day -> nav.navigate("player/$id/$day") },
+                    onStartDay = { day -> nav.navigate(Dest.player(id, day)) },
                     onBack = { nav.popBackStack() },
                 )
             }
-            composable("player/{id}/{day}") { backStack ->
+            composable(Dest.playerTemplate) { backStack ->
                 val id = backStack.arguments?.getString("id").orEmpty()
                 val day = backStack.arguments?.getString("day")?.toIntOrNull() ?: 1
                 PlayerScreen(
                     programId = id,
                     dayNumber = day,
-                    onFinished = {
-                        nav.popBackStack(route = "program/$id", inclusive = false)
-                    },
+                    onFinished = { nav.popBackStack(route = Dest.program(id), inclusive = false) },
                     onBack = { nav.popBackStack() },
                 )
             }
-            composable(Route.Stretches.path) {
-                StretchesScreen(onOpenStretch = { id -> nav.navigate("stretch/$id") })
+            composable(Tab.Stretches.path) {
+                StretchesScreen(onOpenStretch = { id -> nav.navigate(Dest.stretch(id)) })
             }
-            composable("stretch/{id}") { backStack ->
+            composable(Dest.stretchTemplate) { backStack ->
                 val id = backStack.arguments?.getString("id").orEmpty()
                 StretchDetailScreen(
                     stretchId = id,
-                    onPractice = { nav.navigate("player/single/$id") },
+                    onPractice = { nav.navigate(Dest.singlePlayer(id)) },
                     onBack = { nav.popBackStack() },
                 )
             }
-            composable("player/single/{id}") { backStack ->
+            composable(Dest.singlePlayerTemplate) { backStack ->
                 val id = backStack.arguments?.getString("id").orEmpty()
                 SingleStretchPlayerScreen(
                     stretchId = id,
@@ -157,8 +140,8 @@ private fun AppRoot() {
                     onBack = { nav.popBackStack() },
                 )
             }
-            composable(Route.Calendar.path) { CalendarScreen() }
-            composable(Route.Settings.path) { SettingsScreen() }
+            composable(Tab.Calendar.path) { CalendarScreen() }
+            composable(Tab.Settings.path) { SettingsScreen() }
         }
     }
 }
