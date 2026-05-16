@@ -87,16 +87,20 @@ struct PlayerBody: View {
                     HStack(spacing: 24) {
                         Button(action: { engine.previous() }) {
                             Image(systemName: "backward.fill").font(.title)
-                        }.disabled(engine.snapshot.index == 0)
+                        }
+                        .accessibilityIdentifier("playerPrevious")
+                        .disabled(engine.snapshot.index == 0)
 
                         Button(engine.snapshot.running ? "Pause" : "Resume") {
                             engine.togglePlay()
                         }
                         .buttonStyle(.borderedProminent)
+                        .accessibilityIdentifier("playerPause")
 
                         Button(action: skip) {
                             Image(systemName: "forward.fill").font(.title)
                         }
+                        .accessibilityIdentifier("playerNext")
                     }
 
                     Spacer()

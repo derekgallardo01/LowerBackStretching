@@ -67,10 +67,21 @@ Coverage:
 |------|--------|
 | `Tests/SessionStoreTests.swift` | streak rule with injected today/calendar |
 | `Tests/CustomRoutineTests.swift` | CSV serialization, name trimming |
-| `Tests/ContentLoaderTests.swift` | bundled JSON integrity |
+| `Tests/ContentLoaderTests.swift` | bundled JSON integrity, totalDurationSeconds |
 | `Tests/PlayerEngineTests.swift` | 17 cases — tick, next/previous, pause, finish, progress |
+| `Tests/CalendarMonthTests.swift` | grid math: leap year, boundary days, week starts |
+| `Tests/StretchDisplayTests.swift` | difficulty capitalization, subtitles, body-part filtering |
+| `Tests/BodyPartsTests.swift` | display formatting, distinctSorted, filterOptions |
+| `Tests/SyntheticProgramIdTests.swift` | session id prefixes for single/routine |
+| `Tests/ReminderControllerTests.swift` | `apply` persists pref state |
 | `UITests/OnboardingE2EUITests.swift` | skip flow, full step-through, create custom routine end-to-end |
 | `UITests/TabNavigationUITests.swift` | all 5 tabs, category filter, body-part filter, open-program, settings switch toggle |
+| `UITests/CompleteRoutineUITests.swift` | full happy-path: open program → finish day → see in calendar |
+
+The UI tests use `launchArguments` to seed `@AppStorage` values
+(`-onboarding_done NO` or `YES`) so each test starts in a known state.
+`CompleteRoutineUITests` also passes `-resetData` so the SwiftData model
+container is in-memory and the recent-sessions list is empty at start.
 
 The UI tests use `launchArguments` to seed `@AppStorage` values
 (`-onboarding_done NO` or `YES`) so each test starts in a known state.

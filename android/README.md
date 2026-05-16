@@ -68,8 +68,13 @@ Two test source sets, both runnable from Studio (Run → Tests) or CLI.
 | `CustomRoutineRepositoryTest` | insert/update with fake DAO |
 | `PlayerEngineTest` | 17 cases — tick, next/previous, pause, finish, progress |
 | `ReminderSchedulerTest` | next-occurrence math: same-day, next-day, month/year rollover |
+| `CalendarMonthTest` | grid math: leap year, boundary days, week starts |
+| `DisplayTest` | difficulty capitalization, subtitles, body-part filtering |
+| `BodyPartsTest` | display formatting, distinctSorted, filterOptions |
+| `SyntheticProgramIdTest` | session id prefixes for single/routine |
+| `FormatTest` | `formatTime(h, m)` zero-padding |
 
-### Instrumented (Compose UI + Room DAO + E2E)
+### Instrumented (Compose UI + Room DAO + full-app E2E)
 
 ```sh
 ./gradlew :app:connectedDebugAndroidTest
@@ -77,10 +82,12 @@ Two test source sets, both runnable from Studio (Run → Tests) or CLI.
 
 | File | Covers |
 |------|--------|
-| `ContentRepositoryTest` | bundled JSON integrity |
+| `ContentRepositoryTest` | bundled JSON integrity, totalDurationSeconds |
 | `SessionDaoTest` | Room insert/recent/completedDays/forDay |
 | `CustomRoutineDaoTest` | Room insert/update/delete/byId |
 | `SessionRepositoryIntegrationTest` | repository + real Room round-trip |
+| `PrefsTest` | DataStore defaults + round-trip |
+| `ReminderControllerTest` | `applyReminder` persists pref state |
 | `HomeScreenTest` | header, streak card, program list |
 | `ProgramsScreenTest` | header, category filter, FAB callback |
 | `ProgramDetailScreenTest` | day rendering, onStartDay callback |
@@ -89,10 +96,13 @@ Two test source sets, both runnable from Studio (Run → Tests) or CLI.
 | `CalendarScreenTest` | header + empty state |
 | `SettingsScreenTest` | reminder section + about |
 | `RoutineBuilderE2ETest` | save disabled until name+selection, then enabled |
-| `OnboardingE2ETest` | skip lands on home; full step-through lands on home |
+| `OnboardingE2ETest` | skip lands on home; step-through lands on home |
+| `CompleteRoutineE2ETest` | full happy-path: pick program → finish day → see in calendar |
 
 The Compose UI tests host screens inside `createAndroidComposeRule<ComponentActivity>()`
 so `viewModel()` can construct AndroidViewModels with an Application context.
+`CompleteRoutineE2ETest` uses `createAndroidComposeRule<MainActivity>()` instead
+to exercise the real navigation graph; it wipes Room + DataStore in `@Before`.
 
 ## YouTube playback
 
