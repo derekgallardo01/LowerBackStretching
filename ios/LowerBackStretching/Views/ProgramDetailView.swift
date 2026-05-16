@@ -15,18 +15,13 @@ struct ProgramDetailView: View {
                 Text(program.summary).font(.body)
 
                 ForEach(program.days) { day in
-                    let stretches = content.stretches(for: program, day: day.day)
-                    let totalSeconds = stretches.reduce(0) { $0 + $1.durationSeconds }
+                    let totalSeconds = content.stretches(for: program, day: day.day)
+                        .reduce(0) { $0 + $1.durationSeconds }
                     NavigationLink(value: DayTarget(programId: program.id, day: day.day)) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Day \(day.day) · \(day.title)").font(.headline)
-                            Text("\(day.stretchIds.count) stretches · \(totalSeconds / 60) min")
-                                .font(.caption.weight(.medium))
-                                .foregroundStyle(.tint)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(14)
-                        .background(RoundedRectangle(cornerRadius: 14).fill(Color(.secondarySystemBackground)))
+                        InfoRow(
+                            title: day.headerTitle,
+                            subtitle: day.subtitle(totalSeconds: totalSeconds),
+                        )
                     }
                     .buttonStyle(.plain)
                 }

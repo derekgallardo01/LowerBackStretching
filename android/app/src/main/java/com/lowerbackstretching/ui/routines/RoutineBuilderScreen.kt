@@ -4,21 +4,15 @@ import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,8 +30,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.data.model.Stretch
+import com.lowerbackstretching.data.BodyParts
 import com.lowerbackstretching.ui.AppViewModel
+import com.lowerbackstretching.ui.components.ChipsRow
+import com.lowerbackstretching.ui.components.InfoRow
+import com.lowerbackstretching.ui.stretches.filteredBy
+import com.lowerbackstretching.ui.stretches.shortSubtitle
 import kotlinx.coroutines.launch
 
 class RoutineBuilderViewModel(app: Application) : AppViewModel(app)
@@ -51,16 +49,14 @@ fun RoutineBuilderScreen(
 ) {
     val scope = rememberCoroutineScope()
     val stretches = vm.content.stretches
-    val bodyParts = remember(stretches) {
-        listOf("all") + stretches.flatMap { it.bodyParts }.distinct().sorted()
-    }
+    val filterOptions = remember(stretches) { BodyParts.filterOptions(stretches) }
 
     var name by remember { mutableStateOf("") }
-    var filter by remember { mutableStateOf("all") }
+    var filter by remember { mutableStateOf(BodyParts.ALL) }
     val selected = remember { mutableStateListOf<String>() }
 
     val canSave = name.trim().isNotEmpty() && selected.isNotEmpty()
-    val visible = if (filter == "all") stretches else stretches.filter { filter in it.bodyParts }
+    val totalSeconds = selected.sumOf { id -> vm.content.stretch(id)?.durationSeconds ?: 0 }
 
     Scaffold(
         topBar = {
@@ -80,9 +76,7 @@ fun RoutineBuilderScreen(
                                 onSaved()
                             }
                         },
-                    ) {
-                        Icon(Icons.Filled.Check, contentDescription = "Save")
-                    }
+                    ) { Icon(Icons.Filled.Check, contentDescription = "Save") }
                 },
             )
         }
@@ -96,71 +90,32 @@ fun RoutineBuilderScreen(
                 onValueChange = { name = it },
                 label = { Text("Routine name") },
                 singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp),
             )
-
             Text(
-                "${selected.size} stretches selected · ${(selected.sumOf { vm.content.stretch(it)?.durationSeconds ?: 0 }) / 60} min",
+                "${selected.size} stretches selected · ${totalSeconds / 60} min",
                 style = MaterialTheme.typography.labelLarge,
                 modifier = Modifier.padding(horizontal = 16.dp),
             )
-
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(bodyParts) { part ->
-                    FilterChip(
-                        selected = filter == part,
-                        onClick = { filter = part },
-                        label = { Text(part.replace('-', ' ')) },
-                    )
-                }
-            }
+            ChipsRow(options = filterOptions, selected = filter, onSelect = { filter = it })
 
             LazyColumn(
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp, top = 4.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                items(visible, key = { it.id }) { stretch ->
-                    PickerRow(
-                        stretch = stretch,
-                        isSelected = stretch.id in selected,
-                        onToggle = {
-                            if (stretch.id in selected) selected.remove(stretch.id)
-                            else selected.add(stretch.id)
+                items(stretches.filteredBy(filter), key = { it.id }) { stretch ->
+                    val isSelected = stretch.id in selected
+                    InfoRow(
+                        title = stretch.name,
+                        subtitle = stretch.shortSubtitle(),
+                        onClick = {
+                            if (isSelected) selected.remove(stretch.id) else selected.add(stretch.id)
                         },
+                        trailing = if (isSelected) {
+                            { Icon(Icons.Filled.Check, contentDescription = "Selected", tint = MaterialTheme.colorScheme.primary) }
+                        } else null,
                     )
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun PickerRow(stretch: Stretch, isSelected: Boolean, onToggle: () -> Unit) {
-    Card(
-        onClick = onToggle,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        ) {
-            Column(modifier = Modifier.padding(end = 8.dp)) {
-                Text(stretch.name, style = MaterialTheme.typography.titleMedium)
-                Text(
-                    "${stretch.durationSeconds}s · ${stretch.bodyParts.joinToString(" · ") { it.replace('-', ' ') }}",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-            }
-            if (isSelected) {
-                Icon(Icons.Filled.Check, contentDescription = "Selected", tint = MaterialTheme.colorScheme.primary)
             }
         }
     }

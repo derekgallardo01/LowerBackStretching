@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.data.BodyParts
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.YouTubePlayerView
 
@@ -70,7 +71,7 @@ fun StretchDetailScreen(
                 color = MaterialTheme.colorScheme.primary,
             )
             Text(
-                stretch.bodyParts.joinToString(" · ") { it.replace('-', ' ') },
+                BodyParts.displayList(stretch.bodyParts),
                 style = MaterialTheme.typography.labelLarge,
             )
             Text(stretch.description, style = MaterialTheme.typography.bodyLarge)

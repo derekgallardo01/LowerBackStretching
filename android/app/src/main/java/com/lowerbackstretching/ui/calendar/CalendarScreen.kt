@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.db.SessionEntity
 import com.lowerbackstretching.ui.AppViewModel
+import com.lowerbackstretching.ui.components.InfoRow
+import com.lowerbackstretching.ui.components.Stat
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -56,7 +58,6 @@ fun CalendarScreen(vm: CalendarViewModel = viewModel()) {
     val streak by vm.sessions.streak().collectAsState(initial = 0)
     val total by vm.sessions.count().collectAsState(initial = 0)
     val recent by vm.sessions.recent().collectAsState(initial = emptyList())
-
     var month by remember { mutableStateOf(YearMonth.now()) }
 
     LazyColumn(
@@ -65,10 +66,7 @@ fun CalendarScreen(vm: CalendarViewModel = viewModel()) {
     ) {
         item { Text("Calendar", style = MaterialTheme.typography.headlineMedium) }
         item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 Stat("$streak", "Streak")
                 Stat("$total", "Sessions")
                 Stat("${completed.size}", "Active days")
@@ -84,18 +82,8 @@ fun CalendarScreen(vm: CalendarViewModel = viewModel()) {
                 }
             }
         }
-        if (recent.isNotEmpty()) {
-            item {
-                Text(
-                    "Recent sessions",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(top = 8.dp),
-                )
-            }
-            items(recent, key = { it.id }) { session ->
-                SessionRow(session = session, programTitle = vm.content.program(session.programId)?.title ?: session.programId)
-            }
-        } else {
+
+        if (recent.isEmpty()) {
             item {
                 Text(
                     "No sessions yet. Start a routine to track your progress.",
@@ -104,35 +92,33 @@ fun CalendarScreen(vm: CalendarViewModel = viewModel()) {
                     modifier = Modifier.padding(top = 8.dp),
                 )
             }
+        } else {
+            item {
+                Text(
+                    "Recent sessions",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+            }
+            items(recent, key = { it.id }) { session ->
+                InfoRow(
+                    title = session.headerTitle(vm.content.program(session.programId)?.title ?: session.programId),
+                    subtitle = session.subtitle(),
+                )
+            }
         }
     }
 }
 
-@Composable
-private fun SessionRow(session: SessionEntity, programTitle: String) {
-    val date = Instant.ofEpochMilli(session.completedAtEpochMillis)
+private fun SessionEntity.headerTitle(programTitle: String): String =
+    "$programTitle · Day $dayNumber"
+
+private fun SessionEntity.subtitle(): String {
+    val date = Instant.ofEpochMilli(completedAtEpochMillis)
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime()
     val formatted = date.format(DateTimeFormatter.ofPattern("MMM d · h:mm a", Locale.getDefault()))
-
-    Card(shape = RoundedCornerShape(12.dp), modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(12.dp)) {
-            Text("$programTitle · Day ${session.dayNumber}", style = MaterialTheme.typography.titleMedium)
-            Text(
-                "$formatted · ${session.durationSeconds / 60} min",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
-    }
-}
-
-@Composable
-private fun Stat(value: String, label: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(value, style = MaterialTheme.typography.headlineMedium)
-        Text(label, style = MaterialTheme.typography.labelLarge)
-    }
+    return "$formatted · ${durationSeconds / 60} min"
 }
 
 @Composable
@@ -157,10 +143,8 @@ private fun MonthHeader(month: YearMonth, onPrev: () -> Unit, onNext: () -> Unit
 
 @Composable
 private fun WeekdayLabels() {
-    val days = DayOfWeek.values().toList()
-    // Rotate so the week starts on the locale's first day (kept simple: Monday).
     Row(Modifier.fillMaxWidth()) {
-        days.forEach { d ->
+        DayOfWeek.values().forEach { d ->
             Text(
                 d.getDisplayName(TextStyle.NARROW, Locale.getDefault()),
                 modifier = Modifier.weight(1f),
@@ -177,15 +161,13 @@ private fun MonthGrid(month: YearMonth, completed: Set<LocalDate>) {
     val today = LocalDate.now()
     val firstOffset = (first.dayOfWeek.value - DayOfWeek.MONDAY.value).let { if (it < 0) it + 7 else it }
     val length = month.lengthOfMonth()
-    val cells = firstOffset + length
-    val rows = (cells + 6) / 7
+    val rows = (firstOffset + length + 6) / 7
 
     Column {
         for (row in 0 until rows) {
             Row(Modifier.fillMaxWidth()) {
                 for (col in 0..6) {
-                    val cell = row * 7 + col
-                    val dayNum = cell - firstOffset + 1
+                    val dayNum = row * 7 + col - firstOffset + 1
                     if (dayNum in 1..length) {
                         val date = month.atDay(dayNum)
                         DayCell(

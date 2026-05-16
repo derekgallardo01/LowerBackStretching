@@ -4,55 +4,45 @@ import SwiftData
 struct ProgramsView: View {
     @EnvironmentObject private var content: ContentStore
     @Query(sort: [SortDescriptor(\CustomRoutine.createdAt, order: .reverse)]) private var customRoutines: [CustomRoutine]
-    @State private var selectedCategory: String = "all"
+    @State private var selectedCategory: String = BodyParts.all
     @State private var showingBuilder: Bool = false
 
     private var categories: [String] {
-        ["all"] + Array(Set(content.programs.map(\.category))).sorted()
+        [BodyParts.all] + Array(Set(content.programs.map(\.category))).sorted()
     }
-    private var visible: [Program] {
-        selectedCategory == "all" ? content.programs : content.programs.filter { $0.category == selectedCategory }
+
+    private var visiblePrograms: [Program] {
+        selectedCategory == BodyParts.all
+            ? content.programs
+            : content.programs.filter { $0.category == selectedCategory }
     }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 if !customRoutines.isEmpty {
-                    Text("My routines").font(.headline)
+                    SectionHeader("My routines")
                     ForEach(customRoutines) { routine in
                         NavigationLink(value: routine) {
-                            CustomRoutineRow(routine: routine, content: content)
+                            InfoRow(
+                                title: routine.name,
+                                subtitle: routine.subtitle(totalSeconds: totalSeconds(routine)),
+                            )
                         }
                         .buttonStyle(.plain)
                     }
-
-                    Text("Built-in programs")
-                        .font(.headline)
-                        .padding(.top, 8)
+                    SectionHeader("Built-in programs").padding(.top, 8)
                 }
 
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(categories, id: \.self) { c in
-                            Button { selectedCategory = c } label: {
-                                Text(c.replacingOccurrences(of: "-", with: " "))
-                                    .padding(.horizontal, 12).padding(.vertical, 6)
-                                    .background(
-                                        Capsule().fill(
-                                            selectedCategory == c
-                                            ? Color.accentColor.opacity(0.2)
-                                            : Color(.secondarySystemBackground)
-                                        )
-                                    )
-                                    .foregroundStyle(selectedCategory == c ? Color.accentColor : Color.primary)
-                            }
-                        }
-                    }
-                }
+                ChipsRow(options: categories, selected: $selectedCategory)
 
-                ForEach(visible) { program in
+                ForEach(visiblePrograms) { program in
                     NavigationLink(value: program) {
-                        ProgramCardView(program: program)
+                        InfoRow(
+                            title: program.title,
+                            subtitle: program.subtitle,
+                            body: program.summary,
+                        )
                     }
                     .buttonStyle(.plain)
                 }
@@ -78,22 +68,16 @@ struct ProgramsView: View {
             CustomRoutinePlayerView(routine: r)
         }
     }
+
+    private func totalSeconds(_ routine: CustomRoutine) -> Int {
+        routine.stretchIds.compactMap { content.stretch(id: $0)?.durationSeconds }.reduce(0, +)
+    }
 }
 
-private struct CustomRoutineRow: View {
-    let routine: CustomRoutine
-    let content: ContentStore
-
+private struct SectionHeader: View {
+    let text: String
+    init(_ text: String) { self.text = text }
     var body: some View {
-        let totalSeconds = routine.stretchIds.compactMap { content.stretch(id: $0)?.durationSeconds }.reduce(0, +)
-        VStack(alignment: .leading, spacing: 4) {
-            Text(routine.name).font(.title3.weight(.semibold))
-            Text("\(routine.stretchIds.count) stretches · \(totalSeconds / 60) min")
-                .font(.caption.weight(.medium))
-                .foregroundStyle(.tint)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
+        Text(text).font(.headline)
     }
 }

@@ -7,16 +7,14 @@ struct RoutineBuilderView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var name: String = ""
-    @State private var filter: String = "all"
+    @State private var filter: String = BodyParts.all
     @State private var selected: Set<String> = []
 
-    private var bodyParts: [String] {
-        ["all"] + Array(Set(content.stretches.flatMap(\.bodyParts))).sorted()
+    private var filterOptions: [String] {
+        BodyParts.filterOptions(from: content.stretches)
     }
     private var visible: [Stretch] {
-        filter == "all"
-            ? content.stretches
-            : content.stretches.filter { $0.bodyParts.contains(filter) }
+        content.stretches.filtered(by: filter)
     }
     private var totalSeconds: Int {
         selected.compactMap { content.stretch(id: $0)?.durationSeconds }.reduce(0, +)
@@ -35,25 +33,7 @@ struct RoutineBuilderView: View {
                 .font(.caption.weight(.medium))
                 .padding(.horizontal, 16)
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(bodyParts, id: \.self) { part in
-                        Button { filter = part } label: {
-                            Text(part.replacingOccurrences(of: "-", with: " "))
-                                .padding(.horizontal, 12).padding(.vertical, 6)
-                                .background(
-                                    Capsule().fill(
-                                        filter == part
-                                        ? Color.accentColor.opacity(0.2)
-                                        : Color(.secondarySystemBackground)
-                                    )
-                                )
-                                .foregroundStyle(filter == part ? Color.accentColor : Color.primary)
-                        }
-                    }
-                }
-                .padding(.horizontal, 16)
-            }
+            ChipsRow(options: filterOptions, selected: $filter)
 
             List(visible) { stretch in
                 Button {
@@ -66,7 +46,7 @@ struct RoutineBuilderView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(stretch.name).foregroundStyle(.primary)
-                            Text("\(stretch.durationSeconds)s · \(stretch.bodyParts.map { $0.replacingOccurrences(of: "-", with: " ") }.joined(separator: " · "))")
+                            Text(stretch.shortSubtitle)
                                 .font(.caption)
                                 .foregroundStyle(.tint)
                         }

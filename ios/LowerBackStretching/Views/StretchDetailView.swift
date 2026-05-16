@@ -18,7 +18,7 @@ struct StretchDetailView: View {
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.tint)
 
-                Text(stretch.bodyParts.map { $0.replacingOccurrences(of: "-", with: " ") }.joined(separator: " · "))
+                Text(BodyParts.displayList(stretch.bodyParts))
                     .font(.caption.weight(.medium))
 
                 Text(stretch.description).font(.body)

@@ -21,24 +21,20 @@ struct CalendarView: View {
                 }
                 .frame(maxWidth: .infinity)
 
-                MonthCard(
-                    month: $displayedMonth,
-                    completed: completedDays,
-                )
+                MonthCard(month: $displayedMonth, completed: completedDays)
 
                 if recent.isEmpty {
                     Text("No sessions yet. Start a routine to track your progress.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.top, 4)
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Recent sessions").font(.headline)
                         ForEach(recent) { session in
-                            SessionRow(
-                                session: session,
-                                programTitle: content.program(id: session.programId)?.title ?? session.programId,
+                            InfoRow(
+                                title: session.headerTitle(programTitle: programTitle(for: session)),
+                                subtitle: session.subtitleText,
                             )
                         }
                     }
@@ -49,34 +45,18 @@ struct CalendarView: View {
         }
         .navigationTitle("Calendar")
     }
-}
 
-private struct SessionRow: View {
-    let session: SessionRecord
-    let programTitle: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("\(programTitle) · Day \(session.dayNumber)").font(.headline)
-            Text("\(session.completedAt.formatted(date: .abbreviated, time: .shortened)) · \(session.durationSeconds / 60) min")
-                .font(.caption.weight(.medium))
-                .foregroundStyle(.tint)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(12)
-        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
+    private func programTitle(for session: SessionRecord) -> String {
+        content.program(id: session.programId)?.title ?? session.programId
     }
 }
 
-private struct Stat: View {
-    let value: String
-    let label: String
-    var body: some View {
-        VStack(spacing: 4) {
-            Text(value).font(.title.weight(.semibold))
-            Text(label).font(.caption.weight(.medium)).foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
+private extension SessionRecord {
+    func headerTitle(programTitle: String) -> String {
+        "\(programTitle) · Day \(dayNumber)"
+    }
+    var subtitleText: String {
+        "\(completedAt.formatted(date: .abbreviated, time: .shortened)) · \(durationSeconds / 60) min"
     }
 }
 
@@ -112,7 +92,11 @@ private struct MonthCard: View {
             ForEach(weeks(), id: \.self) { week in
                 HStack(spacing: 4) {
                     ForEach(week, id: \.self) { day in
-                        DayCell(date: day, isInMonth: cal.isDate(day, equalTo: month, toGranularity: .month), done: completed.contains(cal.startOfDay(for: day)))
+                        DayCell(
+                            date: day,
+                            isInMonth: cal.isDate(day, equalTo: month, toGranularity: .month),
+                            done: completed.contains(cal.startOfDay(for: day)),
+                        )
                     }
                 }
             }
