@@ -117,7 +117,10 @@ private fun AppRoot() {
                 PlayerScreen(
                     programId = id,
                     dayNumber = day,
-                    onFinished = { nav.popBackStack(route = Dest.program(id), inclusive = false) },
+                    // After finishing, return all the way to the Programs tab
+                    // so the bottom bar is visible. Pops the player AND the
+                    // program-detail screen.
+                    onFinished = { nav.popBackStack(route = Tab.Programs.path, inclusive = false) },
                     onBack = { nav.popBackStack() },
                 )
             }
