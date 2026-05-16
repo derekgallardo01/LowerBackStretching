@@ -14,11 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.SelfImprovement
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,12 +21,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,32 +35,6 @@ import com.lowerbackstretching.notifications.applyReminder
 import com.lowerbackstretching.ui.AppViewModel
 import kotlinx.coroutines.launch
 
-
-private data class Page(val title: String, val body: String, val icon: ImageVector)
-
-private val pages = listOf(
-    Page(
-        "Stretch with guided routines",
-        "Pick a program by goal — lower back relief, hip openers, post-run cooldown. Each day plays a sequence of stretches with timers.",
-        Icons.Filled.FitnessCenter,
-    ),
-    Page(
-        "Build your own",
-        "Pick any stretches from the library to build a routine that fits you. Practice single stretches anytime.",
-        Icons.Filled.SelfImprovement,
-    ),
-    Page(
-        "Stay consistent",
-        "Track every session on the calendar. Streaks show your habit at a glance.",
-        Icons.Filled.CalendarMonth,
-    ),
-    Page(
-        "Daily reminder (optional)",
-        "A gentle nudge once a day so you don't forget. You can change the time or turn it off later.",
-        Icons.Filled.Notifications,
-    ),
-)
-
 @Composable
 fun OnboardingScreen(
     onDone: () -> Unit,
@@ -75,7 +42,24 @@ fun OnboardingScreen(
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
+    val pages = onboardingPages
     val pager = rememberPagerState(pageCount = { pages.size })
+    val isLast = pager.currentPage == pages.size - 1
+
+    fun finish(turnOnReminders: Boolean) {
+        scope.launch {
+            if (turnOnReminders) {
+                vm.prefs.applyReminder(
+                    ctx,
+                    enabled = true,
+                    hour = ReminderDefaults.HOUR,
+                    minute = ReminderDefaults.MINUTE,
+                )
+            }
+            vm.prefs.markOnboardingDone()
+            onDone()
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
@@ -97,30 +81,13 @@ fun OnboardingScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TextButton(onClick = {
-                scope.launch {
-                    vm.prefs.markOnboardingDone()
-                    onDone()
-                }
-            }) {
-                Text("Skip")
-            }
+            TextButton(onClick = { finish(turnOnReminders = false) }) { Text("Skip") }
 
-            val isLast = pager.currentPage == pages.size - 1
             Button(onClick = {
-                scope.launch {
-                    if (isLast) {
-                        vm.prefs.applyReminder(
-                            ctx,
-                            enabled = true,
-                            hour = ReminderDefaults.HOUR,
-                            minute = ReminderDefaults.MINUTE,
-                        )
-                        vm.prefs.markOnboardingDone()
-                        onDone()
-                    } else {
-                        pager.animateScrollToPage(pager.currentPage + 1)
-                    }
+                if (isLast) {
+                    finish(turnOnReminders = true)
+                } else {
+                    scope.launch { pager.animateScrollToPage(pager.currentPage + 1) }
                 }
             }) {
                 Text(if (isLast) "Turn on reminders" else "Next")
@@ -130,7 +97,7 @@ fun OnboardingScreen(
 }
 
 @Composable
-private fun PageView(page: Page) {
+private fun PageView(page: OnboardingPage) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -184,4 +151,3 @@ private fun DotsIndicator(currentPage: Int, totalPages: Int) {
         }
     }
 }
-

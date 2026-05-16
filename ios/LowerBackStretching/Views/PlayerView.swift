@@ -26,7 +26,7 @@ struct SinglePlayerView: View {
             PlayerBody(
                 stretches: [stretch],
                 title: stretch.name,
-                programId: "single-\(stretchId)",
+                programId: SyntheticProgramId.single(stretchId),
                 dayNumber: 0,
             )
         } else {
@@ -45,7 +45,7 @@ struct CustomRoutinePlayerView: View {
         PlayerBody(
             stretches: stretches,
             title: routine.name,
-            programId: "routine-\(routine.id.uuidString)",
+            programId: SyntheticProgramId.routine(routine.id),
             dayNumber: 0,
         )
     }

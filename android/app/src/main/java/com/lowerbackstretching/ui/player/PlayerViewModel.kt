@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.lowerbackstretching.App
+import com.lowerbackstretching.data.SyntheticProgramId
 import com.lowerbackstretching.data.model.Stretch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -43,7 +44,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun loadSingle(stretchId: String) {
-        val pid = "single-$stretchId"
+        val pid = SyntheticProgramId.single(stretchId)
         if (loaded && this.programId == pid) return
         val stretch = appCtx.contentRepository.stretch(stretchId) ?: return
         this.programId = pid
@@ -52,7 +53,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun loadCustomRoutine(routineId: Long) {
-        val pid = "routine-$routineId"
+        val pid = SyntheticProgramId.routine(routineId)
         if (loaded && this.programId == pid) return
         viewModelScope.launch {
             val routine = appCtx.customRoutineRepository.byId(routineId) ?: return@launch
