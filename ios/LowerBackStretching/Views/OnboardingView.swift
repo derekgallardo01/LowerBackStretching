@@ -61,7 +61,11 @@ struct OnboardingView: View {
 
                 Button(page == pages.count - 1 ? "Turn on reminders" : "Next") {
                     if page == pages.count - 1 {
-                        ReminderController.apply(enabled: true, hour: 8, minute: 0)
+                        ReminderController.apply(
+                            enabled: true,
+                            hour: ReminderDefaults.hour,
+                            minute: ReminderDefaults.minute,
+                        )
                         onboardingDone = true
                     } else {
                         withAnimation { page += 1 }

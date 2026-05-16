@@ -2,8 +2,8 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage(ReminderDefaults.enabledKey) private var enabled: Bool = false
-    @AppStorage(ReminderDefaults.hourKey) private var hour: Int = 8
-    @AppStorage(ReminderDefaults.minuteKey) private var minute: Int = 0
+    @AppStorage(ReminderDefaults.hourKey) private var hour: Int = ReminderDefaults.hour
+    @AppStorage(ReminderDefaults.minuteKey) private var minute: Int = ReminderDefaults.minute
 
     @State private var pickerDate: Date = .now
 

@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.lowerbackstretching.App
 import com.lowerbackstretching.MainActivity
 import com.lowerbackstretching.R
 
@@ -21,7 +20,7 @@ class ReminderReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 
-        val notification = NotificationCompat.Builder(context, App.REMINDER_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, NotificationChannels.REMINDER)
             .setSmallIcon(R.drawable.ic_stat_stretch)
             .setContentTitle("Time to stretch")
             .setContentText("A few minutes today keeps your back happy.")

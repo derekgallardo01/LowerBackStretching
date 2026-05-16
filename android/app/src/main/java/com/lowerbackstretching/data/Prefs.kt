@@ -17,10 +17,15 @@ object PrefKeys {
     val ONBOARDING_DONE = booleanPreferencesKey("onboarding_done")
 }
 
+object ReminderDefaults {
+    const val HOUR = 8
+    const val MINUTE = 0
+}
+
 class Prefs(private val context: Context) {
     val reminderEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.REMINDER_ENABLED] ?: false }
-    val reminderHour: Flow<Int> = context.dataStore.data.map { it[PrefKeys.REMINDER_HOUR] ?: 8 }
-    val reminderMinute: Flow<Int> = context.dataStore.data.map { it[PrefKeys.REMINDER_MINUTE] ?: 0 }
+    val reminderHour: Flow<Int> = context.dataStore.data.map { it[PrefKeys.REMINDER_HOUR] ?: ReminderDefaults.HOUR }
+    val reminderMinute: Flow<Int> = context.dataStore.data.map { it[PrefKeys.REMINDER_MINUTE] ?: ReminderDefaults.MINUTE }
     val onboardingDone: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.ONBOARDING_DONE] ?: false }
 
     suspend fun setReminder(enabled: Boolean, hour: Int, minute: Int) {

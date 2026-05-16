@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.notifications.applyReminder
 import com.lowerbackstretching.ui.AppViewModel
+import com.lowerbackstretching.ui.components.ScreenHeader
 import com.lowerbackstretching.ui.util.formatTime
 import kotlinx.coroutines.launch
 
@@ -42,7 +43,7 @@ fun SettingsScreen(vm: AppViewModel = viewModel()) {
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text("Settings", style = MaterialTheme.typography.headlineMedium)
+        ScreenHeader("Settings")
 
         Card(shape = RoundedCornerShape(16.dp)) {
             Column(Modifier.padding(16.dp)) {

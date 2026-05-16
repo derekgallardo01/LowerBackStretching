@@ -40,6 +40,8 @@ import com.lowerbackstretching.data.CalendarMonth
 import com.lowerbackstretching.data.db.SessionEntity
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.InfoRow
+import com.lowerbackstretching.ui.components.ScreenHeader
+import com.lowerbackstretching.ui.components.SectionHeader
 import com.lowerbackstretching.ui.components.Stat
 import java.time.Instant
 import java.time.LocalDate
@@ -62,7 +64,7 @@ fun CalendarScreen(vm: AppViewModel = viewModel()) {
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        item { Text("Calendar", style = MaterialTheme.typography.headlineMedium) }
+        item { ScreenHeader("Calendar") }
         item {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 Stat("$streak", "Streak")
@@ -92,13 +94,7 @@ fun CalendarScreen(vm: AppViewModel = viewModel()) {
                 )
             }
         } else {
-            item {
-                Text(
-                    "Recent sessions",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(top = 8.dp),
-                )
-            }
+            item { SectionHeader("Recent sessions") }
             items(recent, key = { it.id }) { session ->
                 InfoRow(
                     title = session.headerTitle(vm.content.program(session.programId)?.title ?: session.programId),

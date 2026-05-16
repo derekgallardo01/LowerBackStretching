@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,6 +20,7 @@ import com.lowerbackstretching.data.shortSubtitle
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.ChipsRow
 import com.lowerbackstretching.ui.components.InfoRow
+import com.lowerbackstretching.ui.components.ScreenHeader
 
 @Composable
 fun StretchesScreen(
@@ -34,11 +33,7 @@ fun StretchesScreen(
     val visible = all.filteredBy(filter)
 
     Column {
-        Text(
-            "Stretches",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-        )
+        ScreenHeader("Stretches", modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp))
         ChipsRow(options = filterOptions, selected = filter, onSelect = { filter = it })
         LazyColumn(
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp, top = 4.dp),

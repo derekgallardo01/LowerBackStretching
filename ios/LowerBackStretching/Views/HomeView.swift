@@ -12,13 +12,11 @@ struct HomeView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Welcome back").font(.largeTitle.weight(.semibold))
+                ScreenHeader("Welcome back")
 
                 StreakCard(streak: streak, total: total)
 
-                Text("Programs")
-                    .font(.title2.weight(.semibold))
-                    .padding(.top, 4)
+                SectionHeader("Programs").padding(.top, 4)
 
                 ForEach(content.programs) { program in
                     NavigationLink(value: program) {

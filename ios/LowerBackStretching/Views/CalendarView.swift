@@ -2,7 +2,6 @@ import SwiftUI
 import SwiftData
 
 struct CalendarView: View {
-    @EnvironmentObject private var content: ContentStore
     @Query(sort: [SortDescriptor(\SessionRecord.completedAt, order: .reverse)]) private var sessions: [SessionRecord]
     @State private var displayedMonth: Date = Calendar.current.startOfMonth(for: .now)
 
@@ -21,21 +20,17 @@ struct CalendarView: View {
 
                 MonthCard(month: $displayedMonth, completed: completedDays)
 
-                RecentSessions(sessions: recent, programTitle: programTitle)
+                RecentSessions(sessions: recent)
             }
             .padding(16)
         }
         .navigationTitle("Calendar")
     }
-
-    private func programTitle(for session: SessionRecord) -> String {
-        content.program(id: session.programId)?.title ?? session.programId
-    }
 }
 
 private struct RecentSessions: View {
     let sessions: [SessionRecord]
-    let programTitle: (SessionRecord) -> String
+    @EnvironmentObject private var content: ContentStore
 
     var body: some View {
         if sessions.isEmpty {
@@ -45,7 +40,7 @@ private struct RecentSessions: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         } else {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Recent sessions").font(.headline)
+                SectionHeader("Recent sessions")
                 ForEach(sessions) { session in
                     InfoRow(
                         title: "\(programTitle(session)) · Day \(session.dayNumber)",
@@ -55,6 +50,10 @@ private struct RecentSessions: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+
+    private func programTitle(_ session: SessionRecord) -> String {
+        content.program(id: session.programId)?.title ?? session.programId
     }
 }
 

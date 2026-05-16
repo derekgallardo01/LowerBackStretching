@@ -19,7 +19,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.BodyParts.ALL
@@ -27,6 +26,8 @@ import com.lowerbackstretching.data.subtitle
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.ChipsRow
 import com.lowerbackstretching.ui.components.InfoRow
+import com.lowerbackstretching.ui.components.ScreenHeader
+import com.lowerbackstretching.ui.components.SectionHeader
 
 @Composable
 fun ProgramsScreen(
@@ -56,7 +57,7 @@ fun ProgramsScreen(
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 96.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item { Text("Programs", style = MaterialTheme.typography.headlineMedium) }
+            item { ScreenHeader("Programs") }
 
             if (customRoutines.isNotEmpty()) {
                 item { SectionHeader("My routines", topPadding = 4.dp) }
@@ -86,7 +87,3 @@ fun ProgramsScreen(
     }
 }
 
-@Composable
-private fun SectionHeader(text: String, topPadding: Dp) {
-    Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = topPadding))
-}

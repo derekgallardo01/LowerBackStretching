@@ -18,10 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.data.subtitle
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.InfoRow
+import com.lowerbackstretching.ui.components.ScreenHeader
+import com.lowerbackstretching.ui.components.SectionHeader
 import com.lowerbackstretching.ui.components.Stat
-import com.lowerbackstretching.data.subtitle
 
 
 @Composable
@@ -36,15 +38,9 @@ fun HomeScreen(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        item { Text("Welcome back", style = MaterialTheme.typography.headlineMedium) }
+        item { ScreenHeader("Welcome back") }
         item { StreakCard(streak = streak, total = total) }
-        item {
-            Text(
-                "Programs",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(top = 8.dp),
-            )
-        }
+        item { SectionHeader("Programs") }
         items(vm.content.programs, key = { it.id }) { program ->
             InfoRow(
                 title = program.title,
