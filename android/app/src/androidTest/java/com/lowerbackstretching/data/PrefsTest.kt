@@ -8,7 +8,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class PrefsTest {
@@ -17,9 +16,8 @@ class PrefsTest {
     private val prefs = Prefs(ctx)
 
     @Before
-    fun reset() {
-        // Wipe the DataStore file so each test starts from defaults.
-        File(ctx.filesDir, "datastore/settings.preferences_pb").delete()
+    fun reset() = runBlocking {
+        prefs.resetForTests()
     }
 
     @Test

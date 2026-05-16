@@ -39,4 +39,9 @@ class Prefs(private val context: Context) {
     suspend fun markOnboardingDone() {
         context.dataStore.edit { it[PrefKeys.ONBOARDING_DONE] = true }
     }
+
+    /** Test helper — clears all keys so the next read returns defaults. */
+    internal suspend fun resetForTests() {
+        context.dataStore.edit { it.clear() }
+    }
 }

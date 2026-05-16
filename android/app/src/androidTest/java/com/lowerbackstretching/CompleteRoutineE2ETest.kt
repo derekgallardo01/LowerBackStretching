@@ -14,7 +14,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
 
 /**
  * Full happy-path: clear state → mark onboarding done → navigate
@@ -30,13 +29,12 @@ class CompleteRoutineE2ETest {
     private val ctx = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Before
-    fun reset() {
-        File(ctx.filesDir, "datastore/settings.preferences_pb").delete()
+    fun reset() = runBlocking {
         val app = ctx.applicationContext as App
-        runBlocking {
-            app.database.clearAllTables()
-            Prefs(ctx).markOnboardingDone()
-        }
+        app.database.clearAllTables()
+        val prefs = Prefs(ctx)
+        prefs.resetForTests()
+        prefs.markOnboardingDone()
     }
 
     @Test

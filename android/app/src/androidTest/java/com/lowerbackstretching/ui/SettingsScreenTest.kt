@@ -1,12 +1,16 @@
 package com.lowerbackstretching.ui
 
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import com.lowerbackstretching.data.Prefs
 import com.lowerbackstretching.ui.settings.SettingsScreen
 import com.lowerbackstretching.ui.theme.AppTheme
+import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,6 +20,12 @@ class SettingsScreenTest {
 
     @get:Rule val rule = createAndroidComposeRule<ComponentActivity>()
 
+    @Before
+    fun reset() = runBlocking {
+        val ctx = InstrumentationRegistry.getInstrumentation().targetContext
+        Prefs(ctx).resetForTests()
+    }
+
     @Test
     fun renders_reminder_section_and_about() {
         rule.setContent { AppTheme { SettingsScreen() } }
@@ -23,7 +33,7 @@ class SettingsScreenTest {
         rule.onNodeWithText("Daily reminder").assertIsDisplayed()
         rule.onNodeWithText("Reminder time").assertIsDisplayed()
         rule.onNodeWithText("About").assertIsDisplayed()
-        // Initial reminder time is 08:00 from defaults
+        // After resetForTests(), defaults apply: hour=8, minute=0.
         rule.onNodeWithText("08:00").assertIsDisplayed()
     }
 }

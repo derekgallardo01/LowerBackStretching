@@ -41,8 +41,11 @@ class StretchesScreenTest {
         rule.setContent { AppTheme { StretchesScreen(onOpenStretch = {}) } }
         rule.onNodeWithText("calves").performClick()
         rule.onNodeWithText("all").performClick()
+        // Cat-Cow is at the top of the 27-stretch list; Wall Calf Stretch
+        // is further down and won't be in the rendered LazyColumn window.
+        // Just verify the filter reset brought back stretches that were
+        // hidden under the "calves" filter.
         rule.onNodeWithText("Cat-Cow").assertIsDisplayed()
-        rule.onNodeWithText("Wall Calf Stretch").assertIsDisplayed()
     }
 
     @Test
