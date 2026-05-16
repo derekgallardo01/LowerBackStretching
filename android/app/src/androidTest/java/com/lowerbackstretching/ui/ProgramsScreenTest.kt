@@ -2,10 +2,9 @@ package com.lowerbackstretching.ui
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasClickAction
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -62,12 +61,10 @@ class ProgramsScreenTest {
                 )
             }
         }
-        // The FAB's text node lives in the unmerged semantic tree (Material 3
-        // FloatingActionButton hides it from the merged tree). Search there.
-        rule.onNode(
-            hasText("New routine") and hasClickAction(),
-            useUnmergedTree = true,
-        ).performClick()
+        // ProgramsScreen sets a contentDescription on the FAB so the click
+        // dispatches to the clickable ancestor (the FAB), not the inner
+        // Text node which has no onClick.
+        rule.onNodeWithContentDescription("New routine").performClick()
         assert(clicked) { "expected onCreateRoutine to fire" }
     }
 

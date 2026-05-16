@@ -1,5 +1,6 @@
 package com.lowerbackstretching
 
+import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
@@ -9,6 +10,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
 import com.lowerbackstretching.data.Prefs
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -24,7 +26,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class CompleteRoutineE2ETest {
 
-    @get:Rule
+    @get:Rule(order = 0)
+    val permissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)
+
+    @get:Rule(order = 1)
     val rule = createAndroidComposeRule<MainActivity>()
 
     private val ctx = InstrumentationRegistry.getInstrumentation().targetContext
