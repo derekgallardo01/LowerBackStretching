@@ -1,6 +1,5 @@
 package com.lowerbackstretching.ui.programs
 
-import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -29,14 +28,13 @@ import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.ChipsRow
 import com.lowerbackstretching.ui.components.InfoRow
 
-class ProgramsViewModel(app: Application) : AppViewModel(app)
 
 @Composable
 fun ProgramsScreen(
     onOpenProgram: (String) -> Unit,
     onOpenCustomRoutine: (Long) -> Unit,
     onCreateRoutine: () -> Unit,
-    vm: ProgramsViewModel = viewModel(),
+    vm: AppViewModel = viewModel(),
 ) {
     val programs = vm.content.programs
     val customRoutines by vm.customRoutines.all().collectAsState(initial = emptyList())

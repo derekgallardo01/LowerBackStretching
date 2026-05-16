@@ -1,6 +1,5 @@
 package com.lowerbackstretching.ui.home
 
-import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,13 +23,11 @@ import com.lowerbackstretching.ui.components.InfoRow
 import com.lowerbackstretching.ui.components.Stat
 import com.lowerbackstretching.ui.programs.subtitle
 
-class HomeViewModel(app: Application) : AppViewModel(app)
 
 @Composable
 fun HomeScreen(
-    onOpenPrograms: () -> Unit,
     onOpenProgram: (String) -> Unit,
-    vm: HomeViewModel = viewModel(),
+    vm: AppViewModel = viewModel(),
 ) {
     val streak by vm.sessions.streak().collectAsState(initial = 0)
     val total by vm.sessions.count().collectAsState(initial = 0)

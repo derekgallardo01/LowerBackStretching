@@ -1,6 +1,5 @@
 package com.lowerbackstretching.ui.settings
 
-import android.app.Application
 import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,10 +25,9 @@ import com.lowerbackstretching.notifications.ReminderScheduler
 import com.lowerbackstretching.ui.AppViewModel
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(app: Application) : AppViewModel(app)
 
 @Composable
-fun SettingsScreen(vm: SettingsViewModel = viewModel()) {
+fun SettingsScreen(vm: AppViewModel = viewModel()) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     val enabled by vm.prefs.reminderEnabled.collectAsState(initial = false)

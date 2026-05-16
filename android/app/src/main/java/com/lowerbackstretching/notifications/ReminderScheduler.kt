@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import java.util.Calendar
 
 object ReminderScheduler {
@@ -13,18 +12,12 @@ object ReminderScheduler {
 
     fun schedule(context: Context, hour: Int, minute: Int) {
         val alarmManager = context.getSystemService(AlarmManager::class.java)
-        val pending = pendingIntent(context, create = true)
-        val triggerAt = nextOccurrence(hour, minute, Calendar.getInstance())
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, triggerAt, AlarmManager.INTERVAL_DAY, pending
-            )
-        } else {
-            alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, triggerAt, AlarmManager.INTERVAL_DAY, pending
-            )
-        }
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            nextOccurrence(hour, minute, Calendar.getInstance()),
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent(context, create = true),
+        )
     }
 
     fun cancel(context: Context) {

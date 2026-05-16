@@ -1,6 +1,5 @@
 package com.lowerbackstretching.ui.calendar
 
-import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,11 +36,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.data.CalendarMonth
 import com.lowerbackstretching.data.db.SessionEntity
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.InfoRow
 import com.lowerbackstretching.ui.components.Stat
-import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
@@ -50,10 +49,9 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
-class CalendarViewModel(app: Application) : AppViewModel(app)
 
 @Composable
-fun CalendarScreen(vm: CalendarViewModel = viewModel()) {
+fun CalendarScreen(vm: AppViewModel = viewModel()) {
     val completed by vm.sessions.completedDays().collectAsState(initial = emptySet())
     val streak by vm.sessions.streak().collectAsState(initial = 0)
     val total by vm.sessions.count().collectAsState(initial = 0)
@@ -73,12 +71,13 @@ fun CalendarScreen(vm: CalendarViewModel = viewModel()) {
             }
         }
         item {
+            val grid = CalendarMonth(month)
             Card(shape = RoundedCornerShape(16.dp)) {
                 Column(Modifier.padding(12.dp)) {
                     MonthHeader(month, onPrev = { month = month.minusMonths(1) }, onNext = { month = month.plusMonths(1) })
                     Spacer(Modifier.height(8.dp))
-                    WeekdayLabels()
-                    MonthGrid(month = month, completed = completed)
+                    WeekdayLabels(grid)
+                    MonthGrid(grid = grid, completed = completed)
                 }
             }
         }
@@ -142,11 +141,11 @@ private fun MonthHeader(month: YearMonth, onPrev: () -> Unit, onNext: () -> Unit
 }
 
 @Composable
-private fun WeekdayLabels() {
+private fun WeekdayLabels(grid: CalendarMonth) {
     Row(Modifier.fillMaxWidth()) {
-        DayOfWeek.values().forEach { d ->
+        grid.weekdayLabels().forEach { label ->
             Text(
-                d.getDisplayName(TextStyle.NARROW, Locale.getDefault()),
+                label,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.labelLarge,
@@ -156,20 +155,13 @@ private fun WeekdayLabels() {
 }
 
 @Composable
-private fun MonthGrid(month: YearMonth, completed: Set<LocalDate>) {
-    val first = month.atDay(1)
+private fun MonthGrid(grid: CalendarMonth, completed: Set<LocalDate>) {
     val today = LocalDate.now()
-    val firstOffset = (first.dayOfWeek.value - DayOfWeek.MONDAY.value).let { if (it < 0) it + 7 else it }
-    val length = month.lengthOfMonth()
-    val rows = (firstOffset + length + 6) / 7
-
     Column {
-        for (row in 0 until rows) {
+        grid.weeks.forEach { week ->
             Row(Modifier.fillMaxWidth()) {
-                for (col in 0..6) {
-                    val dayNum = row * 7 + col - firstOffset + 1
-                    if (dayNum in 1..length) {
-                        val date = month.atDay(dayNum)
+                week.forEach { date ->
+                    if (grid.isInMonth(date)) {
                         DayCell(
                             date = date,
                             done = date in completed,

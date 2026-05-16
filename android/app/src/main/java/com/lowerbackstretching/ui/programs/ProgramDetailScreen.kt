@@ -1,6 +1,5 @@
 package com.lowerbackstretching.ui.programs
 
-import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -24,7 +23,6 @@ import com.lowerbackstretching.data.model.ProgramDay
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.InfoRow
 
-class ProgramDetailViewModel(app: Application) : AppViewModel(app)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,7 +30,7 @@ fun ProgramDetailScreen(
     programId: String,
     onStartDay: (Int) -> Unit,
     onBack: () -> Unit,
-    vm: ProgramDetailViewModel = viewModel(),
+    vm: AppViewModel = viewModel(),
 ) {
     val program = vm.content.program(programId) ?: return
 
@@ -65,7 +63,7 @@ fun ProgramDetailScreen(
     }
 }
 
-private fun ProgramDetailViewModel.secondsFor(program: Program, day: ProgramDay): Int =
+private fun AppViewModel.secondsFor(program: Program, day: ProgramDay): Int =
     content.stretchesFor(program, day.day).sumOf { it.durationSeconds }
 
 internal fun ProgramDay.headerTitle(): String = "Day $day · $title"

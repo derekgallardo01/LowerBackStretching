@@ -8,7 +8,6 @@ struct CalendarView: View {
 
     private var completedDays: Set<Date> { SessionStore.completedDays(from: sessions) }
     private var streak: Int { SessionStore.streak(from: completedDays) }
-    private var total: Int { sessions.count }
     private var recent: [SessionRecord] { Array(sessions.prefix(20)) }
 
     var body: some View {
@@ -16,30 +15,13 @@ struct CalendarView: View {
             VStack(spacing: 16) {
                 HStack {
                     Stat(value: "\(streak)", label: "Streak")
-                    Stat(value: "\(total)", label: "Sessions")
+                    Stat(value: "\(sessions.count)", label: "Sessions")
                     Stat(value: "\(completedDays.count)", label: "Active days")
                 }
-                .frame(maxWidth: .infinity)
 
                 MonthCard(month: $displayedMonth, completed: completedDays)
 
-                if recent.isEmpty {
-                    Text("No sessions yet. Start a routine to track your progress.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                } else {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Recent sessions").font(.headline)
-                        ForEach(recent) { session in
-                            InfoRow(
-                                title: session.headerTitle(programTitle: programTitle(for: session)),
-                                subtitle: session.subtitleText,
-                            )
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
+                RecentSessions(sessions: recent, programTitle: programTitle)
             }
             .padding(16)
         }
@@ -51,12 +33,28 @@ struct CalendarView: View {
     }
 }
 
-private extension SessionRecord {
-    func headerTitle(programTitle: String) -> String {
-        "\(programTitle) · Day \(dayNumber)"
-    }
-    var subtitleText: String {
-        "\(completedAt.formatted(date: .abbreviated, time: .shortened)) · \(durationSeconds / 60) min"
+private struct RecentSessions: View {
+    let sessions: [SessionRecord]
+    let programTitle: (SessionRecord) -> String
+
+    var body: some View {
+        if sessions.isEmpty {
+            Text("No sessions yet. Start a routine to track your progress.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Recent sessions").font(.headline)
+                ForEach(sessions) { session in
+                    InfoRow(
+                        title: "\(programTitle(session)) · Day \(session.dayNumber)",
+                        subtitle: "\(session.completedAt.formatted(date: .abbreviated, time: .shortened)) · \(session.durationSeconds / 60) min",
+                    )
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 }
 
@@ -66,22 +64,12 @@ private struct MonthCard: View {
     private let cal = Calendar.current
 
     var body: some View {
+        let grid = CalendarMonth(month: month, calendar: cal)
         VStack(spacing: 12) {
-            HStack {
-                Button(action: { month = cal.date(byAdding: .month, value: -1, to: month) ?? month }) {
-                    Image(systemName: "chevron.left").font(.title3)
-                }
-                Spacer()
-                Text(month.formatted(.dateTime.month(.wide).year()))
-                    .font(.title3.weight(.semibold))
-                Spacer()
-                Button(action: { month = cal.date(byAdding: .month, value: 1, to: month) ?? month }) {
-                    Image(systemName: "chevron.right").font(.title3)
-                }
-            }
+            MonthHeader(month: $month)
 
             HStack {
-                ForEach(weekdaySymbols(), id: \.self) { symbol in
+                ForEach(grid.weekdaySymbols, id: \.self) { symbol in
                     Text(symbol)
                         .frame(maxWidth: .infinity)
                         .font(.caption.weight(.medium))
@@ -89,12 +77,12 @@ private struct MonthCard: View {
                 }
             }
 
-            ForEach(weeks(), id: \.self) { week in
+            ForEach(grid.weeks, id: \.self) { week in
                 HStack(spacing: 4) {
                     ForEach(week, id: \.self) { day in
                         DayCell(
                             date: day,
-                            isInMonth: cal.isDate(day, equalTo: month, toGranularity: .month),
+                            isInMonth: grid.isInMonth(day),
                             done: completed.contains(cal.startOfDay(for: day)),
                         )
                     }
@@ -104,26 +92,25 @@ private struct MonthCard: View {
         .padding(12)
         .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
     }
+}
 
-    private func weekdaySymbols() -> [String] {
-        var symbols = cal.veryShortStandaloneWeekdaySymbols
-        let firstWeekday = cal.firstWeekday - 1
-        symbols = Array(symbols[firstWeekday...]) + Array(symbols[..<firstWeekday])
-        return symbols
-    }
+private struct MonthHeader: View {
+    @Binding var month: Date
+    private let cal = Calendar.current
 
-    private func weeks() -> [[Date]] {
-        let firstOfMonth = cal.startOfMonth(for: month)
-        let range = cal.range(of: .day, in: .month, for: firstOfMonth) ?? 1..<2
-        let firstWeekdayOffset = (cal.component(.weekday, from: firstOfMonth) - cal.firstWeekday + 7) % 7
-        let start = cal.date(byAdding: .day, value: -firstWeekdayOffset, to: firstOfMonth)!
-        let totalCells = ((firstWeekdayOffset + range.count + 6) / 7) * 7
-
-        var days: [Date] = []
-        for i in 0..<totalCells {
-            days.append(cal.date(byAdding: .day, value: i, to: start)!)
+    var body: some View {
+        HStack {
+            Button(action: { month = cal.date(byAdding: .month, value: -1, to: month) ?? month }) {
+                Image(systemName: "chevron.left").font(.title3)
+            }
+            Spacer()
+            Text(month.formatted(.dateTime.month(.wide).year()))
+                .font(.title3.weight(.semibold))
+            Spacer()
+            Button(action: { month = cal.date(byAdding: .month, value: 1, to: month) ?? month }) {
+                Image(systemName: "chevron.right").font(.title3)
+            }
         }
-        return stride(from: 0, to: days.count, by: 7).map { Array(days[$0..<($0 + 7)]) }
     }
 }
 
@@ -146,11 +133,5 @@ private struct DayCell: View {
                 done ? Color.white
                 : (isInMonth ? Color.primary : Color.secondary.opacity(0.4))
             )
-    }
-}
-
-extension Calendar {
-    func startOfMonth(for date: Date) -> Date {
-        self.date(from: self.dateComponents([.year, .month], from: date)) ?? date
     }
 }

@@ -1,6 +1,5 @@
 package com.lowerbackstretching.ui.stretches
 
-import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,12 +22,11 @@ import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.ChipsRow
 import com.lowerbackstretching.ui.components.InfoRow
 
-class StretchesViewModel(app: Application) : AppViewModel(app)
 
 @Composable
 fun StretchesScreen(
     onOpenStretch: (String) -> Unit,
-    vm: StretchesViewModel = viewModel(),
+    vm: AppViewModel = viewModel(),
 ) {
     val all = vm.content.stretches
     val filterOptions = remember(all) { BodyParts.filterOptions(all) }

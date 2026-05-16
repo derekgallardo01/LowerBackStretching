@@ -1,6 +1,5 @@
 package com.lowerbackstretching.ui.stretches
 
-import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,7 +27,6 @@ import com.lowerbackstretching.data.BodyParts
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.YouTubePlayerView
 
-class StretchDetailViewModel(app: Application) : AppViewModel(app)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +34,7 @@ fun StretchDetailScreen(
     stretchId: String,
     onPractice: () -> Unit,
     onBack: () -> Unit,
-    vm: StretchDetailViewModel = viewModel(),
+    vm: AppViewModel = viewModel(),
 ) {
     val stretch = vm.content.stretch(stretchId) ?: return
 

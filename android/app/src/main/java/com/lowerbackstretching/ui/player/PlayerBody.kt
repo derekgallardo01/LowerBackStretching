@@ -1,0 +1,123 @@
+package com.lowerbackstretching.ui.player
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.lowerbackstretching.ui.components.YouTubePlayerView
+
+/**
+ * The shared player UI used by all three [PlayerScreen] entry points. Reads
+ * `vm.state` and renders the current stretch, progress bar, and controls.
+ * Renders [FinishedView] once the routine completes.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun PlayerBody(
+    title: String,
+    onFinished: () -> Unit,
+    onBack: () -> Unit,
+    vm: PlayerViewModel,
+) {
+    val state by vm.state.collectAsState()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(title) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                    }
+                },
+            )
+        }
+    ) { inner ->
+        val snapshot = state ?: return@Scaffold
+        val current = snapshot.current ?: return@Scaffold
+
+        if (snapshot.finished) {
+            FinishedView(modifier = Modifier.padding(inner).fillMaxSize(), onDone = onFinished)
+            return@Scaffold
+        }
+
+        Column(
+            modifier = Modifier.padding(inner).fillMaxSize().padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            YouTubePlayerView(videoId = current.youtubeId, modifier = Modifier.fillMaxWidth())
+
+            Text(current.name, style = MaterialTheme.typography.headlineMedium)
+            Text(current.description, style = MaterialTheme.typography.bodyMedium)
+
+            LinearProgressIndicator(
+                progress = { snapshot.progress.coerceIn(0f, 1f) },
+                modifier = Modifier.fillMaxWidth().height(8.dp),
+            )
+            Text(
+                "${snapshot.remainingSeconds}s · ${snapshot.index + 1} of ${snapshot.stretches.size}",
+                style = MaterialTheme.typography.labelLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = vm::previous) {
+                    Icon(Icons.Filled.SkipPrevious, contentDescription = "Previous", modifier = Modifier.size(36.dp))
+                }
+                Button(onClick = vm::togglePlay) {
+                    Text(if (snapshot.running) "Pause" else "Resume")
+                }
+                IconButton(onClick = vm::next) {
+                    Icon(Icons.Filled.SkipNext, contentDescription = "Next", modifier = Modifier.size(36.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FinishedView(modifier: Modifier, onDone: () -> Unit) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text("Nice work.", style = MaterialTheme.typography.headlineLarge)
+            Text("Session logged.", style = MaterialTheme.typography.bodyLarge)
+            Button(onClick = onDone) { Text("Done") }
+        }
+    }
+}

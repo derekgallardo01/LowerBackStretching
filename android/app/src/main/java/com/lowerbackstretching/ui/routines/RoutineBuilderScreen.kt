@@ -1,6 +1,5 @@
 package com.lowerbackstretching.ui.routines
 
-import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,14 +37,13 @@ import com.lowerbackstretching.ui.stretches.filteredBy
 import com.lowerbackstretching.ui.stretches.shortSubtitle
 import kotlinx.coroutines.launch
 
-class RoutineBuilderViewModel(app: Application) : AppViewModel(app)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoutineBuilderScreen(
     onSaved: () -> Unit,
     onBack: () -> Unit,
-    vm: RoutineBuilderViewModel = viewModel(),
+    vm: AppViewModel = viewModel(),
 ) {
     val scope = rememberCoroutineScope()
     val stretches = vm.content.stretches

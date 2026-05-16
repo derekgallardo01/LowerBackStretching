@@ -1,6 +1,5 @@
 package com.lowerbackstretching.ui.onboarding
 
-import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,7 +41,6 @@ import com.lowerbackstretching.notifications.ReminderScheduler
 import com.lowerbackstretching.ui.AppViewModel
 import kotlinx.coroutines.launch
 
-class OnboardingViewModel(app: Application) : AppViewModel(app)
 
 private data class Page(val title: String, val body: String, val icon: ImageVector)
 
@@ -72,7 +70,7 @@ private val pages = listOf(
 @Composable
 fun OnboardingScreen(
     onDone: () -> Unit,
-    vm: OnboardingViewModel = viewModel(),
+    vm: AppViewModel = viewModel(),
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()

@@ -94,10 +94,7 @@ private fun AppRoot() {
             modifier = androidx.compose.ui.Modifier.padding(inner),
         ) {
             composable(Route.Home.path) {
-                HomeScreen(
-                    onOpenPrograms = { nav.navigate(Route.Programs.path) },
-                    onOpenProgram = { id -> nav.navigate("program/$id") },
-                )
+                HomeScreen(onOpenProgram = { id -> nav.navigate("program/$id") })
             }
             composable(Route.Programs.path) {
                 ProgramsScreen(
