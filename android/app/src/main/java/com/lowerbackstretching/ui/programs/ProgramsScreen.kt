@@ -62,11 +62,9 @@ fun ProgramsScreen(
             if (customRoutines.isNotEmpty()) {
                 item { SectionHeader("My routines", topPadding = 4.dp) }
                 items(customRoutines, key = { "custom-${it.id}" }) { routine ->
-                    val totalSeconds = routine.stretchIds
-                        .sumOf { vm.content.stretch(it)?.durationSeconds ?: 0 }
                     InfoRow(
                         title = routine.name,
-                        subtitle = routine.subtitle(totalSeconds),
+                        subtitle = routine.subtitle(vm.content.totalDurationSeconds(routine.stretchIds)),
                         onClick = { onOpenCustomRoutine(routine.id) },
                     )
                 }

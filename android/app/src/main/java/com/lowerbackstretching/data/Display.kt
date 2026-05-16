@@ -11,9 +11,13 @@ import com.lowerbackstretching.data.model.Stretch
  * Mirrors iOS `Stretch+Display.swift`.
  */
 
-/** "30s · easy · lower back · spine" */
+/** "Easy" (capitalized for display from the on-disk "easy"). */
+val Stretch.difficultyDisplay: String
+    get() = difficulty.replaceFirstChar(Char::titlecase)
+
+/** "30s · Easy · lower back · spine" */
 val Stretch.shortSubtitle: String
-    get() = "${durationSeconds}s · $difficulty · ${BodyParts.displayList(bodyParts)}"
+    get() = "${durationSeconds}s · $difficultyDisplay · ${BodyParts.displayList(bodyParts)}"
 
 /** Filter by a body part. Pass [BodyParts.ALL] to return everything. */
 fun List<Stretch>.filteredBy(bodyPart: String): List<Stretch> =

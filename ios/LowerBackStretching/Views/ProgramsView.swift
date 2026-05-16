@@ -26,7 +26,7 @@ struct ProgramsView: View {
                         NavigationLink(value: routine) {
                             InfoRow(
                                 title: routine.name,
-                                subtitle: routine.subtitle(totalSeconds: totalSeconds(routine)),
+                                subtitle: routine.subtitle(totalSeconds: content.totalDurationSeconds(stretchIds: routine.stretchIds)),
                             )
                         }
                         .buttonStyle(.plain)
@@ -69,8 +69,5 @@ struct ProgramsView: View {
         }
     }
 
-    private func totalSeconds(_ routine: CustomRoutine) -> Int {
-        routine.stretchIds.compactMap { content.stretch(id: $0)?.durationSeconds }.reduce(0, +)
-    }
 }
 

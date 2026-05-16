@@ -52,11 +52,9 @@ fun ProgramDetailScreen(
         ) {
             item { Text(program.summary, style = MaterialTheme.typography.bodyLarge) }
             items(program.days, key = { it.day }) { day ->
-                val totalSeconds = vm.content.stretchesFor(program, day.day)
-                    .sumOf { it.durationSeconds }
                 InfoRow(
                     title = day.headerTitle,
-                    subtitle = day.subtitle(totalSeconds),
+                    subtitle = day.subtitle(vm.content.totalDurationSeconds(day.stretchIds)),
                     onClick = { onStartDay(day.day) },
                 )
             }

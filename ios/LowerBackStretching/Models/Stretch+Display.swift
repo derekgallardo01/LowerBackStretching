@@ -1,9 +1,12 @@
 import Foundation
 
 extension Stretch {
-    /// Short subtitle used in list rows: "30s · easy · lower back · spine".
+    /// "Easy" (capitalized for display from the on-disk "easy").
+    var difficultyDisplay: String { difficulty.capitalized }
+
+    /// "30s · Easy · lower back · spine".
     var shortSubtitle: String {
-        "\(durationSeconds)s · \(difficulty) · \(BodyParts.displayList(bodyParts))"
+        "\(durationSeconds)s · \(difficultyDisplay) · \(BodyParts.displayList(bodyParts))"
     }
 }
 

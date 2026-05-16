@@ -34,6 +34,19 @@ final class ContentLoaderTests: XCTestCase {
         }
     }
 
+    func testTotalDurationSumsKnownStretches() {
+        let store = ContentStore()
+        let program = store.programs.first!
+        let ids = program.days.first!.stretchIds
+        let expected = ids.compactMap { store.stretch(id: $0)?.durationSeconds }.reduce(0, +)
+        XCTAssertEqual(store.totalDurationSeconds(stretchIds: ids), expected)
+    }
+
+    func testTotalDurationSkipsUnknownIds() {
+        let store = ContentStore()
+        XCTAssertEqual(store.totalDurationSeconds(stretchIds: ["nonexistent"]), 0)
+    }
+
     func testStretchAndProgramLookups() {
         let store = ContentStore()
         let first = store.stretches.first!

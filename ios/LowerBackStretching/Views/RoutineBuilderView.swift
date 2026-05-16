@@ -17,7 +17,7 @@ struct RoutineBuilderView: View {
         content.stretches.filtered(by: filter)
     }
     private var totalSeconds: Int {
-        selected.compactMap { content.stretch(id: $0)?.durationSeconds }.reduce(0, +)
+        content.totalDurationSeconds(stretchIds: Array(selected))
     }
     private var canSave: Bool {
         !name.trimmingCharacters(in: .whitespaces).isEmpty && !selected.isEmpty

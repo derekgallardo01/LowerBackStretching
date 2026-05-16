@@ -14,7 +14,7 @@ struct StretchDetailView: View {
                     .aspectRatio(16.0 / 9.0, contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
 
-                Text("\(stretch.durationSeconds)s · \(stretch.difficulty)")
+                Text("\(stretch.durationSeconds)s · \(stretch.difficultyDisplay)")
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.tint)
 

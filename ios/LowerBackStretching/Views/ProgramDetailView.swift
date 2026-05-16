@@ -15,12 +15,10 @@ struct ProgramDetailView: View {
                 Text(program.summary).font(.body)
 
                 ForEach(program.days) { day in
-                    let totalSeconds = content.stretches(for: program, day: day.day)
-                        .reduce(0) { $0 + $1.durationSeconds }
                     NavigationLink(value: DayTarget(programId: program.id, day: day.day)) {
                         InfoRow(
                             title: day.headerTitle,
-                            subtitle: day.subtitle(totalSeconds: totalSeconds),
+                            subtitle: day.subtitle(totalSeconds: content.totalDurationSeconds(stretchIds: day.stretchIds)),
                         )
                     }
                     .buttonStyle(.plain)

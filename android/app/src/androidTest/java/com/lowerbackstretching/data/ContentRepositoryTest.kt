@@ -48,6 +48,19 @@ class ContentRepositoryTest {
     }
 
     @Test
+    fun totalDurationSeconds_sums_known_stretches() {
+        val program = repo.programs.first()
+        val ids = program.days.first().stretchIds
+        val expected = ids.sumOf { repo.stretch(it)!!.durationSeconds }
+        assertThat(repo.totalDurationSeconds(ids)).isEqualTo(expected)
+    }
+
+    @Test
+    fun totalDurationSeconds_skips_unknown_ids() {
+        assertThat(repo.totalDurationSeconds(listOf("nonexistent"))).isEqualTo(0)
+    }
+
+    @Test
     fun lookups_by_id_work_and_return_null_for_unknown() {
         val first = repo.stretches.first()
         assertThat(repo.stretch(first.id)).isEqualTo(first)

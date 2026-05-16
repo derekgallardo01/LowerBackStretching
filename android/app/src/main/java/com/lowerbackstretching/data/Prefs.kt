@@ -28,7 +28,7 @@ class Prefs(private val context: Context) {
     val reminderMinute: Flow<Int> = context.dataStore.data.map { it[PrefKeys.REMINDER_MINUTE] ?: ReminderDefaults.MINUTE }
     val onboardingDone: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.ONBOARDING_DONE] ?: false }
 
-    suspend fun setReminder(enabled: Boolean, hour: Int, minute: Int) {
+    internal suspend fun setReminder(enabled: Boolean, hour: Int, minute: Int) {
         context.dataStore.edit {
             it[PrefKeys.REMINDER_ENABLED] = enabled
             it[PrefKeys.REMINDER_HOUR] = hour

@@ -54,7 +54,7 @@ fun RoutineBuilderScreen(
     val selected = remember { mutableStateListOf<String>() }
 
     val canSave = name.trim().isNotEmpty() && selected.isNotEmpty()
-    val totalSeconds = selected.sumOf { id -> vm.content.stretch(id)?.durationSeconds ?: 0 }
+    val totalSeconds = vm.content.totalDurationSeconds(selected)
 
     Scaffold(
         topBar = {

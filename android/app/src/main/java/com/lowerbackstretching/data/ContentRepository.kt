@@ -23,6 +23,9 @@ class ContentRepository(private val context: Context) {
         return d.stretchIds.mapNotNull { stretchById[it] }
     }
 
+    fun totalDurationSeconds(stretchIds: List<String>): Int =
+        stretchIds.sumOf { stretchById[it]?.durationSeconds ?: 0 }
+
     private inline fun <reified T> loadList(filename: String): List<T> {
         val text = context.assets.open(filename).bufferedReader().use { it.readText() }
         return json.decodeFromString(text)

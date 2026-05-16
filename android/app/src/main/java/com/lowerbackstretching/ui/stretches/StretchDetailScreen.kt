@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.BodyParts
+import com.lowerbackstretching.data.difficultyDisplay
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.YouTubePlayerView
 
@@ -64,7 +65,7 @@ fun StretchDetailScreen(
                 autoplay = false,
             )
             Text(
-                "${stretch.durationSeconds}s · ${stretch.difficulty}",
+                "${stretch.durationSeconds}s · ${stretch.difficultyDisplay}",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
             )

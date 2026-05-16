@@ -24,6 +24,10 @@ final class ContentStore: ObservableObject {
         return d.stretchIds.compactMap { stretchById[$0] }
     }
 
+    func totalDurationSeconds(stretchIds: [String]) -> Int {
+        stretchIds.compactMap { stretchById[$0]?.durationSeconds }.reduce(0, +)
+    }
+
     private static func load<T: Decodable>(_ filename: String) -> T? {
         guard let url = Bundle.main.url(forResource: filename, withExtension: nil) else {
             assertionFailure("Missing \(filename) in bundle")
