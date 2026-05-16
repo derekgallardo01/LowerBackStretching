@@ -63,14 +63,14 @@ xcodebuild test -scheme LowerBackStretching \
 
 Coverage:
 
-- `LowerBackStretchingTests/SessionStoreTests.swift` — streak rule, including
-  the grace-day case.
-- `LowerBackStretchingTests/CustomRoutineTests.swift` — CSV serialization
-  and name trimming.
-- `LowerBackStretchingTests/ContentLoaderTests.swift` — bundled JSON
-  integrity (every program day references a real stretch).
-- `LowerBackStretchingUITests/OnboardingE2EUITests.swift` — skip and
-  step-through onboarding, then create a custom routine end-to-end.
+| File | Covers |
+|------|--------|
+| `Tests/SessionStoreTests.swift` | streak rule with injected today/calendar |
+| `Tests/CustomRoutineTests.swift` | CSV serialization, name trimming |
+| `Tests/ContentLoaderTests.swift` | bundled JSON integrity |
+| `Tests/PlayerEngineTests.swift` | 17 cases — tick, next/previous, pause, finish, progress |
+| `UITests/OnboardingE2EUITests.swift` | skip flow, full step-through, create custom routine end-to-end |
+| `UITests/TabNavigationUITests.swift` | all 5 tabs, category filter, body-part filter, open-program, settings switch toggle |
 
 The UI tests use `launchArguments` to seed `@AppStorage` values
 (`-onboarding_done NO` or `YES`) so each test starts in a known state.

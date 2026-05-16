@@ -52,30 +52,26 @@ struct CustomRoutinePlayerView: View {
 }
 
 struct PlayerBody: View {
-    let stretches: [Stretch]
     let title: String
     let programId: String
     let dayNumber: Int
 
+    @StateObject private var engine: PlayerEngine
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
-    @State private var index: Int = 0
-    @State private var remaining: Int = 0
-    @State private var running: Bool = true
-    @State private var finished: Bool = false
-
-    private var current: Stretch? { stretches[safe: index] }
-    private var progress: Double {
-        guard let current, current.durationSeconds > 0 else { return 0 }
-        return Double(current.durationSeconds - remaining) / Double(current.durationSeconds)
+    init(stretches: [Stretch], title: String, programId: String, dayNumber: Int) {
+        self.title = title
+        self.programId = programId
+        self.dayNumber = dayNumber
+        _engine = StateObject(wrappedValue: PlayerEngine(stretches: stretches))
     }
 
     var body: some View {
         Group {
-            if finished {
+            if engine.snapshot.finished {
                 FinishedView { dismiss() }
-            } else if let current {
+            } else if let current = engine.snapshot.current {
                 VStack(spacing: 16) {
                     YouTubeView(videoId: current.youtubeId)
                         .aspectRatio(16.0 / 9.0, contentMode: .fit)
@@ -84,19 +80,21 @@ struct PlayerBody: View {
                     Text(current.name).font(.title2.weight(.semibold))
                     Text(current.description).font(.body).foregroundStyle(.secondary)
 
-                    ProgressView(value: progress).tint(.accentColor)
-                    Text("\(remaining)s · \(index + 1) of \(stretches.count)")
+                    ProgressView(value: engine.snapshot.progress).tint(.accentColor)
+                    Text("\(engine.snapshot.remainingSeconds)s · \(engine.snapshot.index + 1) of \(engine.snapshot.stretches.count)")
                         .font(.caption.weight(.medium))
 
                     HStack(spacing: 24) {
-                        Button(action: previous) {
+                        Button(action: { engine.previous() }) {
                             Image(systemName: "backward.fill").font(.title)
-                        }.disabled(index == 0)
+                        }.disabled(engine.snapshot.index == 0)
 
-                        Button(running ? "Pause" : "Resume") { running.toggle() }
-                            .buttonStyle(.borderedProminent)
+                        Button(engine.snapshot.running ? "Pause" : "Resume") {
+                            engine.togglePlay()
+                        }
+                        .buttonStyle(.borderedProminent)
 
-                        Button(action: next) {
+                        Button(action: skip) {
                             Image(systemName: "forward.fill").font(.title)
                         }
                     }
@@ -110,38 +108,27 @@ struct PlayerBody: View {
         }
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear { if remaining == 0 { remaining = stretches.first?.durationSeconds ?? 0 } }
         .task {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
-                guard running, !finished else { continue }
-                if remaining > 1 {
-                    remaining -= 1
-                } else {
-                    next()
-                }
+                let finishedNow = engine.tick()
+                if finishedNow { recordSession() }
             }
         }
     }
 
-    private func previous() {
-        let prev = max(0, index - 1)
-        index = prev
-        remaining = stretches[prev].durationSeconds
-        finished = false
+    private func skip() {
+        let finishedNow = engine.next()
+        if finishedNow { recordSession() }
     }
 
-    private func next() {
-        let nextIdx = index + 1
-        if nextIdx >= stretches.count {
-            finished = true
-            running = false
-            let total = stretches.reduce(0) { $0 + $1.durationSeconds }
-            SessionStore.record(programId: programId, day: dayNumber, durationSeconds: total, in: modelContext)
-        } else {
-            index = nextIdx
-            remaining = stretches[nextIdx].durationSeconds
-        }
+    private func recordSession() {
+        SessionStore.record(
+            programId: programId,
+            day: dayNumber,
+            durationSeconds: engine.totalDurationSeconds,
+            in: modelContext,
+        )
     }
 }
 
@@ -155,8 +142,4 @@ private struct FinishedView: View {
         }
         .padding()
     }
-}
-
-private extension Array {
-    subscript(safe i: Int) -> Element? { indices.contains(i) ? self[i] : nil }
 }

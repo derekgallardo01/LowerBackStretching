@@ -53,25 +53,46 @@ isolated so the call sites won't change.
 
 ## Tests
 
-Two test source sets, both runnable from Studio (Run → Tests) or CLI:
+Two test source sets, both runnable from Studio (Run → Tests) or CLI.
 
-- `app/src/test/` — pure JVM unit tests (fast, no device needed):
-  ```sh
-  ./gradlew :app:testDebugUnitTest
-  ```
-  Covers: streak calculation (`ComputeStreakTest`), `CustomRoutineEntity` CSV
-  parsing, `CustomRoutineRepository` insert/update behaviour with a fake DAO.
+### JVM unit tests (fast, no device)
 
-- `app/src/androidTest/` — instrumented tests on a device/emulator:
-  ```sh
-  ./gradlew :app:connectedDebugAndroidTest
-  ```
-  Covers: bundled content integrity (`ContentRepositoryTest` — every program
-  day references a valid stretch, every stretch has required fields), plus a
-  Compose-driven E2E flow for onboarding (`OnboardingE2ETest`).
+```sh
+./gradlew :app:testDebugUnitTest
+```
 
-The E2E test clears the DataStore file before each run so onboarding always
-shows.
+| File | Covers |
+|------|--------|
+| `ComputeStreakTest` | streak rule: today, grace-day, gaps, year boundaries |
+| `CustomRoutineEntityTest` | CSV (de)serialization edge cases |
+| `CustomRoutineRepositoryTest` | insert/update with fake DAO |
+| `PlayerEngineTest` | 17 cases — tick, next/previous, pause, finish, progress |
+| `ReminderSchedulerTest` | next-occurrence math: same-day, next-day, month/year rollover |
+
+### Instrumented (Compose UI + Room DAO + E2E)
+
+```sh
+./gradlew :app:connectedDebugAndroidTest
+```
+
+| File | Covers |
+|------|--------|
+| `ContentRepositoryTest` | bundled JSON integrity |
+| `SessionDaoTest` | Room insert/recent/completedDays/forDay |
+| `CustomRoutineDaoTest` | Room insert/update/delete/byId |
+| `SessionRepositoryIntegrationTest` | repository + real Room round-trip |
+| `HomeScreenTest` | header, streak card, program list |
+| `ProgramsScreenTest` | header, category filter, FAB callback |
+| `ProgramDetailScreenTest` | day rendering, onStartDay callback |
+| `StretchesScreenTest` | body-part filter, navigate to detail |
+| `StretchDetailScreenTest` | render + practice callback |
+| `CalendarScreenTest` | header + empty state |
+| `SettingsScreenTest` | reminder section + about |
+| `RoutineBuilderE2ETest` | save disabled until name+selection, then enabled |
+| `OnboardingE2ETest` | skip lands on home; full step-through lands on home |
+
+The Compose UI tests host screens inside `createAndroidComposeRule<ComponentActivity>()`
+so `viewModel()` can construct AndroidViewModels with an Application context.
 
 ## YouTube playback
 

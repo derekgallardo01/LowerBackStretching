@@ -38,32 +38,25 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.App
 import com.lowerbackstretching.data.model.Stretch
 import com.lowerbackstretching.ui.components.YouTubePlayerView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-data class PlayerState(
-    val stretches: List<Stretch> = emptyList(),
-    val index: Int = 0,
-    val remainingSeconds: Int = 0,
-    val running: Boolean = false,
-    val finished: Boolean = false,
-) {
-    val current: Stretch? get() = stretches.getOrNull(index)
-    val progress: Float
-        get() = current?.let {
-            if (it.durationSeconds == 0) 0f
-            else (it.durationSeconds - remainingSeconds).toFloat() / it.durationSeconds
-        } ?: 0f
-}
-
+@OptIn(ExperimentalCoroutinesApi::class)
 class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     private val appCtx: App get() = getApplication()
-    private val _state = MutableStateFlow(PlayerState())
-    val state: StateFlow<PlayerState> = _state.asStateFlow()
+
+    private val _engine = MutableStateFlow<PlayerEngine?>(null)
+
+    val state: StateFlow<PlayerEngine.Snapshot?> = _engine
+        .flatMapLatest { it?.state ?: flowOf(null) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private var programId: String = ""
     private var dayNumber: Int = 1
@@ -74,7 +67,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         this.programId = programId
         this.dayNumber = dayNumber
         val program = appCtx.contentRepository.program(programId) ?: return
-        initState(appCtx.contentRepository.stretchesFor(program, dayNumber))
+        initEngine(appCtx.contentRepository.stretchesFor(program, dayNumber))
     }
 
     fun loadSingle(stretchId: String) {
@@ -82,7 +75,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         if (loaded && this.programId == "single-$stretchId") return
         this.programId = "single-$stretchId"
         this.dayNumber = 0
-        initState(listOf(stretch))
+        initEngine(listOf(stretch))
     }
 
     fun loadCustomRoutine(routineId: Long) {
@@ -93,62 +86,44 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
             val stretches = routine.stretchIds.mapNotNull { appCtx.contentRepository.stretch(it) }
             this@PlayerViewModel.programId = pid
             this@PlayerViewModel.dayNumber = 0
-            initState(stretches)
+            initEngine(stretches)
         }
     }
 
-    private fun initState(stretches: List<Stretch>) {
+    private fun initEngine(stretches: List<Stretch>) {
         loaded = true
-        _state.value = PlayerState(
-            stretches = stretches,
-            index = 0,
-            remainingSeconds = stretches.firstOrNull()?.durationSeconds ?: 0,
-            running = true,
-        )
-        startTicker()
+        val engine = PlayerEngine(stretches)
+        _engine.value = engine
+        startTicker(engine)
     }
 
-    private fun startTicker() {
+    private fun startTicker(engine: PlayerEngine) {
         viewModelScope.launch {
             while (true) {
                 delay(1000)
-                val s = _state.value
-                if (!s.running || s.finished) continue
-                if (s.remainingSeconds > 1) {
-                    _state.update { it.copy(remainingSeconds = it.remainingSeconds - 1) }
-                } else {
-                    next()
-                }
+                val finishedNow = engine.tick()
+                if (finishedNow) recordSession(engine.totalDurationSeconds)
             }
         }
     }
 
-    fun togglePlay() = _state.update { it.copy(running = !it.running) }
+    fun togglePlay() = _engine.value?.togglePlay()
 
     fun next() {
-        val s = _state.value
-        val nextIdx = s.index + 1
-        if (nextIdx >= s.stretches.size) {
-            _state.update { it.copy(finished = true, running = false) }
-            viewModelScope.launch {
-                appCtx.sessionRepository.recordCompletion(
-                    programId = programId,
-                    day = dayNumber,
-                    durationSeconds = s.stretches.sumOf { it.durationSeconds },
-                )
-            }
-        } else {
-            _state.update {
-                it.copy(index = nextIdx, remainingSeconds = it.stretches[nextIdx].durationSeconds)
-            }
-        }
+        val engine = _engine.value ?: return
+        val finishedNow = engine.next()
+        if (finishedNow) recordSession(engine.totalDurationSeconds)
     }
 
-    fun previous() {
-        val s = _state.value
-        val prevIdx = (s.index - 1).coerceAtLeast(0)
-        _state.update {
-            it.copy(index = prevIdx, remainingSeconds = it.stretches[prevIdx].durationSeconds, finished = false)
+    fun previous() = _engine.value?.previous()
+
+    private fun recordSession(durationSeconds: Int) {
+        viewModelScope.launch {
+            appCtx.sessionRepository.recordCompletion(
+                programId = programId,
+                day = dayNumber,
+                durationSeconds = durationSeconds,
+            )
         }
     }
 }
@@ -175,7 +150,7 @@ fun SingleStretchPlayerScreen(
     vm: PlayerViewModel = viewModel(),
 ) {
     LaunchedEffect(stretchId) { vm.loadSingle(stretchId) }
-    val title = vm.state.collectAsState().value.current?.name ?: "Practice"
+    val title = vm.state.collectAsState().value?.current?.name ?: "Practice"
     PlayerBody(title = title, onFinished = onFinished, onBack = onBack, vm = vm)
 }
 
@@ -201,7 +176,6 @@ private fun PlayerBody(
     vm: PlayerViewModel,
 ) {
     val state by vm.state.collectAsState()
-    val current = state.current
 
     Scaffold(
         topBar = {
@@ -215,9 +189,10 @@ private fun PlayerBody(
             )
         }
     ) { inner ->
-        if (current == null) return@Scaffold
+        val snapshot = state ?: return@Scaffold
+        val current = snapshot.current ?: return@Scaffold
 
-        if (state.finished) {
+        if (snapshot.finished) {
             FinishedView(modifier = Modifier.padding(inner).fillMaxSize(), onDone = onFinished)
             return@Scaffold
         }
@@ -235,11 +210,11 @@ private fun PlayerBody(
             Text(current.description, style = MaterialTheme.typography.bodyMedium)
 
             LinearProgressIndicator(
-                progress = { state.progress.coerceIn(0f, 1f) },
+                progress = { snapshot.progress.coerceIn(0f, 1f) },
                 modifier = Modifier.fillMaxWidth().height(8.dp),
             )
             Text(
-                "${state.remainingSeconds}s · ${state.index + 1} of ${state.stretches.size}",
+                "${snapshot.remainingSeconds}s · ${snapshot.index + 1} of ${snapshot.stretches.size}",
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
@@ -256,7 +231,7 @@ private fun PlayerBody(
                     Icon(Icons.Filled.SkipPrevious, contentDescription = "Previous", modifier = Modifier.size(36.dp))
                 }
                 Button(onClick = vm::togglePlay) {
-                    Text(if (state.running) "Pause" else "Resume")
+                    Text(if (snapshot.running) "Pause" else "Resume")
                 }
                 IconButton(onClick = vm::next) {
                     Icon(Icons.Filled.SkipNext, contentDescription = "Next", modifier = Modifier.size(36.dp))
