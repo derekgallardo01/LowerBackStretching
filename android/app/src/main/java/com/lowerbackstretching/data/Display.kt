@@ -6,18 +6,32 @@ import com.lowerbackstretching.data.model.ProgramDay
 import com.lowerbackstretching.data.model.Stretch
 
 /**
- * User-facing strings derived from models. Lives next to the model layer
- * so both [ContentRepository] consumers and Compose screens can use them.
- * Mirrors iOS `Stretch+Display.swift`.
+ * User-facing strings derived from models. Lives next to the model
+ * layer so both [ContentRepository] consumers and Compose screens can
+ * use them. Mirrors iOS `Stretch+Display.swift`.
  */
 
 /** "Easy" (capitalized for display from the on-disk "easy"). */
 val Stretch.difficultyDisplay: String
     get() = difficulty.replaceFirstChar(Char::titlecase)
 
+/**
+ * Per-stretch duration formatted for display.
+ * - [DurationUnit.SECONDS]: "30s"
+ * - [DurationUnit.MINUTES_SHORT]: "0:30" / "1:00" / "1:30"
+ */
+fun formatDuration(seconds: Int, unit: DurationUnit): String = when (unit) {
+    DurationUnit.SECONDS -> "${seconds}s"
+    DurationUnit.MINUTES_SHORT -> {
+        val m = seconds / 60
+        val s = seconds % 60
+        "$m:${s.toString().padStart(2, '0')}"
+    }
+}
+
 /** "30s · Easy · lower back · spine" */
-val Stretch.shortSubtitle: String
-    get() = "${durationSeconds}s · $difficultyDisplay · ${BodyParts.displayList(bodyParts)}"
+fun Stretch.shortSubtitle(unit: DurationUnit = DurationUnit.SECONDS): String =
+    "${formatDuration(durationSeconds, unit)} · $difficultyDisplay · ${BodyParts.displayList(bodyParts)}"
 
 /** Filter by a body part. Pass [BodyParts.ALL] to return everything. */
 fun List<Stretch>.filteredBy(bodyPart: String): List<Stretch> =

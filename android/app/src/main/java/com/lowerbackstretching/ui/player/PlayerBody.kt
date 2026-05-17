@@ -35,6 +35,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.data.DurationUnit
+import com.lowerbackstretching.data.formatDuration
+import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.YouTubePlayerView
 
 /**
@@ -50,8 +54,10 @@ internal fun PlayerBody(
     onFinished: () -> Unit,
     onBack: () -> Unit,
     vm: PlayerViewModel,
+    appVm: AppViewModel = viewModel(),
 ) {
     val state by vm.state.collectAsState()
+    val unit by appVm.prefs.durationUnit.collectAsState(initial = DurationUnit.SECONDS)
     KeepScreenOnAndLockPortrait()
 
     Scaffold(
@@ -88,7 +94,7 @@ internal fun PlayerBody(
                 modifier = Modifier.fillMaxWidth().height(8.dp),
             )
             Text(
-                "${snapshot.remainingSeconds}s · ${snapshot.index + 1} of ${snapshot.stretches.size}",
+                "${formatDuration(snapshot.remainingSeconds, unit)} · ${snapshot.index + 1} of ${snapshot.stretches.size}",
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),

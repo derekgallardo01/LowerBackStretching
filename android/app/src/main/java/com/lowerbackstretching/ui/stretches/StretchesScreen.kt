@@ -14,7 +14,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
 import com.lowerbackstretching.data.BodyParts
+import com.lowerbackstretching.data.DurationUnit
 import com.lowerbackstretching.data.filteredBy
 import com.lowerbackstretching.data.shortSubtitle
 import com.lowerbackstretching.ui.AppViewModel
@@ -31,6 +33,7 @@ fun StretchesScreen(
     val filterOptions = remember(all) { BodyParts.filterOptions(all) }
     var filter by remember { mutableStateOf(BodyParts.ALL) }
     val visible = all.filteredBy(filter)
+    val unit by vm.prefs.durationUnit.collectAsState(initial = DurationUnit.SECONDS)
 
     Column {
         ScreenHeader("Stretches", modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp))
@@ -42,7 +45,7 @@ fun StretchesScreen(
             items(visible, key = { it.id }) { stretch ->
                 InfoRow(
                     title = stretch.name,
-                    subtitle = stretch.shortSubtitle,
+                    subtitle = stretch.shortSubtitle(unit),
                     onClick = { onOpenStretch(stretch.id) },
                 )
             }

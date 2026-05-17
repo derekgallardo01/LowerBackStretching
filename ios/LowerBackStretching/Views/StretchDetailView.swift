@@ -3,6 +3,9 @@ import SwiftUI
 struct StretchDetailView: View {
     let stretch: Stretch
 
+    @AppStorage(SettingsKeys.durationUnit) private var durationUnitRaw: String = DurationUnit.seconds.storageValue
+    private var unit: DurationUnit { DurationUnit.fromStorage(durationUnitRaw) }
+
     struct PracticeTarget: Hashable {
         let stretchId: String
     }
@@ -15,7 +18,7 @@ struct StretchDetailView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
 
                 HStack(spacing: 8) {
-                    Text("\(stretch.durationSeconds)s")
+                    Text(formatDuration(stretch.durationSeconds, unit: unit))
                         .font(.caption.weight(.medium))
                         .foregroundStyle(.tint)
                     Text("·").font(.caption.weight(.medium))

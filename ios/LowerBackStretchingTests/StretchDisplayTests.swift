@@ -21,9 +21,28 @@ final class StretchDisplayTests: XCTestCase {
         XCTAssertEqual(stretch(difficulty: "hard").difficultyDisplay, "Hard")
     }
 
-    func testShortSubtitleRendersDurationDifficultyAndBodyParts() {
+    func testShortSubtitleDefaultSeconds() {
         let s = stretch(difficulty: "easy", seconds: 45, bodyParts: ["lower-back", "spine"])
-        XCTAssertEqual(s.shortSubtitle, "45s · Easy · lower back · spine")
+        XCTAssertEqual(s.shortSubtitle(), "45s · Easy · lower back · spine")
+    }
+
+    func testShortSubtitleWithMinutesShort() {
+        let s = stretch(difficulty: "medium", seconds: 90, bodyParts: ["hips"])
+        XCTAssertEqual(s.shortSubtitle(unit: .minutesShort), "1:30 · Medium · hips")
+    }
+
+    func testFormatDurationSecondsAppendsS() {
+        XCTAssertEqual(formatDuration(45, unit: .seconds), "45s")
+        XCTAssertEqual(formatDuration(60, unit: .seconds), "60s")
+        XCTAssertEqual(formatDuration(0, unit: .seconds), "0s")
+    }
+
+    func testFormatDurationMinutesShortPadsSeconds() {
+        XCTAssertEqual(formatDuration(0, unit: .minutesShort), "0:00")
+        XCTAssertEqual(formatDuration(30, unit: .minutesShort), "0:30")
+        XCTAssertEqual(formatDuration(60, unit: .minutesShort), "1:00")
+        XCTAssertEqual(formatDuration(90, unit: .minutesShort), "1:30")
+        XCTAssertEqual(formatDuration(125, unit: .minutesShort), "2:05")
     }
 
     func testFilteredByAllReturnsEverything() {

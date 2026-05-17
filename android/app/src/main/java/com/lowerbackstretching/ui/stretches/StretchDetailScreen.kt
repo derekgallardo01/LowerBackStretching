@@ -20,11 +20,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.BodyParts
+import com.lowerbackstretching.data.DurationUnit
+import com.lowerbackstretching.data.formatDuration
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.DifficultyDots
 import com.lowerbackstretching.ui.components.YouTubePlayerView
@@ -39,6 +43,7 @@ fun StretchDetailScreen(
     vm: AppViewModel = viewModel(),
 ) {
     val stretch = vm.content.stretch(stretchId) ?: return
+    val unit by vm.prefs.durationUnit.collectAsState(initial = DurationUnit.SECONDS)
 
     Scaffold(
         topBar = {
@@ -70,7 +75,7 @@ fun StretchDetailScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    "${stretch.durationSeconds}s",
+                    formatDuration(stretch.durationSeconds, unit),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                 )

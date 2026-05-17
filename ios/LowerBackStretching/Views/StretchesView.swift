@@ -3,6 +3,8 @@ import SwiftUI
 struct StretchesView: View {
     @EnvironmentObject private var content: ContentStore
     @State private var filter: String = BodyParts.all
+    @AppStorage(SettingsKeys.durationUnit) private var durationUnitRaw: String = DurationUnit.seconds.storageValue
+    private var unit: DurationUnit { DurationUnit.fromStorage(durationUnitRaw) }
 
     private var filterOptions: [String] {
         BodyParts.filterOptions(from: content.stretches)
@@ -20,7 +22,7 @@ struct StretchesView: View {
                 VStack(spacing: 10) {
                     ForEach(visible) { stretch in
                         NavigationLink(value: stretch) {
-                            InfoRow(title: stretch.name, subtitle: stretch.shortSubtitle)
+                            InfoRow(title: stretch.name, subtitle: stretch.shortSubtitle(unit: unit))
                         }
                         .buttonStyle(.plain)
                     }

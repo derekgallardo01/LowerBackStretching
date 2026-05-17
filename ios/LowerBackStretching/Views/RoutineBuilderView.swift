@@ -9,6 +9,8 @@ struct RoutineBuilderView: View {
     @State private var name: String = ""
     @State private var filter: String = BodyParts.all
     @State private var selected: Set<String> = []
+    @AppStorage(SettingsKeys.durationUnit) private var durationUnitRaw: String = DurationUnit.seconds.storageValue
+    private var unit: DurationUnit { DurationUnit.fromStorage(durationUnitRaw) }
 
     private var filterOptions: [String] {
         BodyParts.filterOptions(from: content.stretches)
@@ -46,7 +48,7 @@ struct RoutineBuilderView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(stretch.name).foregroundStyle(.primary)
-                            Text(stretch.shortSubtitle)
+                            Text(stretch.shortSubtitle(unit: unit))
                                 .font(.caption)
                                 .foregroundStyle(.tint)
                         }

@@ -62,6 +62,8 @@ struct PlayerBody: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(SettingsKeys.hapticsTransitions) private var hapticsTransitions: Bool = true
     @AppStorage(SettingsKeys.hapticsFinish) private var hapticsFinish: Bool = true
+    @AppStorage(SettingsKeys.durationUnit) private var durationUnitRaw: String = DurationUnit.seconds.storageValue
+    private var unit: DurationUnit { DurationUnit.fromStorage(durationUnitRaw) }
 
     init(stretches: [Stretch], title: String, programId: String, dayNumber: Int) {
         self.title = title
@@ -84,7 +86,7 @@ struct PlayerBody: View {
                     Text(current.description).font(.body).foregroundStyle(.secondary)
 
                     ProgressView(value: engine.snapshot.progress).tint(.accentColor)
-                    Text("\(engine.snapshot.remainingSeconds)s · \(engine.snapshot.index + 1) of \(engine.snapshot.stretches.count)")
+                    Text("\(formatDuration(engine.snapshot.remainingSeconds, unit: unit)) · \(engine.snapshot.index + 1) of \(engine.snapshot.stretches.count)")
                         .font(.caption.weight(.medium))
 
                     HStack(spacing: 24) {

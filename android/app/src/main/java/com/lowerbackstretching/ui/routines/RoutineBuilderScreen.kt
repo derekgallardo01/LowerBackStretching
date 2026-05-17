@@ -22,6 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.BodyParts
+import com.lowerbackstretching.data.DurationUnit
 import com.lowerbackstretching.data.filteredBy
 import com.lowerbackstretching.data.shortSubtitle
 import com.lowerbackstretching.ui.AppViewModel
@@ -55,6 +57,7 @@ fun RoutineBuilderScreen(
 
     val canSave = name.trim().isNotEmpty() && selected.isNotEmpty()
     val totalSeconds = vm.content.totalDurationSeconds(selected)
+    val unit by vm.prefs.durationUnit.collectAsState(initial = DurationUnit.SECONDS)
 
     Scaffold(
         topBar = {
@@ -105,7 +108,7 @@ fun RoutineBuilderScreen(
                     val isSelected = stretch.id in selected
                     InfoRow(
                         title = stretch.name,
-                        subtitle = stretch.shortSubtitle,
+                        subtitle = stretch.shortSubtitle(unit),
                         onClick = {
                             if (isSelected) selected.remove(stretch.id) else selected.add(stretch.id)
                         },

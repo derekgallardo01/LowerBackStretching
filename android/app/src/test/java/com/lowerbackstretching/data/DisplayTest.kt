@@ -31,9 +31,32 @@ class DisplayTest {
     }
 
     @Test
-    fun shortSubtitle_renders_duration_difficulty_and_body_parts() {
+    fun shortSubtitle_default_seconds() {
         val s = stretch(seconds = 45, difficulty = "easy", bodyParts = listOf("lower-back", "spine"))
-        assertThat(s.shortSubtitle).isEqualTo("45s · Easy · lower back · spine")
+        assertThat(s.shortSubtitle()).isEqualTo("45s · Easy · lower back · spine")
+    }
+
+    @Test
+    fun shortSubtitle_with_minutes_short() {
+        val s = stretch(seconds = 90, difficulty = "medium", bodyParts = listOf("hips"))
+        assertThat(s.shortSubtitle(DurationUnit.MINUTES_SHORT))
+            .isEqualTo("1:30 · Medium · hips")
+    }
+
+    @Test
+    fun formatDuration_seconds_appends_s() {
+        assertThat(formatDuration(45, DurationUnit.SECONDS)).isEqualTo("45s")
+        assertThat(formatDuration(60, DurationUnit.SECONDS)).isEqualTo("60s")
+        assertThat(formatDuration(0, DurationUnit.SECONDS)).isEqualTo("0s")
+    }
+
+    @Test
+    fun formatDuration_minutes_short_pads_seconds() {
+        assertThat(formatDuration(0, DurationUnit.MINUTES_SHORT)).isEqualTo("0:00")
+        assertThat(formatDuration(30, DurationUnit.MINUTES_SHORT)).isEqualTo("0:30")
+        assertThat(formatDuration(60, DurationUnit.MINUTES_SHORT)).isEqualTo("1:00")
+        assertThat(formatDuration(90, DurationUnit.MINUTES_SHORT)).isEqualTo("1:30")
+        assertThat(formatDuration(125, DurationUnit.MINUTES_SHORT)).isEqualTo("2:05")
     }
 
     @Test

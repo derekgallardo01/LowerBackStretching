@@ -1,12 +1,26 @@
 import Foundation
 
+/// Per-stretch duration formatted for display.
+/// - `.seconds`: "30s"
+/// - `.minutesShort`: "0:30" / "1:00" / "1:30"
+func formatDuration(_ seconds: Int, unit: DurationUnit) -> String {
+    switch unit {
+    case .seconds:
+        return "\(seconds)s"
+    case .minutesShort:
+        let m = seconds / 60
+        let s = seconds % 60
+        return "\(m):\(String(format: "%02d", s))"
+    }
+}
+
 extension Stretch {
     /// "Easy" (capitalized for display from the on-disk "easy").
     var difficultyDisplay: String { difficulty.capitalized }
 
     /// "30s · Easy · lower back · spine".
-    var shortSubtitle: String {
-        "\(durationSeconds)s · \(difficultyDisplay) · \(BodyParts.displayList(bodyParts))"
+    func shortSubtitle(unit: DurationUnit = .seconds) -> String {
+        "\(formatDuration(durationSeconds, unit: unit)) · \(difficultyDisplay) · \(BodyParts.displayList(bodyParts))"
     }
 }
 
