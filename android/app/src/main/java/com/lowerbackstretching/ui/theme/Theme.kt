@@ -5,7 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import com.lowerbackstretching.data.ThemeMode
+import com.lowerbackstretching.core.ThemeMode
 
 private val LightColors = lightColorScheme(
     primary = Sage40,

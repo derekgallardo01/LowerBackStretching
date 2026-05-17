@@ -18,8 +18,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.data.DurationUnit
-import com.lowerbackstretching.data.ThemeMode
+import com.lowerbackstretching.core.DurationUnit
+import com.lowerbackstretching.core.ThemeMode
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.SectionHeader
 import kotlinx.coroutines.launch

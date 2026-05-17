@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.lowerbackstretching.data.Prefs
-import com.lowerbackstretching.data.ThemeMode
+import com.lowerbackstretching.core.ThemeMode
 import com.lowerbackstretching.share.SharedRoutine
 import com.lowerbackstretching.share.parseRoutineLink
 import com.lowerbackstretching.ui.nav.AppNav

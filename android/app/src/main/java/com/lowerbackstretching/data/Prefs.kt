@@ -12,7 +12,9 @@ import com.lowerbackstretching.audio.AmbientTrack
 import com.lowerbackstretching.audio.AudioDefaults
 import com.lowerbackstretching.audio.ChimeTrack
 import com.lowerbackstretching.audio.MusicTrack
+import com.lowerbackstretching.core.DurationUnit
 import com.lowerbackstretching.core.InProgressSession
+import com.lowerbackstretching.core.ThemeMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -51,27 +53,6 @@ object GoalDefaults {
 object ReminderDefaults {
     const val HOUR = 8
     const val MINUTE = 0
-}
-
-enum class ThemeMode(val storageValue: String) {
-    SYSTEM("system"),
-    LIGHT("light"),
-    DARK("dark");
-
-    companion object {
-        fun fromStorage(value: String?): ThemeMode =
-            entries.firstOrNull { it.storageValue == value } ?: SYSTEM
-    }
-}
-
-enum class DurationUnit(val storageValue: String) {
-    SECONDS("seconds"),
-    MINUTES_SHORT("minutes_short");
-
-    companion object {
-        fun fromStorage(value: String?): DurationUnit =
-            entries.firstOrNull { it.storageValue == value } ?: SECONDS
-    }
 }
 
 class Prefs(private val context: Context) {

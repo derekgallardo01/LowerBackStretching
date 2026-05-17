@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.core.BodyParts
-import com.lowerbackstretching.data.DurationUnit
+import com.lowerbackstretching.core.DurationUnit
 import com.lowerbackstretching.data.filteredBy
 import com.lowerbackstretching.data.shortSubtitle
 import com.lowerbackstretching.ui.AppViewModel

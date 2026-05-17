@@ -42,7 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.LocalPictureInPictureHost
-import com.lowerbackstretching.data.DurationUnit
+import com.lowerbackstretching.core.DurationUnit
 import com.lowerbackstretching.core.bodyZonesForTags
 import com.lowerbackstretching.data.formatDuration
 import com.lowerbackstretching.ui.AppViewModel
