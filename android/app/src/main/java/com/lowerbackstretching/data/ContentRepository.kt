@@ -1,6 +1,7 @@
 package com.lowerbackstretching.data
 
 import android.content.Context
+import com.lowerbackstretching.data.model.GlossaryEntry
 import com.lowerbackstretching.data.model.Program
 import com.lowerbackstretching.data.model.Stretch
 import kotlinx.serialization.json.Json
@@ -11,6 +12,7 @@ class ContentRepository(private val context: Context) {
 
     val stretches: List<Stretch> by lazy { loadList("stretches.json") }
     val programs: List<Program> by lazy { loadList("programs.json") }
+    val glossary: List<GlossaryEntry> by lazy { loadList("glossary.json") }
 
     private val stretchById: Map<String, Stretch> by lazy { stretches.associateBy { it.id } }
     private val programById: Map<String, Program> by lazy { programs.associateBy { it.id } }

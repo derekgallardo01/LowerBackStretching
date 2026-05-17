@@ -44,3 +44,11 @@ data class ProgramDay(
     val title: String,
     val stretchIds: List<String>,
 )
+
+@Serializable
+data class GlossaryEntry(
+    val term: String,
+    val definition: String,
+    /** Free-form category — current values: "anatomy", "concepts". */
+    val category: String,
+)

@@ -22,7 +22,7 @@ struct HomeView: View {
         )
     }
 
-    enum Quick: Hashable { case achievements, goals, flexibility }
+    enum Quick: Hashable { case achievements, goals, flexibility, glossary }
 
     var body: some View {
         ScrollView {
@@ -48,10 +48,16 @@ struct HomeView: View {
                     }
                     .buttonStyle(.plain)
                 }
-                NavigationLink(value: Quick.flexibility) {
-                    QuickCard(title: "Flexibility self-test", bodyText: "Track your reach over time")
+                HStack(spacing: 12) {
+                    NavigationLink(value: Quick.flexibility) {
+                        QuickCard(title: "Flexibility self-test", bodyText: "Track your reach over time")
+                    }
+                    .buttonStyle(.plain)
+                    NavigationLink(value: Quick.glossary) {
+                        QuickCard(title: "Glossary", bodyText: "Anatomy & stretching terms")
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
 
                 SectionHeader("Programs").padding(.top, 4)
 
@@ -76,6 +82,7 @@ struct HomeView: View {
             case .achievements: AchievementsView()
             case .goals: GoalsView()
             case .flexibility: FlexibilityView()
+            case .glossary: GlossaryView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)

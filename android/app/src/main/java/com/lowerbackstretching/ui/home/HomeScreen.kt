@@ -43,6 +43,7 @@ fun HomeScreen(
     onOpenAchievements: () -> Unit,
     onOpenGoals: () -> Unit,
     onOpenFlexibility: () -> Unit,
+    onOpenGlossary: () -> Unit,
     vm: AppViewModel = viewModel(),
 ) {
     val streak by vm.sessions.streak().collectAsState(initial = 0)
@@ -95,12 +96,23 @@ fun HomeScreen(
             }
         }
         item {
-            QuickCard(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Flexibility self-test",
-                body = "Track your reach over time",
-                onClick = onOpenFlexibility,
-            )
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                QuickCard(
+                    modifier = Modifier.weight(1f),
+                    title = "Flexibility self-test",
+                    body = "Track your reach over time",
+                    onClick = onOpenFlexibility,
+                )
+                QuickCard(
+                    modifier = Modifier.weight(1f),
+                    title = "Glossary",
+                    body = "Anatomy & stretching terms",
+                    onClick = onOpenGlossary,
+                )
+            }
         }
         item { SectionHeader("Programs") }
         items(vm.content.programs, key = { it.id }) { program ->

@@ -93,4 +93,20 @@ class ContentRepositoryTest {
         assertThat(pigeon.educationalCards).isNull()
         assertThat(pigeon.mistakesToAvoid).isNull()
     }
+
+    @Test
+    fun glossary_loads_and_every_entry_has_required_fields() {
+        assertThat(repo.glossary).isNotEmpty()
+        for (entry in repo.glossary) {
+            assertThat(entry.term).isNotEmpty()
+            assertThat(entry.definition).isNotEmpty()
+            assertThat(entry.category).isNotEmpty()
+        }
+    }
+
+    @Test
+    fun glossary_categories_are_known_set() {
+        val categories = repo.glossary.map { it.category }.toSet()
+        assertThat(categories).containsAtLeast("anatomy", "concepts")
+    }
 }

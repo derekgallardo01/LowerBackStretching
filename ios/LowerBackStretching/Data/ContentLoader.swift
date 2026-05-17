@@ -4,14 +4,17 @@ import SwiftUI
 final class ContentStore: ObservableObject {
     let stretches: [Stretch]
     let programs: [Program]
+    let glossary: [GlossaryEntry]
     private let stretchById: [String: Stretch]
     private let programById: [String: Program]
 
     init() {
         let s: [Stretch] = ContentStore.load("stretches.json") ?? []
         let p: [Program] = ContentStore.load("programs.json") ?? []
+        let g: [GlossaryEntry] = ContentStore.load("glossary.json") ?? []
         self.stretches = s
         self.programs = p
+        self.glossary = g
         self.stretchById = Dictionary(uniqueKeysWithValues: s.map { ($0.id, $0) })
         self.programById = Dictionary(uniqueKeysWithValues: p.map { ($0.id, $0) })
     }

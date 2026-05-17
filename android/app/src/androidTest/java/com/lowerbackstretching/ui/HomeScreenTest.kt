@@ -25,6 +25,7 @@ class HomeScreenTest {
                     onOpenAchievements = {},
                     onOpenGoals = {},
                     onOpenFlexibility = {},
+                    onOpenGlossary = {},
                 )
             }
         }
@@ -42,6 +43,7 @@ class HomeScreenTest {
                     onOpenAchievements = {},
                     onOpenGoals = {},
                     onOpenFlexibility = {},
+                    onOpenGlossary = {},
                 )
             }
         }

@@ -80,4 +80,21 @@ final class ContentLoaderTests: XCTestCase {
         XCTAssertNil(pigeon.educationalCards)
         XCTAssertNil(pigeon.mistakesToAvoid)
     }
+
+    func testGlossaryLoadsAndEveryEntryHasRequiredFields() {
+        let store = ContentStore()
+        XCTAssertFalse(store.glossary.isEmpty)
+        for entry in store.glossary {
+            XCTAssertFalse(entry.term.isEmpty)
+            XCTAssertFalse(entry.definition.isEmpty)
+            XCTAssertFalse(entry.category.isEmpty)
+        }
+    }
+
+    func testGlossaryCategoriesAreKnownSet() {
+        let store = ContentStore()
+        let categories = Set(store.glossary.map(\.category))
+        XCTAssertTrue(categories.contains("anatomy"))
+        XCTAssertTrue(categories.contains("concepts"))
+    }
 }

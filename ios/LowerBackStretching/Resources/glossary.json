@@ -1,0 +1,92 @@
+[
+  {
+    "term": "Active range of motion",
+    "definition": "How far you can move a joint using only your own muscles — no help from your hands, gravity, or a partner. Increasing your active range matters more for daily life than your passive range.",
+    "category": "concepts"
+  },
+  {
+    "term": "Cervical spine",
+    "definition": "The seven vertebrae in your neck (C1-C7). When you read 'neck stretch', it's the cervical spine being targeted.",
+    "category": "anatomy"
+  },
+  {
+    "term": "Closed-chain",
+    "definition": "An exercise where the working hand or foot is fixed against a surface (push-up, squat). Generally safer for joints than open-chain variants because the joint can't 'escape' a bad position.",
+    "category": "concepts"
+  },
+  {
+    "term": "Eccentric loading",
+    "definition": "Lengthening a muscle while it's under tension — like the lowering part of a squat. Eccentric work is the most efficient way to build flexibility and tendon resilience.",
+    "category": "concepts"
+  },
+  {
+    "term": "Erector spinae",
+    "definition": "A group of three long muscles running parallel to your spine. They straighten your back when you stand up and resist forward folding. Tight erectors are a common cause of low-back stiffness.",
+    "category": "anatomy"
+  },
+  {
+    "term": "Fascia",
+    "definition": "Connective tissue that wraps every muscle. It's not as elastic as muscle itself, which is why stretches that feel 'thick' or 'rubbery' often need long holds (60-90s) to release.",
+    "category": "anatomy"
+  },
+  {
+    "term": "Flexion",
+    "definition": "Bending a joint to decrease its angle — curling your spine into a Cat Pose, bringing your knee toward your chest. The opposite of extension.",
+    "category": "concepts"
+  },
+  {
+    "term": "Hip flexor",
+    "definition": "A group of muscles at the front of your hip (mainly psoas and iliacus) that lift your knee. Sitting all day keeps them short, which then pulls your low back forward.",
+    "category": "anatomy"
+  },
+  {
+    "term": "Iliac crest",
+    "definition": "The top edge of your pelvis — the hard bony ridge you feel when you put your hands on your hips. Many stretches reference 'square the hips' relative to this landmark.",
+    "category": "anatomy"
+  },
+  {
+    "term": "Lumbar spine",
+    "definition": "The five vertebrae of your lower back (L1-L5). The vertebrae here are the largest and bear the most load — and consequently are where most stretching apps focus.",
+    "category": "anatomy"
+  },
+  {
+    "term": "Mobility",
+    "definition": "Flexibility with control. A person with great mobility can not only reach a deep stretch but actively hold and move in and out of it. Mobility-not-flexibility is the goal for injury prevention.",
+    "category": "concepts"
+  },
+  {
+    "term": "Neutral spine",
+    "definition": "The natural S-curve of your spine when standing relaxed — not rounded, not arched. Most strength work and many stretches start from neutral.",
+    "category": "concepts"
+  },
+  {
+    "term": "Pelvic tilt",
+    "definition": "Rotation of the pelvis around the hip joints. Anterior tilt (forward) hollows the low back; posterior tilt (backward) flattens it. Learning to find both is a core skill for back health.",
+    "category": "concepts"
+  },
+  {
+    "term": "PNF stretching",
+    "definition": "Proprioceptive Neuromuscular Facilitation. A stretch technique where you contract the muscle being stretched for 5-10 seconds, then relax and stretch deeper. Effective but advanced — don't start here.",
+    "category": "concepts"
+  },
+  {
+    "term": "Psoas",
+    "definition": "A deep hip flexor that runs from the lumbar spine to the inner thigh. Tightness here pulls the lower back into anterior tilt and is implicated in many back-pain cases.",
+    "category": "anatomy"
+  },
+  {
+    "term": "Sacroiliac joint",
+    "definition": "The joint where your sacrum (base of the spine) meets the iliac bones (pelvis). Often called 'SI joint'. Limited motion, but when it gets stuck or inflamed it generates a lot of low-back pain.",
+    "category": "anatomy"
+  },
+  {
+    "term": "Static stretching",
+    "definition": "Holding a stretch in one position for 20-60 seconds. Most of the stretches in this app are static. Effective for flexibility; not what you want as a pre-workout warmup (use dynamic instead).",
+    "category": "concepts"
+  },
+  {
+    "term": "Thoracic spine",
+    "definition": "The twelve vertebrae of your mid-back (T1-T12). Designed for rotation. Stiffness here is what makes 'check your blind spot' uncomfortable.",
+    "category": "anatomy"
+  }
+]

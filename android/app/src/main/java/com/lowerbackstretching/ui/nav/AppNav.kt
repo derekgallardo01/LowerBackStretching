@@ -22,6 +22,7 @@ import com.lowerbackstretching.ui.calendar.CalendarScreen
 import com.lowerbackstretching.ui.flexibility.FlexibilityScreen
 import com.lowerbackstretching.ui.goals.GoalsScreen
 import com.lowerbackstretching.ui.home.HomeScreen
+import com.lowerbackstretching.ui.learn.GlossaryScreen
 import com.lowerbackstretching.ui.onboarding.OnboardingScreen
 import com.lowerbackstretching.ui.player.CustomRoutinePlayerScreen
 import com.lowerbackstretching.ui.player.PlayerScreen
@@ -87,6 +88,7 @@ private fun AppRoot() {
                     onOpenAchievements = { nav.navigate(Dest.achievements) },
                     onOpenGoals = { nav.navigate(Dest.goals) },
                     onOpenFlexibility = { nav.navigate(Dest.flexibility) },
+                    onOpenGlossary = { nav.navigate(Dest.glossary) },
                 )
             }
             composable(Dest.achievements) {
@@ -97,6 +99,9 @@ private fun AppRoot() {
             }
             composable(Dest.flexibility) {
                 FlexibilityScreen(onBack = { nav.popBackStack() })
+            }
+            composable(Dest.glossary) {
+                GlossaryScreen(onBack = { nav.popBackStack() })
             }
             composable(Tab.Programs.path) {
                 ProgramsScreen(

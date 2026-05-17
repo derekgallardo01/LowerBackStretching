@@ -24,3 +24,12 @@ struct EducationalCard: Codable, Hashable {
     /// Optional SF Symbol name for visual interest.
     var icon: String? = nil
 }
+
+struct GlossaryEntry: Codable, Hashable, Identifiable {
+    let term: String
+    let definition: String
+    /// Free-form category — current values: "anatomy", "concepts".
+    let category: String
+
+    var id: String { term }
+}

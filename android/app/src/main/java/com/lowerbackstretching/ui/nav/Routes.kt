@@ -47,4 +47,5 @@ object Dest {
     const val achievements = "achievements"
     const val goals = "goals"
     const val flexibility = "flexibility"
+    const val glossary = "glossary"
 }
