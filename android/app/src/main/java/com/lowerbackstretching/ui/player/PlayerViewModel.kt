@@ -8,6 +8,7 @@ import com.lowerbackstretching.audio.AudioController
 import com.lowerbackstretching.data.InProgressSession
 import com.lowerbackstretching.core.SyntheticProgramId
 import com.lowerbackstretching.core.model.Stretch
+import com.lowerbackstretching.core.player.PlayerEngine
 import com.lowerbackstretching.notifications.Haptics
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -37,9 +38,9 @@ import java.time.LocalDate
 class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     private val appCtx: App get() = getApplication()
 
-    private val _engine = MutableStateFlow<PlayerEngine?>(null)
+    private val _engine = MutableStateFlow<PlayerEngine<Stretch>?>(null)
 
-    val state: StateFlow<PlayerEngine.Snapshot?> = _engine
+    val state: StateFlow<PlayerEngine.Snapshot<Stretch>?> = _engine
         .flatMapLatest { it?.state ?: flowOf(null) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

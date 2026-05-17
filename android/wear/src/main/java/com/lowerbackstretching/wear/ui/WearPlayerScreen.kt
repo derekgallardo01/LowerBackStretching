@@ -23,9 +23,9 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
+import com.lowerbackstretching.core.player.PlayerEngine
 import com.lowerbackstretching.wear.WatchContent
 import com.lowerbackstretching.wear.WearHaptics
-import com.lowerbackstretching.wear.player.WearPlayerEngine
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.drop
 fun WearPlayerScreen() {
     val context = LocalContext.current
     val routine = remember { WatchContent.loadRoutine(context) }
-    val engine = remember { WearPlayerEngine(routine.stretches) }
+    val engine = remember { PlayerEngine(routine.stretches) }
     val snapshot by engine.state.collectAsState()
 
     // 1Hz tick driving the engine.

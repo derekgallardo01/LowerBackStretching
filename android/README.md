@@ -76,10 +76,11 @@ Build & install:
 
 The watch app reuses the same launcher icon as the phone but ships
 its own `WearMainActivity` (no shared activity / no Data Layer API
-yet — that's a follow-up). The pure state machine in
-`wear/.../WearPlayerEngine.kt` mirrors `app/.../PlayerEngine.kt`
-line-for-line; if drift becomes painful, extract both into a
-`:core` library module.
+yet — that's a follow-up). The state machine is shared via
+`:core` — both phone and watch use the generic
+`PlayerEngine<T : Timed>`. `Stretch` and `WatchStretch` both
+implement `Timed`; the watch's slim model stays slim, the engine
+is identical.
 
 ## Health Connect
 

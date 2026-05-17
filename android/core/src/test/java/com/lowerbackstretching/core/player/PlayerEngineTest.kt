@@ -1,4 +1,4 @@
-package com.lowerbackstretching.ui.player
+package com.lowerbackstretching.core.player
 
 import com.google.common.truth.Truth.assertThat
 import com.lowerbackstretching.core.model.Stretch

@@ -1,5 +1,6 @@
 package com.lowerbackstretching.core.model
 
+import com.lowerbackstretching.core.player.Timed
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -7,7 +8,7 @@ data class Stretch(
     val id: String,
     val name: String,
     val bodyParts: List<String>,
-    val durationSeconds: Int,
+    override val durationSeconds: Int,
     val difficulty: String,
     val description: String,
     val youtubeId: String,
@@ -19,7 +20,7 @@ data class Stretch(
     val mistakesToAvoid: List<String>? = null,
     /** Body-feedback text shown as a small overlay during the player. */
     val whatYouShouldFeel: String? = null,
-)
+) : Timed
 
 @Serializable
 data class EducationalCard(

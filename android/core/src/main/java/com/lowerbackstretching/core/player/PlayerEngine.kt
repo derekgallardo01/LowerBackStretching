@@ -1,6 +1,5 @@
-package com.lowerbackstretching.ui.player
+package com.lowerbackstretching.core.player
 
-import com.lowerbackstretching.core.model.Stretch
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -10,27 +9,44 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 /**
- * Pure state machine for the stretch player — no Android dependency, so
- * it's directly unit-testable. The viewmodel drives [tick] on a
- * one-second cadence and listens for the [finishedEvents] flow to record
- * the session exactly once.
+ * Anything that takes time. The player engine only needs the duration
+ * to drive its countdown; everything else (name, body parts, video id)
+ * belongs to the platform-specific stretch types built on top.
+ *
+ * Both `Stretch` (phone) and `WatchStretch` (wear) implement this so
+ * the same engine can drive either kind of routine.
+ */
+interface Timed {
+    val durationSeconds: Int
+}
+
+/**
+ * Pure state machine for the stretch player — no Android dependency,
+ * so it's directly unit-testable. The viewmodel drives [tick] on a
+ * one-second cadence and listens for the [finishedEvents] flow to
+ * record the session exactly once.
  *
  * `startIndex` lets the viewmodel resume an interrupted routine — pass
  * the saved index and the engine starts at that stretch.
+ *
+ * Generic over anything with a `durationSeconds`. The engine never
+ * touches other fields; callers read platform-specific properties
+ * (name, video id, etc.) through `state.value.current`, which is
+ * typed `T?` and preserves the input element type.
  */
-class PlayerEngine(
-    initialStretches: List<Stretch>,
+class PlayerEngine<T : Timed>(
+    initialStretches: List<T>,
     startIndex: Int = 0,
 ) {
 
-    data class Snapshot(
-        val stretches: List<Stretch>,
+    data class Snapshot<T : Timed>(
+        val stretches: List<T>,
         val index: Int,
         val remainingSeconds: Int,
         val running: Boolean,
         val finished: Boolean,
     ) {
-        val current: Stretch? get() = stretches.getOrNull(index)
+        val current: T? get() = stretches.getOrNull(index)
 
         val progress: Float
             get() = current?.let {
@@ -68,7 +84,7 @@ class PlayerEngine(
             finished = initialStretches.isEmpty(),
         )
     )
-    val state: StateFlow<Snapshot> = _state.asStateFlow()
+    val state: StateFlow<Snapshot<T>> = _state.asStateFlow()
 
     private val _finishedEvents = MutableSharedFlow<FinishedEvent>(extraBufferCapacity = 1)
     val finishedEvents: SharedFlow<FinishedEvent> = _finishedEvents.asSharedFlow()

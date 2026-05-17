@@ -1,5 +1,6 @@
 package com.lowerbackstretching.wear.model
 
+import com.lowerbackstretching.core.player.Timed
 import kotlinx.serialization.Serializable
 
 /**
@@ -7,16 +8,15 @@ import kotlinx.serialization.Serializable
  * The watch only needs the id, name, and duration to drive the timer;
  * the video, description, educational cards, and so on stay phone-only.
  *
- * Kept duplicated rather than extracted into a shared :core module so
- * this wave can ship without restructuring the whole project; the
- * extraction is a natural follow-up.
+ * Implements [Timed] so the shared [com.lowerbackstretching.core.player.PlayerEngine]
+ * can drive either kind of routine.
  */
 @Serializable
 data class WatchStretch(
     val id: String,
     val name: String,
-    val durationSeconds: Int,
-)
+    override val durationSeconds: Int,
+) : Timed
 
 @Serializable
 data class WatchRoutine(
