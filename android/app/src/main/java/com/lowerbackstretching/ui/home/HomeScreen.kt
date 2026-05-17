@@ -15,9 +15,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,7 +28,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.subtitle
 import com.lowerbackstretching.data.xpForSession
 import com.lowerbackstretching.data.xpProgress
+import com.lowerbackstretching.health.shouldShowCooldown
 import com.lowerbackstretching.ui.AppViewModel
+import java.time.LocalDate
 import com.lowerbackstretching.ui.components.InfoRow
 import com.lowerbackstretching.ui.components.ScreenHeader
 import com.lowerbackstretching.ui.components.SectionHeader
@@ -45,11 +50,30 @@ fun HomeScreen(
     val totalSeconds by vm.sessions.totalDurationSeconds().collectAsState(initial = 0)
     val xp = remember(totalSeconds) { xpProgress(xpForSession(totalSeconds)) }
 
+    val healthReadEnabled by vm.prefs.healthReadEnabled.collectAsState(initial = false)
+    val lastSessionDay by vm.prefs.lastSessionEpochDay.collectAsState(initial = 0L)
+    val stretchedToday = lastSessionDay == LocalDate.now().toEpochDay()
+    var stepsToday by remember { mutableStateOf<Long?>(null) }
+    LaunchedEffect(healthReadEnabled) {
+        stepsToday = if (healthReadEnabled) vm.health.readStepsToday() else null
+    }
+    val showCooldown = shouldShowCooldown(healthReadEnabled, stretchedToday, stepsToday)
+
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item { ScreenHeader("Welcome back") }
+        if (showCooldown) {
+            item {
+                CooldownCard(
+                    steps = stepsToday ?: 0L,
+                    onAction = {
+                        vm.content.programs.firstOrNull()?.let { onOpenProgram(it.id) }
+                    },
+                )
+            }
+        }
         item { StatsCard(streak = streak, total = total, level = xp.level, xpProgress = xp.progress, xpIntoLevel = xp.xpIntoLevel, xpToNextLevel = xp.xpToNextLevel) }
         item {
             Row(
@@ -121,6 +145,25 @@ private fun StatsCard(
             Text(
                 "$xpIntoLevel / $xpToNextLevel XP to next level",
                 style = MaterialTheme.typography.labelMedium,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CooldownCard(steps: Long, onAction: () -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.tertiaryContainer,
+        shape = RoundedCornerShape(16.dp),
+        onClick = onAction,
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text("Walked $steps steps today.", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "Try a quick cooldown stretch to keep your back happy.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.85f),
             )
         }
     }
