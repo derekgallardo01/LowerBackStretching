@@ -23,6 +23,22 @@ enum SettingsKeys {
     static let ambientTrack = "ambient_track"
     static let ambientVolume = "ambient_volume"
     static let chimeTrack = "chime_track"
+
+    /// Days since 1970-01-01 (local calendar) of the user's most
+    /// recent recorded session. Smart-reminder gate reads this on
+    /// notification delivery.
+    static let lastSessionEpochDay = "last_session_epoch_day"
+}
+
+/// Days since 1970-01-01 in the user's current calendar. Used for
+/// "did the user stretch today" checks on both write (SessionStore)
+/// and read (notification delegate).
+enum EpochDay {
+    static func current(_ date: Date = .now, calendar: Calendar = .current) -> Int {
+        let start = calendar.startOfDay(for: date)
+        let epoch = Date(timeIntervalSince1970: 0)
+        return calendar.dateComponents([.day], from: epoch, to: start).day ?? 0
+    }
 }
 
 enum ThemeMode: String, CaseIterable {

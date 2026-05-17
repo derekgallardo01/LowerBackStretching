@@ -2,7 +2,7 @@ import Foundation
 import UserNotifications
 
 enum ReminderManager {
-    private static let identifier = "daily_stretch_reminder"
+    static let identifier = "daily_stretch_reminder"
 
     static func schedule(hour: Int, minute: Int) {
         cancel()
@@ -30,5 +30,13 @@ enum ReminderManager {
 
     static func cancel() {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
+    }
+
+    /// Drops any reminder currently in the notification tray. Called
+    /// after a session is recorded so the user isn't reminded of
+    /// something they already did.
+    static func clearDelivered() {
+        UNUserNotificationCenter.current()
+            .removeDeliveredNotifications(withIdentifiers: [identifier])
     }
 }

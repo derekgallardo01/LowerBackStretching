@@ -32,5 +32,7 @@ enum SessionStore {
         )
         context.insert(record)
         try? context.save()
+        UserDefaults.standard.set(EpochDay.current(), forKey: SettingsKeys.lastSessionEpochDay)
+        ReminderManager.clearDelivered()
     }
 }

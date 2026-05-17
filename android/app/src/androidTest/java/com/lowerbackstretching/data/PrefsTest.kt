@@ -106,4 +106,15 @@ class PrefsTest {
         prefs.setMusicVolume(2f)
         assertThat(prefs.musicVolume.first()).isEqualTo(1f)
     }
+
+    @Test
+    fun last_session_epoch_day_defaults_to_zero() = runBlocking {
+        assertThat(prefs.lastSessionEpochDay.first()).isEqualTo(0L)
+    }
+
+    @Test
+    fun last_session_epoch_day_round_trip() = runBlocking {
+        prefs.setLastSessionEpochDay(19_876L)
+        assertThat(prefs.lastSessionEpochDay.first()).isEqualTo(19_876L)
+    }
 }

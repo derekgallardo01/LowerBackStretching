@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.lowerbackstretching.audio.AmbientTrack
@@ -33,6 +34,7 @@ object PrefKeys {
     val AMBIENT_TRACK = stringPreferencesKey("ambient_track")
     val AMBIENT_VOLUME = floatPreferencesKey("ambient_volume")
     val CHIME_TRACK = stringPreferencesKey("chime_track")
+    val LAST_SESSION_EPOCH_DAY = longPreferencesKey("last_session_epoch_day")
 }
 
 object ReminderDefaults {
@@ -83,6 +85,7 @@ class Prefs(private val context: Context) {
     val ambientTrack: Flow<AmbientTrack> = context.dataStore.data.map { AmbientTrack.fromStorage(it[PrefKeys.AMBIENT_TRACK]) }
     val ambientVolume: Flow<Float> = context.dataStore.data.map { it[PrefKeys.AMBIENT_VOLUME] ?: AudioDefaults.AMBIENT_VOLUME }
     val chimeTrack: Flow<ChimeTrack> = context.dataStore.data.map { ChimeTrack.fromStorage(it[PrefKeys.CHIME_TRACK]) }
+    val lastSessionEpochDay: Flow<Long> = context.dataStore.data.map { it[PrefKeys.LAST_SESSION_EPOCH_DAY] ?: 0L }
 
     internal suspend fun setReminder(enabled: Boolean, hour: Int, minute: Int) {
         context.dataStore.edit {
@@ -146,6 +149,10 @@ class Prefs(private val context: Context) {
 
     suspend fun setChimeTrack(track: ChimeTrack) {
         context.dataStore.edit { it[PrefKeys.CHIME_TRACK] = track.storageValue }
+    }
+
+    suspend fun setLastSessionEpochDay(epochDay: Long) {
+        context.dataStore.edit { it[PrefKeys.LAST_SESSION_EPOCH_DAY] = epochDay }
     }
 
     /** Test helper — clears all keys so the next read returns defaults. */

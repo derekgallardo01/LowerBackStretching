@@ -1,10 +1,15 @@
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 @main
 struct LowerBackStretchingApp: App {
     @StateObject private var content = ContentStore()
     @AppStorage(SettingsKeys.themeMode) private var themeModeRaw: String = ThemeMode.system.storageValue
+
+    init() {
+        UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
+    }
 
     private let container: ModelContainer = {
         let config = ModelConfiguration(

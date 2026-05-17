@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 /**
  * Drives a [PlayerEngine] on a one-second tick and records a session
@@ -154,6 +155,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
                         totalDays = program.days.size,
                     )
                 }
+                appCtx.prefs.setLastSessionEpochDay(LocalDate.now().toEpochDay())
                 appCtx.prefs.clearInProgress()
                 if (appCtx.prefs.hapticsFinish.first()) Haptics.finish(appCtx)
             }
