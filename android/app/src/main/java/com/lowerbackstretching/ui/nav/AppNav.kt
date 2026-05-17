@@ -18,6 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lowerbackstretching.data.Prefs
 import com.lowerbackstretching.ui.achievements.AchievementsScreen
+import com.lowerbackstretching.ui.anatomy.BodyDiagramScreen
 import com.lowerbackstretching.ui.calendar.CalendarScreen
 import com.lowerbackstretching.ui.flexibility.FlexibilityScreen
 import com.lowerbackstretching.ui.goals.GoalsScreen
@@ -89,6 +90,13 @@ private fun AppRoot() {
                     onOpenGoals = { nav.navigate(Dest.goals) },
                     onOpenFlexibility = { nav.navigate(Dest.flexibility) },
                     onOpenGlossary = { nav.navigate(Dest.glossary) },
+                    onOpenBodyDiagram = { nav.navigate(Dest.bodyDiagram) },
+                )
+            }
+            composable(Dest.bodyDiagram) {
+                BodyDiagramScreen(
+                    onOpenStretch = { id -> nav.navigate(Dest.stretch(id)) },
+                    onBack = { nav.popBackStack() },
                 )
             }
             composable(Dest.achievements) {

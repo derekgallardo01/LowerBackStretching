@@ -26,6 +26,7 @@ class HomeScreenTest {
                     onOpenGoals = {},
                     onOpenFlexibility = {},
                     onOpenGlossary = {},
+                    onOpenBodyDiagram = {},
                 )
             }
         }
@@ -44,6 +45,7 @@ class HomeScreenTest {
                     onOpenGoals = {},
                     onOpenFlexibility = {},
                     onOpenGlossary = {},
+                    onOpenBodyDiagram = {},
                 )
             }
         }

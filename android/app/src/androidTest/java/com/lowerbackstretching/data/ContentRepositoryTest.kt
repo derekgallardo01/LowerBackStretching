@@ -109,4 +109,15 @@ class ContentRepositoryTest {
         val categories = repo.glossary.map { it.category }.toSet()
         assertThat(categories).containsAtLeast("anatomy", "concepts")
     }
+
+    @Test
+    fun every_body_zone_has_at_least_one_matching_stretch() {
+        // Tapping a zone on the body diagram opens a sheet listing
+        // matching stretches. If any zone maps to an empty list the
+        // user sees a dead-end — guard against that.
+        for (zone in BodyZone.entries) {
+            val matches = repo.stretches.filter { it.bodyParts.contains(zone.bodyPartTag) }
+            assertThat(matches).isNotEmpty()
+        }
+    }
 }

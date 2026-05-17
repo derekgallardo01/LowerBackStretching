@@ -44,6 +44,7 @@ fun HomeScreen(
     onOpenGoals: () -> Unit,
     onOpenFlexibility: () -> Unit,
     onOpenGlossary: () -> Unit,
+    onOpenBodyDiagram: () -> Unit,
     vm: AppViewModel = viewModel(),
 ) {
     val streak by vm.sessions.streak().collectAsState(initial = 0)
@@ -113,6 +114,14 @@ fun HomeScreen(
                     onClick = onOpenGlossary,
                 )
             }
+        }
+        item {
+            QuickCard(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Tap where it hurts",
+                body = "Find a stretch by body area",
+                onClick = onOpenBodyDiagram,
+            )
         }
         item { SectionHeader("Programs") }
         items(vm.content.programs, key = { it.id }) { program ->

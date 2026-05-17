@@ -22,7 +22,7 @@ struct HomeView: View {
         )
     }
 
-    enum Quick: Hashable { case achievements, goals, flexibility, glossary }
+    enum Quick: Hashable { case achievements, goals, flexibility, glossary, bodyDiagram }
 
     var body: some View {
         ScrollView {
@@ -58,6 +58,10 @@ struct HomeView: View {
                     }
                     .buttonStyle(.plain)
                 }
+                NavigationLink(value: Quick.bodyDiagram) {
+                    QuickCard(title: "Tap where it hurts", bodyText: "Find a stretch by body area")
+                }
+                .buttonStyle(.plain)
 
                 SectionHeader("Programs").padding(.top, 4)
 
@@ -83,6 +87,7 @@ struct HomeView: View {
             case .goals: GoalsView()
             case .flexibility: FlexibilityView()
             case .glossary: GlossaryView()
+            case .bodyDiagram: BodyDiagramView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)

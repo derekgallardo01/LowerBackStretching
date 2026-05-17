@@ -97,4 +97,15 @@ final class ContentLoaderTests: XCTestCase {
         XCTAssertTrue(categories.contains("anatomy"))
         XCTAssertTrue(categories.contains("concepts"))
     }
+
+    func testEveryBodyZoneHasAtLeastOneMatchingStretch() {
+        // Tapping a zone on the body diagram opens a sheet listing
+        // matching stretches. If any zone maps to an empty list the
+        // user sees a dead-end — guard against that.
+        let store = ContentStore()
+        for zone in BodyZone.allCases {
+            let matches = store.stretches.filter { $0.bodyParts.contains(zone.bodyPartTag) }
+            XCTAssertFalse(matches.isEmpty, "No stretches match zone \(zone.displayName)")
+        }
+    }
 }

@@ -48,4 +48,5 @@ object Dest {
     const val goals = "goals"
     const val flexibility = "flexibility"
     const val glossary = "glossary"
+    const val bodyDiagram = "body-diagram"
 }
