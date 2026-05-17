@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.LocalPictureInPictureHost
 import com.lowerbackstretching.data.DurationUnit
 import com.lowerbackstretching.data.bodyZonesForTags
 import com.lowerbackstretching.data.formatDuration
@@ -65,9 +66,30 @@ internal fun PlayerBody(
 ) {
     val state by vm.state.collectAsState()
     val unit by appVm.prefs.durationUnit.collectAsState(initial = DurationUnit.SECONDS)
+    val pipHost = LocalPictureInPictureHost.current
+    val inPip by pipHost.inPip.collectAsState()
     KeepScreenOnAndLockPortrait()
-    DisposableEffect(vm) {
-        onDispose { vm.stop() }
+    DisposableEffect(vm, pipHost) {
+        pipHost.pipEligible.value = true
+        onDispose {
+            pipHost.pipEligible.value = false
+            vm.stop()
+        }
+    }
+
+    if (inPip) {
+        val snapshot = state
+        val current = snapshot?.current
+        if (snapshot != null && current != null && !snapshot.finished) {
+            PipPlayerLayout(
+                videoId = current.youtubeId,
+                remainingSeconds = snapshot.remainingSeconds,
+                progress = snapshot.routineProgress,
+            )
+        } else {
+            FinishedView(modifier = Modifier.fillMaxSize(), onDone = onFinished)
+        }
+        return
     }
 
     Scaffold(
@@ -177,6 +199,34 @@ private fun KeepScreenOnAndLockPortrait() {
             if (priorOrientation != null) {
                 activity.requestedOrientation = priorOrientation
             }
+        }
+    }
+}
+
+/**
+ * Compact layout shown while the activity is in Picture-in-Picture
+ * mode. Just the video + a remaining-seconds badge in the bottom-left
+ * corner over a thin progress bar. No controls (PiP windows are too
+ * small for them) — user taps the PiP to expand back to full app.
+ */
+@Composable
+private fun PipPlayerLayout(videoId: String, remainingSeconds: Int, progress: Float) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        YouTubePlayerView(videoId = videoId, modifier = Modifier.fillMaxSize())
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth(),
+        ) {
+            Text(
+                "${remainingSeconds}s",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(8.dp),
+            )
+            LinearProgressIndicator(
+                progress = { progress.coerceIn(0f, 1f) },
+                modifier = Modifier.fillMaxWidth().height(3.dp),
+            )
         }
     }
 }

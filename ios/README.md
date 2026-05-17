@@ -57,6 +57,20 @@ files break easily. Steps:
     iOS 16). HealthKit only works on real devices — the simulator returns
     false for `isHealthDataAvailable()`.
 
+## Picture-in-Picture
+
+Not supported on iOS in v0.1. iOS Picture-in-Picture is hard-wired
+to `AVPictureInPictureController`, which only works with content
+backed by an `AVPlayer` / `AVPlayerLayer`. The current player uses
+a `WKWebView` hosting the YouTube iframe — that pipeline can't
+participate in iOS PiP.
+
+To unlock it, swap the YouTube embed for locally-hosted MP4s
+played via `AVPlayerViewController`, then attach
+`AVPictureInPictureController` per the standard Apple docs. The
+Android side has working PiP on the same activity flow — see
+`android/README.md` "Picture-in-Picture".
+
 ## Architecture
 
 - `App/LowerBackStretchingApp.swift` — `@main` entry. Configures the SwiftData

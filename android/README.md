@@ -43,6 +43,22 @@ a `signingConfigs.release` block to `app/build.gradle.kts`, then:
 - `ui/` — Compose screens (`home`, `programs`, `player`, `calendar`,
   `settings`) and the YouTube embed component.
 
+## Picture-in-Picture
+
+The player activity supports PiP on Android 8 (API 26) and up. When
+the user presses Home while on a player screen, the activity calls
+`enterPictureInPictureMode(...)` with a 16:9 aspect ratio. The
+Compose tree observes the change via `PictureInPictureHost.inPip`
+and switches to a compact layout — just the YouTube video, the
+remaining-seconds badge, and a 3dp progress bar at the bottom. No
+controls (PiP windows are too small to hit them); tapping the PiP
+expands the app back to full size.
+
+The activity declares `supportsPictureInPicture="true"` and
+`configChanges="screenSize|smallestScreenSize|screenLayout|orientation"`
+in the manifest so Android doesn't recreate the activity on the
+PiP transition.
+
 ## Wear OS companion
 
 The `wear/` module is a standalone Wear OS app (Wear OS 3+ /
