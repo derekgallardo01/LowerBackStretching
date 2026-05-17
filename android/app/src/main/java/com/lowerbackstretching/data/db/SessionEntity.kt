@@ -11,4 +11,6 @@ data class SessionEntity(
     val completedAtEpochDay: Long,
     val completedAtEpochMillis: Long,
     val durationSeconds: Int,
+    /** `SessionType.storageValue` — "program" / "single" / "routine". */
+    val type: String = "program",
 )

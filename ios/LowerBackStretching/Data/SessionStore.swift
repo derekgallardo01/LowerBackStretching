@@ -24,7 +24,12 @@ enum SessionStore {
     }
 
     static func record(programId: String, day: Int, durationSeconds: Int, in context: ModelContext) {
-        let record = SessionRecord(programId: programId, dayNumber: day, durationSeconds: durationSeconds)
+        let record = SessionRecord(
+            programId: programId,
+            dayNumber: day,
+            durationSeconds: durationSeconds,
+            type: SyntheticProgramId.type(for: programId)
+        )
         context.insert(record)
         try? context.save()
     }

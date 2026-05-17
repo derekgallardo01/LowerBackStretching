@@ -27,6 +27,7 @@ class SessionRepository(private val dao: SessionDao) {
                 completedAtEpochDay = LocalDate.now().toEpochDay(),
                 completedAtEpochMillis = now,
                 durationSeconds = durationSeconds,
+                type = SyntheticProgramId.typeFor(programId).storageValue,
             )
         )
     }

@@ -19,4 +19,20 @@ final class SyntheticProgramIdTests: XCTestCase {
             SyntheticProgramId.routine(uuid)
         )
     }
+
+    func testTypeForClassifiesEachPrefix() {
+        XCTAssertEqual(SyntheticProgramId.type(for: "single-cat-cow"), .single)
+        XCTAssertEqual(SyntheticProgramId.type(for: "routine-00000000-0000-0000-0000-000000000001"), .routine)
+        XCTAssertEqual(SyntheticProgramId.type(for: "lower-back-relief-7day"), .program)
+    }
+
+    func testSessionTypeFromStorageRoundTrips() {
+        for type in SessionType.allCases {
+            XCTAssertEqual(SessionType.fromStorage(type.storageValue), type)
+        }
+    }
+
+    func testSessionTypeFromStorageUnknownDefaultsToProgram() {
+        XCTAssertEqual(SessionType.fromStorage("nonsense"), .program)
+    }
 }
