@@ -2,6 +2,7 @@ package com.lowerbackstretching.ui.stretches
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,12 +20,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.BodyParts
-import com.lowerbackstretching.data.difficultyDisplay
 import com.lowerbackstretching.ui.AppViewModel
+import com.lowerbackstretching.ui.components.DifficultyDots
 import com.lowerbackstretching.ui.components.YouTubePlayerView
 
 
@@ -63,11 +65,18 @@ fun StretchDetailScreen(
                 modifier = Modifier.fillMaxWidth(),
                 autoplay = false,
             )
-            Text(
-                "${stretch.durationSeconds}s · ${stretch.difficultyDisplay}",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    "${stretch.durationSeconds}s",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Text("·", style = MaterialTheme.typography.labelLarge)
+                DifficultyDots(difficulty = stretch.difficulty)
+            }
             Text(
                 BodyParts.displayList(stretch.bodyParts),
                 style = MaterialTheme.typography.labelLarge,

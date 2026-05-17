@@ -14,9 +14,13 @@ struct StretchDetailView: View {
                     .aspectRatio(16.0 / 9.0, contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
 
-                Text("\(stretch.durationSeconds)s · \(stretch.difficultyDisplay)")
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(.tint)
+                HStack(spacing: 8) {
+                    Text("\(stretch.durationSeconds)s")
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.tint)
+                    Text("·").font(.caption.weight(.medium))
+                    DifficultyDots(difficulty: stretch.difficulty)
+                }
 
                 Text(BodyParts.displayList(stretch.bodyParts))
                     .font(.caption.weight(.medium))
