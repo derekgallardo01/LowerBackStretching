@@ -33,9 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.data.FlexibilityDelta
+import com.lowerbackstretching.core.FlexibilityDelta
 import com.lowerbackstretching.data.db.FlexibilityTestEntity
-import com.lowerbackstretching.data.flexibilityDelta
+import com.lowerbackstretching.core.flexibilityDelta
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.ScreenHeader
 import com.lowerbackstretching.ui.components.SectionHeader

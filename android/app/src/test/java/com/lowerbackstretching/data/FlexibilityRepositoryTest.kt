@@ -22,23 +22,6 @@ class FlexibilityRepositoryTest {
         assertThat(saved.shoulderReachCm).isNull()
     }
 
-    @Test
-    fun `flexibilityDelta returns null deltas when either snapshot is missing`() {
-        val now = FlexibilityTestEntity(recordedAtEpochMillis = 0, sitAndReachCm = 10f, toeTouchCm = null, shoulderReachCm = 5f)
-        assertThat(flexibilityDelta(now, null).sitAndReachCm).isNull()
-        assertThat(flexibilityDelta(null, now).toeTouchCm).isNull()
-    }
-
-    @Test
-    fun `flexibilityDelta subtracts per-metric and skips when one side is null`() {
-        val now  = FlexibilityTestEntity(recordedAtEpochMillis = 1, sitAndReachCm = 12f, toeTouchCm = null, shoulderReachCm = 7f)
-        val prev = FlexibilityTestEntity(recordedAtEpochMillis = 0, sitAndReachCm = 10f, toeTouchCm = 3f,   shoulderReachCm = null)
-        val delta = flexibilityDelta(now, prev)
-        assertThat(delta.sitAndReachCm).isEqualTo(2f)
-        assertThat(delta.toeTouchCm).isNull()
-        assertThat(delta.shoulderReachCm).isNull()
-    }
-
     private class FakeDao : FlexibilityTestDao {
         val inserted = mutableListOf<FlexibilityTestEntity>()
         private val rows = MutableStateFlow<List<FlexibilityTestEntity>>(emptyList())
