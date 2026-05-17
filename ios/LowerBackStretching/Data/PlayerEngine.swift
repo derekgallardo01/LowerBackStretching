@@ -3,7 +3,8 @@ import Combine
 
 /// Pure state machine for the stretch player — no SwiftUI dependency, so
 /// it's directly unit-testable. The view drives `tick()` on a one-second
-/// cadence and listens for `snapshot.finished`.
+/// cadence and listens for `finishedEvent` to record the session exactly
+/// once.
 final class PlayerEngine: ObservableObject {
 
     struct Snapshot: Equatable {
@@ -23,7 +24,14 @@ final class PlayerEngine: ObservableObject {
         }
     }
 
+    /// Set exactly once when the routine completes. Views observe this
+    /// (via `.onChange`) to record the session.
+    struct FinishedEvent: Equatable {
+        let totalDurationSeconds: Int
+    }
+
     @Published private(set) var snapshot: Snapshot
+    @Published private(set) var finishedEvent: FinishedEvent?
     let totalDurationSeconds: Int
 
     init(stretches: [Stretch]) {
@@ -37,8 +45,9 @@ final class PlayerEngine: ObservableObject {
         )
     }
 
-    /// Advance the clock by one second. Returns true if this tick caused the
-    /// routine to finish.
+    /// Advance the clock by one second. Returns true if this tick caused
+    /// the routine to finish. Callers don't need the return value for
+    /// session recording — observe `finishedEvent` instead.
     @discardableResult
     func tick() -> Bool {
         guard snapshot.running, !snapshot.finished else { return false }
@@ -73,6 +82,7 @@ final class PlayerEngine: ObservableObject {
         if nextIdx >= snapshot.stretches.count {
             snapshot.finished = true
             snapshot.running = false
+            finishedEvent = FinishedEvent(totalDurationSeconds: totalDurationSeconds)
             return true
         } else {
             snapshot.index = nextIdx

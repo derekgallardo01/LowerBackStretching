@@ -112,27 +112,25 @@ struct PlayerBody: View {
         }
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: engine.finishedEvent) { _, event in
+            guard let event else { return }
+            SessionStore.record(
+                programId: programId,
+                day: dayNumber,
+                durationSeconds: event.totalDurationSeconds,
+                in: modelContext
+            )
+        }
         .task {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
-                let finishedNow = engine.tick()
-                if finishedNow { recordSession() }
+                engine.tick()
             }
         }
     }
 
     private func skip() {
-        let finishedNow = engine.next()
-        if finishedNow { recordSession() }
-    }
-
-    private func recordSession() {
-        SessionStore.record(
-            programId: programId,
-            day: dayNumber,
-            durationSeconds: engine.totalDurationSeconds,
-            in: modelContext
-        )
+        engine.next()
     }
 }
 

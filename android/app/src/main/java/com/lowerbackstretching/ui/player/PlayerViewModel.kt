@@ -7,6 +7,7 @@ import com.lowerbackstretching.App
 import com.lowerbackstretching.data.SyntheticProgramId
 import com.lowerbackstretching.data.model.Stretch
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,9 +18,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 /**
- * Drives a [PlayerEngine] on a one-second tick and records a session to the
- * database when the routine finishes. Three `load*` entry points seed the
- * engine with different stretch sources.
+ * Drives a [PlayerEngine] on a one-second tick and records a session
+ * to the database when the engine emits its [PlayerEngine.FinishedEvent].
+ * Three `load*` entry points seed the engine with different stretch
+ * sources; recording always goes through the same Flow listener so the
+ * trigger can't drift between sources.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerViewModel(app: Application) : AndroidViewModel(app) {
@@ -34,6 +37,8 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     private var programId: String = ""
     private var dayNumber: Int = 1
     private var loaded: Boolean = false
+    private var tickerJob: Job? = null
+    private var finishedJob: Job? = null
 
     fun loadProgram(programId: String, dayNumber: Int) {
         if (loaded && this.programId == programId && this.dayNumber == dayNumber) return
@@ -67,35 +72,31 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     fun togglePlay() = _engine.value?.togglePlay()
 
     fun next() {
-        val engine = _engine.value ?: return
-        if (engine.next()) recordSession(engine.totalDurationSeconds)
+        _engine.value?.next()
     }
 
     fun previous() = _engine.value?.previous()
 
     private fun initEngine(stretches: List<Stretch>) {
         loaded = true
+        tickerJob?.cancel()
+        finishedJob?.cancel()
         val engine = PlayerEngine(stretches)
         _engine.value = engine
-        startTicker(engine)
-    }
-
-    private fun startTicker(engine: PlayerEngine) {
-        viewModelScope.launch {
+        tickerJob = viewModelScope.launch {
             while (true) {
                 delay(1000)
-                if (engine.tick()) recordSession(engine.totalDurationSeconds)
+                engine.tick()
             }
         }
-    }
-
-    private fun recordSession(durationSeconds: Int) {
-        viewModelScope.launch {
-            appCtx.sessionRepository.recordCompletion(
-                programId = programId,
-                day = dayNumber,
-                durationSeconds = durationSeconds,
-            )
+        finishedJob = viewModelScope.launch {
+            engine.finishedEvents.collect { event ->
+                appCtx.sessionRepository.recordCompletion(
+                    programId = programId,
+                    day = dayNumber,
+                    durationSeconds = event.totalDurationSeconds,
+                )
+            }
         }
     }
 }

@@ -1,15 +1,19 @@
 package com.lowerbackstretching.ui.player
 
 import com.lowerbackstretching.data.model.Stretch
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 /**
- * Pure state machine for the stretch player — no Android or coroutine
- * dependencies, so it's directly unit-testable. The viewmodel drives
- * [tick] on a one-second cadence and listens for [Snapshot.finished].
+ * Pure state machine for the stretch player — no Android dependency, so
+ * it's directly unit-testable. The viewmodel drives [tick] on a
+ * one-second cadence and listens for the [finishedEvents] flow to record
+ * the session exactly once.
  */
 class PlayerEngine(initialStretches: List<Stretch>) {
 
@@ -29,6 +33,9 @@ class PlayerEngine(initialStretches: List<Stretch>) {
             } ?: 0f
     }
 
+    /** Emitted exactly once when the routine completes. */
+    data class FinishedEvent(val totalDurationSeconds: Int)
+
     private val _state = MutableStateFlow(
         Snapshot(
             stretches = initialStretches,
@@ -40,11 +47,15 @@ class PlayerEngine(initialStretches: List<Stretch>) {
     )
     val state: StateFlow<Snapshot> = _state.asStateFlow()
 
+    private val _finishedEvents = MutableSharedFlow<FinishedEvent>(extraBufferCapacity = 1)
+    val finishedEvents: SharedFlow<FinishedEvent> = _finishedEvents.asSharedFlow()
+
     val totalDurationSeconds: Int = initialStretches.sumOf { it.durationSeconds }
 
     /**
-     * Advance the clock by one second. Returns true if this tick caused the
-     * routine to finish, so the caller can record the session.
+     * Advance the clock by one second. Returns true if this tick caused
+     * the routine to finish. Callers don't need to use the return value
+     * for session recording — subscribe to [finishedEvents] instead.
      */
     fun tick(): Boolean {
         val s = _state.value
@@ -83,6 +94,7 @@ class PlayerEngine(initialStretches: List<Stretch>) {
         val nextIdx = s.index + 1
         return if (nextIdx >= s.stretches.size) {
             _state.update { it.copy(finished = true, running = false) }
+            _finishedEvents.tryEmit(FinishedEvent(totalDurationSeconds))
             true
         } else {
             _state.update {

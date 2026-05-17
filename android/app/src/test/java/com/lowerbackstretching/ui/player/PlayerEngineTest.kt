@@ -2,6 +2,9 @@ package com.lowerbackstretching.ui.player
 
 import com.google.common.truth.Truth.assertThat
 import com.lowerbackstretching.data.model.Stretch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withTimeout
 import org.junit.Test
 
 class PlayerEngineTest {
@@ -167,5 +170,21 @@ class PlayerEngineTest {
         repeat(5) { finishedOnLast = engine.tick() }
         assertThat(finishedOnLast).isTrue()
         assertThat(engine.state.value.finished).isTrue()
+    }
+
+    @Test
+    fun finishedEvents_emits_once_with_total_duration_via_tick() = runTest {
+        val engine = PlayerEngine(listOf(stretch("a", 2), stretch("b", 3)))
+        repeat(5) { engine.tick() }
+        val event = withTimeout(1000) { engine.finishedEvents.first() }
+        assertThat(event.totalDurationSeconds).isEqualTo(5)
+    }
+
+    @Test
+    fun finishedEvents_emits_via_next() = runTest {
+        val engine = PlayerEngine(listOf(stretch("a", 10)))
+        engine.next()
+        val event = withTimeout(1000) { engine.finishedEvents.first() }
+        assertThat(event.totalDurationSeconds).isEqualTo(10)
     }
 }

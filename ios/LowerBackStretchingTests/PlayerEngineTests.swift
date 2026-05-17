@@ -140,4 +140,18 @@ final class PlayerEngineTests: XCTestCase {
         XCTAssertTrue(finishedOnLast)
         XCTAssertTrue(engine.snapshot.finished)
     }
+
+    func testFinishedEventFiresWithTotalDurationViaTick() {
+        let engine = PlayerEngine(stretches: [stretch("a", 2), stretch("b", 3)])
+        XCTAssertNil(engine.finishedEvent)
+        for _ in 0..<5 { _ = engine.tick() }
+        XCTAssertEqual(engine.finishedEvent?.totalDurationSeconds, 5)
+    }
+
+    func testFinishedEventFiresViaNext() {
+        let engine = PlayerEngine(stretches: [stretch("a", 10)])
+        XCTAssertNil(engine.finishedEvent)
+        _ = engine.next()
+        XCTAssertEqual(engine.finishedEvent?.totalDurationSeconds, 10)
+    }
 }
