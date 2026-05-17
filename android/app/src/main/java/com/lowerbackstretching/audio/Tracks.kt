@@ -8,7 +8,7 @@ package com.lowerbackstretching.audio
  * `resName` is looked up via `resources.getIdentifier(...)` at play
  * time — if the file is missing from `res/raw/`, the AudioController
  * silently falls back to no-op (the build still succeeds; the feature
- * just plays nothing). See `res/raw/README.md` for file requirements.
+ * just plays nothing). See `android/app/AUDIO_FILES.md` for file requirements.
  */
 
 enum class MusicTrack(
