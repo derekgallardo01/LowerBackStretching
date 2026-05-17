@@ -30,6 +30,22 @@ struct StretchDetailView: View {
 
                 Text(stretch.description).font(.body)
 
+                if let why = stretch.whyThisStretch {
+                    WhyThisStretchCard(text: why)
+                }
+
+                if let cards = stretch.educationalCards, !cards.isEmpty {
+                    SectionHeader("Learn more")
+                    ForEach(cards, id: \.title) { card in
+                        EducationalCardView(card: card)
+                    }
+                }
+
+                if let mistakes = stretch.mistakesToAvoid, !mistakes.isEmpty {
+                    SectionHeader("Mistakes to avoid")
+                    MistakesCard(mistakes: mistakes)
+                }
+
                 NavigationLink(value: PracticeTarget(stretchId: stretch.id)) {
                     Label("Practice this stretch", systemImage: "play.fill")
                         .frame(maxWidth: .infinity)
@@ -46,5 +62,52 @@ struct StretchDetailView: View {
         .navigationDestination(for: PracticeTarget.self) { target in
             SinglePlayerView(stretchId: target.stretchId)
         }
+    }
+}
+
+private struct WhyThisStretchCard: View {
+    let text: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Why this stretch").font(.subheadline.weight(.semibold))
+            Text(text).font(.body)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(Color.accentColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+private struct EducationalCardView: View {
+    let card: EducationalCard
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(card.title).font(.headline)
+            Text(card.body).font(.body)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 14))
+    }
+}
+
+private struct MistakesCard: View {
+    let mistakes: [String]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ForEach(mistakes, id: \.self) { mistake in
+                HStack(alignment: .top, spacing: 8) {
+                    Text("•")
+                    Text(mistake)
+                }
+                .font(.body)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 14))
     }
 }

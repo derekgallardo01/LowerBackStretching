@@ -57,4 +57,27 @@ final class ContentLoaderTests: XCTestCase {
         XCTAssertNotNil(store.program(id: firstProgram.id))
         XCTAssertNil(store.program(id: "nonexistent"))
     }
+
+    func testCatCowHasEducationalContent() {
+        let store = ContentStore()
+        let catCow = store.stretch(id: "cat-cow")!
+        XCTAssertNotNil(catCow.whyThisStretch)
+        XCTAssertNotNil(catCow.whatYouShouldFeel)
+        XCTAssertNotNil(catCow.educationalCards)
+        XCTAssertFalse(catCow.educationalCards!.isEmpty)
+        XCTAssertNotNil(catCow.mistakesToAvoid)
+        XCTAssertFalse(catCow.mistakesToAvoid!.isEmpty)
+    }
+
+    func testStretchesWithoutEducationalContentStillParse() {
+        // Pigeon wasn't enriched in the wave-6 first cut, so all the
+        // optional fields should be nil. Confirms the schema tolerates
+        // partial population without throwing.
+        let store = ContentStore()
+        let pigeon = store.stretch(id: "pigeon")!
+        XCTAssertNil(pigeon.whyThisStretch)
+        XCTAssertNil(pigeon.whatYouShouldFeel)
+        XCTAssertNil(pigeon.educationalCards)
+        XCTAssertNil(pigeon.mistakesToAvoid)
+    }
 }

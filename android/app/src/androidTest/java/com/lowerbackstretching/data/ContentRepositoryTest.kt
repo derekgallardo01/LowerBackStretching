@@ -70,4 +70,27 @@ class ContentRepositoryTest {
         assertThat(repo.program(firstProgram.id)).isEqualTo(firstProgram)
         assertThat(repo.program("nonexistent")).isNull()
     }
+
+    @Test
+    fun cat_cow_has_educational_content() {
+        val catCow = repo.stretch("cat-cow")!!
+        assertThat(catCow.whyThisStretch).isNotNull()
+        assertThat(catCow.whatYouShouldFeel).isNotNull()
+        assertThat(catCow.educationalCards).isNotNull()
+        assertThat(catCow.educationalCards!!).isNotEmpty()
+        assertThat(catCow.mistakesToAvoid).isNotNull()
+        assertThat(catCow.mistakesToAvoid!!).isNotEmpty()
+    }
+
+    @Test
+    fun stretches_without_educational_content_still_parse() {
+        // pigeon was not enriched in the wave-6 first cut, so all the
+        // optional fields should be null. This confirms the schema
+        // tolerates partial population without throwing.
+        val pigeon = repo.stretch("pigeon")!!
+        assertThat(pigeon.whyThisStretch).isNull()
+        assertThat(pigeon.whatYouShouldFeel).isNull()
+        assertThat(pigeon.educationalCards).isNull()
+        assertThat(pigeon.mistakesToAvoid).isNull()
+    }
 }

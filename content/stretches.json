@@ -6,7 +6,26 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "On hands and knees, alternate arching your spine up toward the ceiling and dropping your belly while looking up. Move with your breath.",
-    "youtubeId": "PLACEHOLDER_CAT_COW"
+    "youtubeId": "PLACEHOLDER_CAT_COW",
+    "whyThisStretch": "Mobilizes every vertebra of the spine and warms up the muscles around your lower back without loading them.",
+    "whatYouShouldFeel": "A gentle wave-like motion through your whole back. No sharp pinches at any point.",
+    "educationalCards": [
+      {
+        "title": "How it works",
+        "body": "Cat-Cow alternates between flexion (rounding) and extension (arching). This trains the small muscles between each vertebra to coordinate, restoring range of motion that's lost from sitting all day.",
+        "icon": "school"
+      },
+      {
+        "title": "Pair it with breath",
+        "body": "Inhale as you drop your belly into Cow. Exhale as you round into Cat. Match the speed of the movement to the length of your breath.",
+        "icon": "air"
+      }
+    ],
+    "mistakesToAvoid": [
+      "Letting your shoulders hike up to your ears — keep them broad and away from the neck.",
+      "Cranking your head back at the top — look forward and down, not straight up.",
+      "Going too fast. The slower you move, the more vertebrae participate."
+    ]
   },
   {
     "id": "child-pose",
@@ -15,7 +34,26 @@
     "durationSeconds": 60,
     "difficulty": "easy",
     "description": "Kneel, sit back on your heels, and fold forward with arms extended. Rest your forehead on the mat and breathe.",
-    "youtubeId": "PLACEHOLDER_CHILD_POSE"
+    "youtubeId": "PLACEHOLDER_CHILD_POSE",
+    "whyThisStretch": "A restorative pose that decompresses the lower back and opens the hips while you do almost nothing.",
+    "whatYouShouldFeel": "A spreading sensation across your low back and the tops of your shoulders. No knee pain.",
+    "educationalCards": [
+      {
+        "title": "Two variations",
+        "body": "Knees together compresses the belly and emphasizes the lower back. Knees wide (toes still touching) opens the inner hips and is gentler on the knees.",
+        "icon": "tune"
+      },
+      {
+        "title": "Use it as a reset",
+        "body": "Return to Child's Pose between any two harder stretches if you need a break. It's effectively impossible to overdo.",
+        "icon": "favorite"
+      }
+    ],
+    "mistakesToAvoid": [
+      "Forcing your forehead to the mat — rest it on a stacked fist or a pillow if it doesn't reach.",
+      "Holding tension in your shoulders. Let them drop and melt toward the floor.",
+      "Ignoring knee pain. Slide a folded blanket between your hamstrings and calves if your knees complain."
+    ]
   },
   {
     "id": "knee-to-chest",
@@ -24,7 +62,21 @@
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Lying on your back, pull one knee gently toward your chest. Hold, then switch sides.",
-    "youtubeId": "PLACEHOLDER_KNEE_TO_CHEST"
+    "youtubeId": "PLACEHOLDER_KNEE_TO_CHEST",
+    "whyThisStretch": "Lengthens the muscles of the lower back and glutes and gently mobilizes the sacroiliac joint.",
+    "whatYouShouldFeel": "A pull across your low back on the side of the bent knee, plus a stretch in the same-side glute.",
+    "educationalCards": [
+      {
+        "title": "Why one at a time",
+        "body": "Single-knee variants keep the other leg lengthened, which keeps tension out of the hip flexor and isolates the lower back better than the double-knee version.",
+        "icon": "tips_and_updates"
+      }
+    ],
+    "mistakesToAvoid": [
+      "Yanking the knee — use steady, gentle pressure with your hands.",
+      "Letting the lifted shoulder peel off the floor. Keep both shoulder blades grounded.",
+      "Holding your breath. Inhale to expand, exhale to draw the knee closer."
+    ]
   },
   {
     "id": "supine-twist",
@@ -33,7 +85,26 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lying on your back, drop both knees to one side while keeping shoulders flat. Hold, then switch.",
-    "youtubeId": "PLACEHOLDER_SUPINE_TWIST"
+    "youtubeId": "PLACEHOLDER_SUPINE_TWIST",
+    "whyThisStretch": "Twists the spine while gravity does most of the work, releasing tension from the lower back and outer hips.",
+    "whatYouShouldFeel": "A diagonal stretch from the dropped-knee side, across the low back, into the opposite shoulder.",
+    "educationalCards": [
+      {
+        "title": "The shoulder anchor",
+        "body": "The far-side shoulder peeling up is the most common compensation. Press it down before the knees drop — that's where the rotational stretch comes from.",
+        "icon": "compress"
+      },
+      {
+        "title": "Knee height matters",
+        "body": "Higher knees (90/90) emphasize the lumbar spine. Lower knees (closer to straight) emphasize the thoracic spine. Pick the height that targets where you're stiff.",
+        "icon": "height"
+      }
+    ],
+    "mistakesToAvoid": [
+      "Forcing the knees all the way to the floor on day one — let them rest on a pillow if they don't reach.",
+      "Cranking your head in the opposite direction. Let it follow the spine, not lead.",
+      "Bouncing in and out of the twist. Settle once and breathe."
+    ]
   },
   {
     "id": "pelvic-tilt",
@@ -42,7 +113,26 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lying on your back with knees bent, flatten your lower back into the floor by tilting your pelvis. Release and repeat.",
-    "youtubeId": "PLACEHOLDER_PELVIC_TILT"
+    "youtubeId": "PLACEHOLDER_PELVIC_TILT",
+    "whyThisStretch": "Teaches your deep core to control the pelvis — the prerequisite for almost every safe-back exercise.",
+    "whatYouShouldFeel": "A gentle pressing of your low back into the floor, driven from the belly, not the glutes.",
+    "educationalCards": [
+      {
+        "title": "Mostly a coordination drill",
+        "body": "Pelvic tilts barely look like anything but they're the foundation. Master this motion and stretches like Glute Bridge and Cat-Cow become far more effective.",
+        "icon": "school"
+      },
+      {
+        "title": "Less is more",
+        "body": "The motion is small — a couple of centimeters of pelvis tilt is plenty. Big visible movements usually mean you're recruiting the wrong muscles.",
+        "icon": "tune"
+      }
+    ],
+    "mistakesToAvoid": [
+      "Squeezing the glutes to drive the motion — that's a hip thrust, not a pelvic tilt.",
+      "Holding the breath. Exhale as you tilt the pelvis; inhale to release.",
+      "Lifting the hips off the floor. Only the pelvis tilts; the seat stays planted."
+    ]
   },
   {
     "id": "sphinx",

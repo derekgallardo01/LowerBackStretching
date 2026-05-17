@@ -11,6 +11,22 @@ data class Stretch(
     val difficulty: String,
     val description: String,
     val youtubeId: String,
+    /** A one-line summary of why this stretch helps. Optional. */
+    val whyThisStretch: String? = null,
+    /** Deeper how-to / anatomy / education cards shown on the detail screen. */
+    val educationalCards: List<EducationalCard>? = null,
+    /** Common mistakes the user should watch for. */
+    val mistakesToAvoid: List<String>? = null,
+    /** Body-feedback text shown as a small overlay during the player. */
+    val whatYouShouldFeel: String? = null,
+)
+
+@Serializable
+data class EducationalCard(
+    val title: String,
+    val body: String,
+    /** Optional Material icon name (filled set) for visual interest. */
+    val icon: String? = null,
 )
 
 @Serializable
