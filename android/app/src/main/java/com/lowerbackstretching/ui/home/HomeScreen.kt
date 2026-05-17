@@ -23,8 +23,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.calendar.scheduleStretchBreakIntent
 import com.lowerbackstretching.data.subtitle
 import com.lowerbackstretching.data.xpForSession
 import com.lowerbackstretching.data.xpProgress
@@ -47,6 +49,7 @@ fun HomeScreen(
     onOpenBodyDiagram: () -> Unit,
     vm: AppViewModel = viewModel(),
 ) {
+    val ctx = LocalContext.current
     val streak by vm.sessions.streak().collectAsState(initial = 0)
     val total by vm.sessions.count().collectAsState(initial = 0)
     val totalSeconds by vm.sessions.totalDurationSeconds().collectAsState(initial = 0)
@@ -116,12 +119,23 @@ fun HomeScreen(
             }
         }
         item {
-            QuickCard(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Tap where it hurts",
-                body = "Find a stretch by body area",
-                onClick = onOpenBodyDiagram,
-            )
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                QuickCard(
+                    modifier = Modifier.weight(1f),
+                    title = "Tap where it hurts",
+                    body = "Find a stretch by body area",
+                    onClick = onOpenBodyDiagram,
+                )
+                QuickCard(
+                    modifier = Modifier.weight(1f),
+                    title = "Schedule a break",
+                    body = "Add to your calendar",
+                    onClick = { ctx.startActivity(scheduleStretchBreakIntent()) },
+                )
+            }
         }
         item { SectionHeader("Programs") }
         items(vm.content.programs, key = { it.id }) { program ->

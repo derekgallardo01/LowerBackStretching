@@ -44,9 +44,18 @@ files break easily. Steps:
    Pasting the link into Safari on a device with the app installed
    will then prompt to open the app, fire `.onOpenURL`, and the
    import sheet appears.
-9. Build & Run on a simulator (notifications also work in the simulator since
-   iOS 16). HealthKit only works on real devices — the simulator returns
-   false for `isHealthDataAvailable()`.
+9. **Calendar write access (Wave 10 — "Schedule a break" on Home).**
+   Info.plist needs at least one of these (iOS 17+ accepts the first;
+   older versions need the second):
+     - `NSCalendarsWriteOnlyAccessUsageDescription` —
+       e.g. "Adds a stretching break event to your calendar."
+     - `NSCalendarsUsageDescription` — same string, older iOS.
+   No entitlement is needed; EventKit handles the rest. Without
+   these strings the system blocks the request and the sheet
+   dismisses without saving.
+10. Build & Run on a simulator (notifications also work in the simulator since
+    iOS 16). HealthKit only works on real devices — the simulator returns
+    false for `isHealthDataAvailable()`.
 
 ## Architecture
 

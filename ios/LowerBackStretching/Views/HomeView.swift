@@ -7,6 +7,7 @@ struct HomeView: View {
     @AppStorage(SettingsKeys.healthReadEnabled) private var healthReadEnabled: Bool = false
     @AppStorage(SettingsKeys.lastSessionEpochDay) private var lastSessionEpochDay: Int = 0
     @State private var stepsToday: Int?
+    @State private var showingCalendar: Bool = false
 
     private var completedDays: Set<Date> { SessionStore.completedDays(from: sessions) }
     private var streak: Int { SessionStore.streak(from: completedDays) }
@@ -58,10 +59,16 @@ struct HomeView: View {
                     }
                     .buttonStyle(.plain)
                 }
-                NavigationLink(value: Quick.bodyDiagram) {
-                    QuickCard(title: "Tap where it hurts", bodyText: "Find a stretch by body area")
+                HStack(spacing: 12) {
+                    NavigationLink(value: Quick.bodyDiagram) {
+                        QuickCard(title: "Tap where it hurts", bodyText: "Find a stretch by body area")
+                    }
+                    .buttonStyle(.plain)
+                    Button { showingCalendar = true } label: {
+                        QuickCard(title: "Schedule a break", bodyText: "Add to your calendar")
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
 
                 SectionHeader("Programs").padding(.top, 4)
 
@@ -103,6 +110,15 @@ struct HomeView: View {
                 HealthController.shared.readStepsToday { stepsToday = $0 }
             } else {
                 stepsToday = nil
+            }
+        }
+        .sheet(isPresented: $showingCalendar) {
+            CalendarEventComposer(
+                title: "Stretching break",
+                minutesFromNow: 15,
+                durationMinutes: 10
+            ) {
+                showingCalendar = false
             }
         }
     }
