@@ -23,6 +23,8 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
+import com.lowerbackstretching.core.DurationUnit
+import com.lowerbackstretching.core.formatDuration
 import com.lowerbackstretching.core.player.PlayerEngine
 import com.lowerbackstretching.wear.WatchContent
 import com.lowerbackstretching.wear.WearHaptics
@@ -81,7 +83,7 @@ fun WearPlayerScreen() {
                 maxLines = 2,
             )
             Text(
-                "${snapshot.remainingSeconds}s",
+                formatDuration(snapshot.remainingSeconds, DurationUnit.SECONDS),
                 style = MaterialTheme.typography.display2,
             )
             Text(
