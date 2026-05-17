@@ -44,7 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.LocalPictureInPictureHost
 import com.lowerbackstretching.core.DurationUnit
 import com.lowerbackstretching.core.bodyZonesForTags
-import com.lowerbackstretching.data.formatDuration
+import com.lowerbackstretching.core.formatDuration
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.anatomy.BodySilhouette
 import com.lowerbackstretching.ui.components.YouTubePlayerView

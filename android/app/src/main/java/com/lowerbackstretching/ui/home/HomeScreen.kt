@@ -25,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.data.subtitle
+import com.lowerbackstretching.core.subtitle
 import com.lowerbackstretching.core.xpForSession
 import com.lowerbackstretching.core.xpProgress
 import com.lowerbackstretching.health.shouldShowCooldown

@@ -1,15 +1,14 @@
-package com.lowerbackstretching.data
+package com.lowerbackstretching.core
 
-import com.lowerbackstretching.core.BodyParts
 import com.lowerbackstretching.core.model.Program
 import com.lowerbackstretching.core.model.ProgramDay
 import com.lowerbackstretching.core.model.Stretch
-import com.lowerbackstretching.data.db.CustomRoutineEntity
 
 /**
- * User-facing strings derived from models. Lives next to the model
- * layer so both [ContentRepository] consumers and Compose screens can
- * use them. Mirrors iOS `Stretch+Display.swift`.
+ * User-facing strings derived from the catalog models. Pure functions
+ * over :core types — the watch app and any future shared surface can
+ * call these without touching DataStore or Room. Mirrors iOS
+ * `Stretch+Display.swift`.
  */
 
 /** "Easy" (capitalized for display from the on-disk "easy"). */
@@ -50,6 +49,10 @@ val ProgramDay.headerTitle: String
 fun ProgramDay.subtitle(totalSeconds: Int): String =
     "${stretchIds.size} stretches · ${totalSeconds / 60} min"
 
-/** "5 stretches · 3 min" */
-fun CustomRoutineEntity.subtitle(totalSeconds: Int): String =
-    "${stretchIds.size} stretches · ${totalSeconds / 60} min"
+/**
+ * "5 stretches · 3 min" — pure helper for any UI row that knows the
+ * stretch count + a precomputed total duration. Used by custom-routine
+ * cards which have a Room-bound type living outside :core.
+ */
+fun stretchCountSubtitle(stretchCount: Int, totalSeconds: Int): String =
+    "$stretchCount stretches · ${totalSeconds / 60} min"

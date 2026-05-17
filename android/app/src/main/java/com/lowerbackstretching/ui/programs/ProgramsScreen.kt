@@ -27,8 +27,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.core.BodyParts.ALL
+import com.lowerbackstretching.core.stretchCountSubtitle
+import com.lowerbackstretching.core.subtitle
 import com.lowerbackstretching.data.db.CustomRoutineEntity
-import com.lowerbackstretching.data.subtitle
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.ChipsRow
 import com.lowerbackstretching.ui.components.InfoRow
@@ -78,7 +79,10 @@ fun ProgramsScreen(
                 items(customRoutines, key = { "custom-${it.id}" }) { routine ->
                     InfoRow(
                         title = routine.name,
-                        subtitle = routine.subtitle(vm.content.totalDurationSeconds(routine.stretchIds)),
+                        subtitle = stretchCountSubtitle(
+                            routine.stretchIds.size,
+                            vm.content.totalDurationSeconds(routine.stretchIds),
+                        ),
                         onClick = { onOpenCustomRoutine(routine.id) },
                         onLongClick = { actionsTarget = routine },
                     )

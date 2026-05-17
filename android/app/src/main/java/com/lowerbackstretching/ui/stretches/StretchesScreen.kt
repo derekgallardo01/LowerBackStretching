@@ -17,8 +17,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.collectAsState
 import com.lowerbackstretching.core.BodyParts
 import com.lowerbackstretching.core.DurationUnit
-import com.lowerbackstretching.data.filteredBy
-import com.lowerbackstretching.data.shortSubtitle
+import com.lowerbackstretching.core.filteredBy
+import com.lowerbackstretching.core.shortSubtitle
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.ChipsRow
 import com.lowerbackstretching.ui.components.InfoRow
