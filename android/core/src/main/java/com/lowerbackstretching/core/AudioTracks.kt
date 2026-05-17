@@ -1,14 +1,11 @@
 package com.lowerbackstretching.core
 
 /**
- * Catalogue of audio assets shipped with the app. Each entry maps a
- * persisted preference value to a `res/raw/` resource name and a
- * user-visible label.
- *
- * `resName` is looked up via `resources.getIdentifier(...)` at play
- * time — if the file is missing from `res/raw/`, the AudioController
- * silently falls back to no-op (the build still succeeds; the feature
- * just plays nothing). See `android/app/AUDIO_FILES.md` for file requirements.
+ * Catalogue of audio assets the app can play. Pure data — the Android
+ * `AudioController` in `:app/audio/` is the consumer that looks up
+ * `resName` via `resources.getIdentifier(...)` at play time, falling
+ * back to no-op when the matching file is missing from `res/raw/`. See
+ * `android/app/AUDIO_FILES.md` for the bundling contract.
  */
 
 enum class MusicTrack(
