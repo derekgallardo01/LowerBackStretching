@@ -69,6 +69,7 @@ struct PlayerBody: View {
     @AppStorage(SettingsKeys.ambientTrack) private var ambientTrackRaw: String = AmbientTrack.none.storageValue
     @AppStorage(SettingsKeys.ambientVolume) private var ambientVolume: Double = Double(AudioDefaults.ambientVolume)
     @AppStorage(SettingsKeys.chimeTrack) private var chimeTrackRaw: String = ChimeTrack.none.storageValue
+    @AppStorage(SettingsKeys.healthWriteEnabled) private var healthWriteEnabled: Bool = false
     private var unit: DurationUnit { DurationUnit.fromStorage(durationUnitRaw) }
 
     init(stretches: [Stretch], title: String, programId: String, dayNumber: Int) {
@@ -141,6 +142,11 @@ struct PlayerBody: View {
                     totalDays: program.days.count,
                     in: modelContext
                 )
+            }
+            if healthWriteEnabled {
+                let end = Date.now
+                let start = end.addingTimeInterval(-Double(event.totalDurationSeconds))
+                HealthController.shared.writeStretchingWorkout(start: start, end: end) { _ in }
             }
             InProgressStore.clear()
             if hapticsFinish { Haptics.finish() }

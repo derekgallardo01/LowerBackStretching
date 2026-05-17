@@ -43,6 +43,27 @@ a `signingConfigs.release` block to `app/build.gradle.kts`, then:
 - `ui/` — Compose screens (`home`, `programs`, `player`, `calendar`,
   `settings`) and the YouTube embed component.
 
+## Health Connect
+
+Wave 5 added an optional integration with Health Connect (Google's
+cross-app health data store).
+
+- Dependency: `androidx.health.connect:connect-client` (declared in
+  `libs.versions.toml`).
+- Permissions: `health.WRITE_EXERCISE` (to log stretching sessions)
+  and `health.READ_STEPS` (to suggest a cooldown after long walks).
+  Both declared in `AndroidManifest.xml` and gated behind user
+  toggles in Settings → Health Connect.
+- The toggles do nothing unless the device has the Health Connect
+  app installed. `HealthController.availability()` reports
+  `NotInstalled` / `ProviderUpdateRequired` / `Available` and the
+  Settings UI surfaces the right message.
+- On Android 14+, Health Connect ships as a system module; on older
+  devices users install it from the Play Store. The `<queries>` block
+  in the manifest lets us discover the provider on Android 13 and
+  below.
+- Test on a real device — the emulator doesn't bundle Health Connect.
+
 ## Notifications
 
 We use `AlarmManager.setRepeating` for the daily reminder. Android no longer

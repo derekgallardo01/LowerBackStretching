@@ -13,6 +13,8 @@ struct SettingsView: View {
     @AppStorage(SettingsKeys.ambientTrack) private var ambientTrackRaw: String = AmbientTrack.none.storageValue
     @AppStorage(SettingsKeys.ambientVolume) private var ambientVolume: Double = Double(AudioDefaults.ambientVolume)
     @AppStorage(SettingsKeys.chimeTrack) private var chimeTrackRaw: String = ChimeTrack.none.storageValue
+    @AppStorage(SettingsKeys.healthWriteEnabled) private var healthWriteEnabled: Bool = false
+    @AppStorage(SettingsKeys.healthReadEnabled) private var healthReadEnabled: Bool = false
 
     @State private var pickerDate: Date = .now
 
@@ -93,6 +95,23 @@ struct SettingsView: View {
                     ForEach(ChimeTrack.allCases, id: \.self) { t in
                         Text(t.displayName).tag(t)
                     }
+                }
+            }
+
+            Section(header: Text("Apple Health")) {
+                if HealthController.shared.isAvailable {
+                    Toggle("Write stretching workouts", isOn: $healthWriteEnabled)
+                        .onChange(of: healthWriteEnabled) { _, on in
+                            if on { HealthController.shared.requestAuthorization { _ in } }
+                        }
+                    Toggle("Read daily steps", isOn: $healthReadEnabled)
+                        .onChange(of: healthReadEnabled) { _, on in
+                            if on { HealthController.shared.requestAuthorization { _ in } }
+                        }
+                } else {
+                    Text("Apple Health isn't available on this device.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
 

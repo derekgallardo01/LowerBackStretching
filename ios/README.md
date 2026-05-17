@@ -24,8 +24,21 @@ files break easily. Steps:
    the app target.
 6. In the project's `Info` settings, add `NSUserActivityTypes` if you plan to
    add Siri shortcuts (optional). Local notifications need no Info.plist entry.
-7. Build & Run on a simulator (notifications also work in the simulator since
-   iOS 16).
+7. **HealthKit (Wave 5).** If you want the "Apple Health" toggles in
+   Settings to do anything:
+   - Project → Signing & Capabilities → **+ Capability → HealthKit**.
+     Leave "Clinical Health Records" and "Background Delivery" off.
+   - Info.plist: add string entries
+     - `NSHealthShareUsageDescription` — e.g. "Reads your daily step
+       count to suggest a cooldown stretch after long walks."
+     - `NSHealthUpdateUsageDescription` — e.g. "Logs your stretching
+       sessions as flexibility workouts in Apple Health."
+   Without the capability, `HKHealthStore.isHealthDataAvailable()`
+   returns false and the Settings section shows "Apple Health isn't
+   available on this device." instead of the toggles.
+8. Build & Run on a simulator (notifications also work in the simulator since
+   iOS 16). HealthKit only works on real devices — the simulator returns
+   false for `isHealthDataAvailable()`.
 
 ## Architecture
 

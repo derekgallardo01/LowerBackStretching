@@ -37,6 +37,8 @@ object PrefKeys {
     val LAST_SESSION_EPOCH_DAY = longPreferencesKey("last_session_epoch_day")
     val WEEKLY_GOAL = intPreferencesKey("weekly_goal")
     val MONTHLY_GOAL = intPreferencesKey("monthly_goal")
+    val HEALTH_WRITE_ENABLED = booleanPreferencesKey("health_write_enabled")
+    val HEALTH_READ_ENABLED = booleanPreferencesKey("health_read_enabled")
 }
 
 object GoalDefaults {
@@ -95,6 +97,8 @@ class Prefs(private val context: Context) {
     val lastSessionEpochDay: Flow<Long> = context.dataStore.data.map { it[PrefKeys.LAST_SESSION_EPOCH_DAY] ?: 0L }
     val weeklyGoal: Flow<Int> = context.dataStore.data.map { it[PrefKeys.WEEKLY_GOAL] ?: GoalDefaults.WEEKLY }
     val monthlyGoal: Flow<Int> = context.dataStore.data.map { it[PrefKeys.MONTHLY_GOAL] ?: GoalDefaults.MONTHLY }
+    val healthWriteEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.HEALTH_WRITE_ENABLED] ?: false }
+    val healthReadEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.HEALTH_READ_ENABLED] ?: false }
 
     internal suspend fun setReminder(enabled: Boolean, hour: Int, minute: Int) {
         context.dataStore.edit {
@@ -170,6 +174,14 @@ class Prefs(private val context: Context) {
 
     suspend fun setMonthlyGoal(target: Int) {
         context.dataStore.edit { it[PrefKeys.MONTHLY_GOAL] = target.coerceIn(1, 90) }
+    }
+
+    suspend fun setHealthWriteEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[PrefKeys.HEALTH_WRITE_ENABLED] = enabled }
+    }
+
+    suspend fun setHealthReadEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[PrefKeys.HEALTH_READ_ENABLED] = enabled }
     }
 
     /** Test helper — clears all keys so the next read returns defaults. */

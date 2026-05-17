@@ -8,6 +8,17 @@
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- Health Connect: opt-in writes for stretching sessions, opt-in reads
+         for daily step count. Both gated by user preferences in Settings. -->
+    <uses-permission android:name="android.permission.health.WRITE_EXERCISE" />
+    <uses-permission android:name="android.permission.health.READ_STEPS" />
+
+    <!-- Health Connect requires this query to discover the provider app on
+         Android 13 and below. -->
+    <queries>
+        <package android:name="com.google.android.apps.healthdata" />
+    </queries>
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -42,5 +53,20 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
+
+        <!-- Health Connect: privacy-policy activity intent filter so the
+             system can deep-link to "How is this data used?" from the
+             permission UI. Wire to MainActivity for now; replace with a
+             dedicated screen if richer copy is needed. -->
+        <activity-alias
+            android:name="ViewPermissionUsageActivity"
+            android:exported="true"
+            android:targetActivity=".MainActivity"
+            android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
+                <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
+            </intent-filter>
+        </activity-alias>
     </application>
 </manifest>

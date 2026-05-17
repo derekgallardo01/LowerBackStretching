@@ -8,6 +8,7 @@ import com.lowerbackstretching.data.Prefs
 import com.lowerbackstretching.data.ProgramProgressRepository
 import com.lowerbackstretching.data.SessionRepository
 import com.lowerbackstretching.data.db.AppDatabase
+import com.lowerbackstretching.health.HealthController
 import com.lowerbackstretching.notifications.NotificationChannels
 
 class App : Application() {
@@ -24,6 +25,7 @@ class App : Application() {
     val flexibilityRepository: FlexibilityRepository by lazy {
         FlexibilityRepository(database.flexibilityTestDao())
     }
+    val health: HealthController by lazy { HealthController(this) }
     val prefs: Prefs by lazy { Prefs(this) }
 
     override fun onCreate() {

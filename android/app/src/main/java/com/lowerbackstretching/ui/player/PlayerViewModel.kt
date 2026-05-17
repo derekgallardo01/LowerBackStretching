@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDate
 
 /**
@@ -156,6 +157,11 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
                     )
                 }
                 appCtx.prefs.setLastSessionEpochDay(LocalDate.now().toEpochDay())
+                if (appCtx.prefs.healthWriteEnabled.first()) {
+                    val end = Instant.now()
+                    val start = end.minusSeconds(event.totalDurationSeconds.toLong())
+                    appCtx.health.writeStretchingSession(start = start, end = end)
+                }
                 appCtx.prefs.clearInProgress()
                 if (appCtx.prefs.hapticsFinish.first()) Haptics.finish(appCtx)
             }

@@ -1,6 +1,7 @@
 package com.lowerbackstretching.ui.settings
 
 import android.app.TimePickerDialog
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ import com.lowerbackstretching.audio.ChimeTrack
 import com.lowerbackstretching.audio.MusicTrack
 import com.lowerbackstretching.data.DurationUnit
 import com.lowerbackstretching.data.ThemeMode
+import com.lowerbackstretching.health.HealthController
 import com.lowerbackstretching.notifications.applyReminder
 import com.lowerbackstretching.notifications.rememberNotificationPermissionAsk
 import com.lowerbackstretching.ui.AppViewModel
@@ -64,6 +66,12 @@ fun SettingsScreen(vm: AppViewModel = viewModel()) {
     val ambientTrack by vm.prefs.ambientTrack.collectAsState(initial = AmbientTrack.NONE)
     val ambientVolume by vm.prefs.ambientVolume.collectAsState(initial = 0.6f)
     val chimeTrack by vm.prefs.chimeTrack.collectAsState(initial = ChimeTrack.NONE)
+    val healthWrite by vm.prefs.healthWriteEnabled.collectAsState(initial = false)
+    val healthRead by vm.prefs.healthReadEnabled.collectAsState(initial = false)
+    val healthAvailability = remember { vm.health.availability() }
+    val healthLauncher = rememberLauncherForActivityResult(
+        contract = vm.health.permissionsContract()
+    ) { /* result is the granted Set<String>; flow re-emits the toggle state regardless. */ }
 
     fun applyReminder(enabled: Boolean, hour: Int, minute: Int) {
         if (enabled) askNotificationPermission()
@@ -117,6 +125,20 @@ fun SettingsScreen(vm: AppViewModel = viewModel()) {
             onAmbientVolumeChange = { scope.launch { vm.prefs.setAmbientVolume(it) } },
             chime = chimeTrack,
             onChimeChange = { scope.launch { vm.prefs.setChimeTrack(it) } },
+        )
+
+        HealthCard(
+            availability = healthAvailability,
+            write = healthWrite,
+            onWriteChange = { on ->
+                scope.launch { vm.prefs.setHealthWriteEnabled(on) }
+                if (on) healthLauncher.launch(HealthController.allPermissions)
+            },
+            read = healthRead,
+            onReadChange = { on ->
+                scope.launch { vm.prefs.setHealthReadEnabled(on) }
+                if (on) healthLauncher.launch(HealthController.allPermissions)
+            },
         )
 
         AboutCard()
@@ -330,6 +352,71 @@ private fun VolumeSlider(label: String, value: Float, onValueChange: (Float) -> 
     Column {
         Text(label, style = MaterialTheme.typography.bodyMedium)
         Slider(value = value, onValueChange = onValueChange, valueRange = 0f..1f)
+    }
+}
+
+@Composable
+private fun HealthCard(
+    availability: HealthController.Availability,
+    write: Boolean,
+    onWriteChange: (Boolean) -> Unit,
+    read: Boolean,
+    onReadChange: (Boolean) -> Unit,
+) {
+    Card(shape = RoundedCornerShape(16.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            SectionHeader("Health Connect", topPadding = 0.dp)
+            when (availability) {
+                HealthController.Availability.NotInstalled -> Text(
+                    "Install the Health Connect app to share stretching sessions with your other fitness apps.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                )
+                HealthController.Availability.ProviderUpdateRequired -> Text(
+                    "Health Connect needs an update. Open the Play Store to install the latest version.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                )
+                HealthController.Availability.Available -> {
+                    HealthToggleRow(
+                        title = "Write stretching sessions",
+                        subtitle = "Adds each completed session to Health Connect.",
+                        checked = write,
+                        onChange = onWriteChange,
+                    )
+                    HealthToggleRow(
+                        title = "Read daily steps",
+                        subtitle = "Suggests a cooldown stretch after long walks.",
+                        checked = read,
+                        onChange = onReadChange,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HealthToggleRow(
+    title: String,
+    subtitle: String,
+    checked: Boolean,
+    onChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.padding(end = 12.dp)) {
+            Text(title, style = MaterialTheme.typography.titleSmall)
+            Text(
+                subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            )
+        }
+        Switch(checked = checked, onCheckedChange = onChange)
     }
 }
 

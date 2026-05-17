@@ -31,6 +31,9 @@ enum SettingsKeys {
 
     static let weeklyGoal = "weekly_goal"
     static let monthlyGoal = "monthly_goal"
+
+    static let healthWriteEnabled = "health_write_enabled"
+    static let healthReadEnabled = "health_read_enabled"
 }
 
 enum GoalDefaults {
