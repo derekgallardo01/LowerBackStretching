@@ -43,59 +43,55 @@ jobs:
         with:
           gradle-version: '8.7'
 
-      # Each gradle invocation tees stdout+stderr to a per-step log
-      # file. On step failure the next step prints the file's tail to
-      # the run summary so the actual Kotlin error is visible in the
-      # GitHub Actions UI without having to download artifacts.
+      # Each gradle invocation: if it fails, print the Kotlin error
+      # lines from its captured stdout BEFORE re-exiting. The errors
+      # then appear at the BOTTOM of the failing step (where the user
+      # actually looks), as ::error:: annotations, AND in the run
+      # summary. Three places — no way to miss them.
       - name: Compile :core (main + test)
-        id: compile_core
         run: |
-          set -o pipefail
           gradle :core:compileKotlin :core:compileTestKotlin \
             --stacktrace --console=plain 2>&1 | tee /tmp/core.log
+          rc=${PIPESTATUS[0]}
+          if [ $rc -ne 0 ]; then bash $GITHUB_WORKSPACE/.github/scripts/print-kotlin-errors.sh /tmp/core.log; fi
+          exit $rc
 
       - name: Compile :app (debug + test)
-        id: compile_app
         run: |
-          set -o pipefail
           gradle :app:compileDebugKotlin :app:compileDebugUnitTestKotlin \
             --stacktrace --console=plain 2>&1 | tee /tmp/app.log
+          rc=${PIPESTATUS[0]}
+          if [ $rc -ne 0 ]; then bash $GITHUB_WORKSPACE/.github/scripts/print-kotlin-errors.sh /tmp/app.log; fi
+          exit $rc
 
       - name: Compile :wear (debug + test)
-        id: compile_wear
         run: |
-          set -o pipefail
           gradle :wear:compileDebugKotlin :wear:compileDebugUnitTestKotlin \
             --stacktrace --console=plain 2>&1 | tee /tmp/wear.log
+          rc=${PIPESTATUS[0]}
+          if [ $rc -ne 0 ]; then bash $GITHUB_WORKSPACE/.github/scripts/print-kotlin-errors.sh /tmp/wear.log; fi
+          exit $rc
 
       - name: Run :core unit tests
-        run: gradle :core:test --stacktrace --console=plain 2>&1 | tee /tmp/core-test.log
+        run: |
+          gradle :core:test --stacktrace --console=plain 2>&1 | tee /tmp/core-test.log
+          rc=${PIPESTATUS[0]}
+          if [ $rc -ne 0 ]; then bash $GITHUB_WORKSPACE/.github/scripts/print-kotlin-errors.sh /tmp/core-test.log; fi
+          exit $rc
 
       - name: Run :app unit tests
-        run: gradle :app:testDebugUnitTest --stacktrace --console=plain 2>&1 | tee /tmp/app-test.log
+        run: |
+          gradle :app:testDebugUnitTest --stacktrace --console=plain 2>&1 | tee /tmp/app-test.log
+          rc=${PIPESTATUS[0]}
+          if [ $rc -ne 0 ]; then bash $GITHUB_WORKSPACE/.github/scripts/print-kotlin-errors.sh /tmp/app-test.log; fi
+          exit $rc
 
       - name: Run :wear unit tests
-        run: gradle :wear:testDebugUnitTest --stacktrace --console=plain 2>&1 | tee /tmp/wear-test.log
-
-      - name: Echo errors to job summary
-        if: failure()
         run: |
-          {
-            echo "## Kotlin compile / test errors"
-            for f in /tmp/core.log /tmp/app.log /tmp/wear.log \
-                    /tmp/core-test.log /tmp/app-test.log /tmp/wear-test.log; do
-              [ -f "$f" ] || continue
-              # Lines the Kotlin compiler / Gradle uses for compile errors.
-              hits=$(grep -E "^e: |error:|FAILED|> Task.*FAILED" "$f" || true)
-              if [ -n "$hits" ]; then
-                echo ""
-                echo "### $f"
-                echo '```'
-                echo "$hits" | head -80
-                echo '```'
-              fi
-            done
-          } >> "$GITHUB_STEP_SUMMARY"
+          gradle :wear:testDebugUnitTest --stacktrace --console=plain 2>&1 | tee /tmp/wear-test.log
+          rc=${PIPESTATUS[0]}
+          if [ $rc -ne 0 ]; then bash $GITHUB_WORKSPACE/.github/scripts/print-kotlin-errors.sh /tmp/wear-test.log; fi
+          exit $rc
 
       - name: Upload test reports
         if: failure()
