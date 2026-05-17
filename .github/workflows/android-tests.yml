@@ -43,6 +43,9 @@ jobs:
         with:
           gradle-version: '8.7'
 
+      - name: Run :core unit tests
+        run: gradle :core:test --stacktrace
+
       - name: Run :app unit tests
         run: gradle :app:testDebugUnitTest --stacktrace
 
@@ -55,6 +58,7 @@ jobs:
         with:
           name: unit-test-reports
           path: |
+            android/core/build/reports/tests/
             android/app/build/reports/tests/
             android/wear/build/reports/tests/
           retention-days: 14
