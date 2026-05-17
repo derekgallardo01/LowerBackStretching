@@ -17,7 +17,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lowerbackstretching.data.Prefs
+import com.lowerbackstretching.ui.achievements.AchievementsScreen
 import com.lowerbackstretching.ui.calendar.CalendarScreen
+import com.lowerbackstretching.ui.goals.GoalsScreen
 import com.lowerbackstretching.ui.home.HomeScreen
 import com.lowerbackstretching.ui.onboarding.OnboardingScreen
 import com.lowerbackstretching.ui.player.CustomRoutinePlayerScreen
@@ -79,7 +81,17 @@ private fun AppRoot() {
             modifier = Modifier.padding(inner),
         ) {
             composable(Tab.Home.path) {
-                HomeScreen(onOpenProgram = { id -> nav.navigate(Dest.program(id)) })
+                HomeScreen(
+                    onOpenProgram = { id -> nav.navigate(Dest.program(id)) },
+                    onOpenAchievements = { nav.navigate(Dest.achievements) },
+                    onOpenGoals = { nav.navigate(Dest.goals) },
+                )
+            }
+            composable(Dest.achievements) {
+                AchievementsScreen(onBack = { nav.popBackStack() })
+            }
+            composable(Dest.goals) {
+                GoalsScreen(onBack = { nav.popBackStack() })
             }
             composable(Tab.Programs.path) {
                 ProgramsScreen(

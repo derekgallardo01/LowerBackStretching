@@ -35,6 +35,13 @@ object PrefKeys {
     val AMBIENT_VOLUME = floatPreferencesKey("ambient_volume")
     val CHIME_TRACK = stringPreferencesKey("chime_track")
     val LAST_SESSION_EPOCH_DAY = longPreferencesKey("last_session_epoch_day")
+    val WEEKLY_GOAL = intPreferencesKey("weekly_goal")
+    val MONTHLY_GOAL = intPreferencesKey("monthly_goal")
+}
+
+object GoalDefaults {
+    const val WEEKLY = 3
+    const val MONTHLY = 12
 }
 
 object ReminderDefaults {
@@ -86,6 +93,8 @@ class Prefs(private val context: Context) {
     val ambientVolume: Flow<Float> = context.dataStore.data.map { it[PrefKeys.AMBIENT_VOLUME] ?: AudioDefaults.AMBIENT_VOLUME }
     val chimeTrack: Flow<ChimeTrack> = context.dataStore.data.map { ChimeTrack.fromStorage(it[PrefKeys.CHIME_TRACK]) }
     val lastSessionEpochDay: Flow<Long> = context.dataStore.data.map { it[PrefKeys.LAST_SESSION_EPOCH_DAY] ?: 0L }
+    val weeklyGoal: Flow<Int> = context.dataStore.data.map { it[PrefKeys.WEEKLY_GOAL] ?: GoalDefaults.WEEKLY }
+    val monthlyGoal: Flow<Int> = context.dataStore.data.map { it[PrefKeys.MONTHLY_GOAL] ?: GoalDefaults.MONTHLY }
 
     internal suspend fun setReminder(enabled: Boolean, hour: Int, minute: Int) {
         context.dataStore.edit {
@@ -153,6 +162,14 @@ class Prefs(private val context: Context) {
 
     suspend fun setLastSessionEpochDay(epochDay: Long) {
         context.dataStore.edit { it[PrefKeys.LAST_SESSION_EPOCH_DAY] = epochDay }
+    }
+
+    suspend fun setWeeklyGoal(target: Int) {
+        context.dataStore.edit { it[PrefKeys.WEEKLY_GOAL] = target.coerceIn(1, 21) }
+    }
+
+    suspend fun setMonthlyGoal(target: Int) {
+        context.dataStore.edit { it[PrefKeys.MONTHLY_GOAL] = target.coerceIn(1, 90) }
     }
 
     /** Test helper — clears all keys so the next read returns defaults. */

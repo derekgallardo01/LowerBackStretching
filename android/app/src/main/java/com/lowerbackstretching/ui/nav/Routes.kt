@@ -43,4 +43,7 @@ object Dest {
 
     const val routinePlayerTemplate = "routine/{id}/play"
     fun routinePlayer(routineId: Long) = "routine/$routineId/play"
+
+    const val achievements = "achievements"
+    const val goals = "goals"
 }

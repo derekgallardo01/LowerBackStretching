@@ -15,6 +15,10 @@ class SessionRepository(private val dao: SessionDao) {
 
     fun streak(): Flow<Int> = completedDays().map { computeStreak(it, LocalDate.now()) }
 
+    fun longestStreak(): Flow<Int> = completedDays().map { longestStreak(it) }
+
+    fun totalDurationSeconds(): Flow<Int> = dao.totalDurationSeconds().map { it ?: 0 }
+
     fun recent(limit: Int = 20): Flow<List<SessionEntity>> =
         dao.recent(limit)
 

@@ -28,6 +28,14 @@ enum SettingsKeys {
     /// recent recorded session. Smart-reminder gate reads this on
     /// notification delivery.
     static let lastSessionEpochDay = "last_session_epoch_day"
+
+    static let weeklyGoal = "weekly_goal"
+    static let monthlyGoal = "monthly_goal"
+}
+
+enum GoalDefaults {
+    static let weekly = 3
+    static let monthly = 12
 }
 
 /// Days since 1970-01-01 in the user's current calendar. Used for

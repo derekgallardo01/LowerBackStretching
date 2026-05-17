@@ -25,4 +25,7 @@ interface SessionDao {
 
     @Query("SELECT COUNT(*) FROM sessions")
     fun count(): Flow<Int>
+
+    @Query("SELECT SUM(durationSeconds) FROM sessions")
+    fun totalDurationSeconds(): Flow<Int?>
 }
