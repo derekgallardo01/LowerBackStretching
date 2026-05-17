@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -104,11 +105,13 @@ fun FlexibilityScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
             }
 
             if (history.isNotEmpty()) {
-                item { SectionHeader("History") }
                 val latest = history.first()
                 val previous = history.drop(1).firstOrNull()
-                val delta = remember(latest, previous) { flexibilityDelta(latest, previous) }
-                item { LatestCard(latest = latest, delta = delta) }
+                item { SectionHeader("History") }
+                item {
+                    val delta = remember(latest, previous) { flexibilityDelta(latest, previous) }
+                    LatestCard(latest = latest, delta = delta)
+                }
                 if (history.size > 1) {
                     item { SectionHeader("Earlier", topPadding = 8.dp) }
                     items(history.drop(1)) { row -> HistoryRow(row) }
