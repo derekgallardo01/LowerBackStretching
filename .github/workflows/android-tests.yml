@@ -43,6 +43,17 @@ jobs:
         with:
           gradle-version: '8.7'
 
+      # Explicit compile steps surface Kotlin errors directly in the
+      # failing step's log instead of buried inside the test task.
+      - name: Compile :core (main + test)
+        run: gradle :core:compileKotlin :core:compileTestKotlin --stacktrace --info
+
+      - name: Compile :app (debug + test)
+        run: gradle :app:compileDebugKotlin :app:compileDebugUnitTestKotlin --stacktrace --info
+
+      - name: Compile :wear (debug + test)
+        run: gradle :wear:compileDebugKotlin :wear:compileDebugUnitTestKotlin --stacktrace --info
+
       - name: Run :core unit tests
         run: gradle :core:test --stacktrace
 
