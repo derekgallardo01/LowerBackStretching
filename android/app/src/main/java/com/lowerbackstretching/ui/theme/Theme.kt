@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import com.lowerbackstretching.data.ThemeMode
 
 private val LightColors = lightColorScheme(
     primary = Sage40,
@@ -32,9 +33,14 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun AppTheme(
-    dark: Boolean = isSystemInDarkTheme(),
+    themeMode: ThemeMode = ThemeMode.SYSTEM,
     content: @Composable () -> Unit,
 ) {
+    val dark = when (themeMode) {
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+    }
     MaterialTheme(
         colorScheme = if (dark) DarkColors else LightColors,
         typography = AppTypography,

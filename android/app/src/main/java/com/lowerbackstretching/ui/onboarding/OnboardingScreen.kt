@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.ReminderDefaults
 import com.lowerbackstretching.notifications.applyReminder
+import com.lowerbackstretching.notifications.rememberNotificationPermissionAsk
 import com.lowerbackstretching.ui.AppViewModel
 import kotlinx.coroutines.launch
 
@@ -42,11 +43,13 @@ fun OnboardingScreen(
 ) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
+    val askNotificationPermission = rememberNotificationPermissionAsk()
     val pages = onboardingPages
     val pager = rememberPagerState(pageCount = { pages.size })
     val isLast = pager.currentPage == pages.size - 1
 
     fun finish(turnOnReminders: Boolean) {
+        if (turnOnReminders) askNotificationPermission()
         scope.launch {
             if (turnOnReminders) {
                 vm.prefs.applyReminder(
