@@ -14,11 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,8 +52,9 @@ import com.lowerbackstretching.ui.components.YouTubePlayerView
 /**
  * The shared player UI used by all three [PlayerScreen] entry points.
  * Reads `vm.state` and renders the current stretch, progress bar, and
- * controls. Renders [FinishedView] once the routine completes. Holds
- * the screen on and locks portrait orientation while visible.
+ * controls. Delegates the PiP layout to [PipPlayerLayout] and the
+ * completion screen to [FinishedView]. Holds the screen on and locks
+ * portrait orientation while visible.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -195,40 +196,6 @@ private fun KeepScreenOnAndLockPortrait() {
     }
 }
 
-/**
- * Compact layout shown while the activity is in Picture-in-Picture
- * mode. PiP windows are too small for controls — the user taps the
- * PiP to expand back.
- */
-@Composable
-private fun PipPlayerLayout(videoId: String, remainingSeconds: Int, progress: Float) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        YouTubePlayerView(videoId = videoId, modifier = Modifier.fillMaxSize())
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth(),
-        ) {
-            Text(
-                "${remainingSeconds}s",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(8.dp),
-            )
-            ThinProgressBar(progress = progress)
-        }
-    }
-}
-
-@Composable
-private fun ThinProgressBar(progress: Float) {
-    LinearProgressIndicator(
-        progress = { progress },
-        modifier = Modifier.fillMaxWidth().height(3.dp),
-        color = MaterialTheme.colorScheme.secondary,
-        trackColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
-    )
-}
-
 @Composable
 private fun WhatYouShouldFeelOverlay(text: String) {
     Surface(
@@ -246,20 +213,6 @@ private fun WhatYouShouldFeelOverlay(text: String) {
                 Text("What you should feel", style = MaterialTheme.typography.labelMedium)
                 Text(text, style = MaterialTheme.typography.bodyMedium)
             }
-        }
-    }
-}
-
-@Composable
-private fun FinishedView(modifier: Modifier, onDone: () -> Unit) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Text("Nice work.", style = MaterialTheme.typography.headlineLarge)
-            Text("Session logged.", style = MaterialTheme.typography.bodyLarge)
-            Button(onClick = onDone) { Text("Done") }
         }
     }
 }
