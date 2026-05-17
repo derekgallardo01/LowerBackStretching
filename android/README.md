@@ -43,6 +43,28 @@ a `signingConfigs.release` block to `app/build.gradle.kts`, then:
 - `ui/` — Compose screens (`home`, `programs`, `player`, `calendar`,
   `settings`) and the YouTube embed component.
 
+## Wear OS companion
+
+The `wear/` module is a standalone Wear OS app (Wear OS 3+ /
+API 30+) that runs a stripped-down 5-stretch routine bundled in
+its own `assets/watch_routine.json`. It doesn't talk to the phone
+yet — every watch is self-contained — but pairs naturally with the
+phone app because both share the same `applicationId`.
+
+Build & install:
+
+```sh
+./gradlew :wear:assembleDebug
+./gradlew :wear:installDebug   # to a connected Wear OS device or emulator
+```
+
+The watch app reuses the same launcher icon as the phone but ships
+its own `WearMainActivity` (no shared activity / no Data Layer API
+yet — that's a follow-up). The pure state machine in
+`wear/.../WearPlayerEngine.kt` mirrors `app/.../PlayerEngine.kt`
+line-for-line; if drift becomes painful, extract both into a
+`:core` library module.
+
 ## Health Connect
 
 Wave 5 added an optional integration with Health Connect (Google's
