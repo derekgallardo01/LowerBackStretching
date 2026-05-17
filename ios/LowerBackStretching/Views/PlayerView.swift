@@ -63,6 +63,11 @@ struct PlayerBody: View {
     @AppStorage(SettingsKeys.hapticsTransitions) private var hapticsTransitions: Bool = true
     @AppStorage(SettingsKeys.hapticsFinish) private var hapticsFinish: Bool = true
     @AppStorage(SettingsKeys.durationUnit) private var durationUnitRaw: String = DurationUnit.seconds.storageValue
+    @AppStorage(SettingsKeys.musicTrack) private var musicTrackRaw: String = MusicTrack.none.storageValue
+    @AppStorage(SettingsKeys.musicVolume) private var musicVolume: Double = Double(AudioDefaults.musicVolume)
+    @AppStorage(SettingsKeys.ambientTrack) private var ambientTrackRaw: String = AmbientTrack.none.storageValue
+    @AppStorage(SettingsKeys.ambientVolume) private var ambientVolume: Double = Double(AudioDefaults.ambientVolume)
+    @AppStorage(SettingsKeys.chimeTrack) private var chimeTrackRaw: String = ChimeTrack.none.storageValue
     private var unit: DurationUnit { DurationUnit.fromStorage(durationUnitRaw) }
 
     init(stretches: [Stretch], title: String, programId: String, dayNumber: Int) {
@@ -137,7 +142,12 @@ struct PlayerBody: View {
                 InProgressSession(programId: programId, dayNumber: dayNumber, index: newValue)
             )
             if hapticsTransitions { Haptics.short() }
+            AudioController.shared.playChime(ChimeTrack.fromStorage(chimeTrackRaw))
         }
+        .onChange(of: musicTrackRaw) { _, _ in applyMusic() }
+        .onChange(of: musicVolume) { _, _ in applyMusic() }
+        .onChange(of: ambientTrackRaw) { _, _ in applyAmbient() }
+        .onChange(of: ambientVolume) { _, _ in applyAmbient() }
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = true
             // Persist resume point on first frame too (covers force-kill
@@ -145,8 +155,13 @@ struct PlayerBody: View {
             InProgressStore.save(
                 InProgressSession(programId: programId, dayNumber: dayNumber, index: engine.snapshot.index)
             )
+            applyMusic()
+            applyAmbient()
         }
-        .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
+        .onDisappear {
+            UIApplication.shared.isIdleTimerDisabled = false
+            AudioController.shared.stopAll()
+        }
         .task {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 1_000_000_000)
@@ -157,6 +172,20 @@ struct PlayerBody: View {
 
     private func skip() {
         engine.next()
+    }
+
+    private func applyMusic() {
+        AudioController.shared.setMusic(
+            MusicTrack.fromStorage(musicTrackRaw),
+            volume: Float(musicVolume)
+        )
+    }
+
+    private func applyAmbient() {
+        AudioController.shared.setAmbient(
+            AmbientTrack.fromStorage(ambientTrackRaw),
+            volume: Float(ambientVolume)
+        )
     }
 }
 

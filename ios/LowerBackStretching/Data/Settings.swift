@@ -17,6 +17,12 @@ enum SettingsKeys {
 
     static let hapticsTransitions = "haptics_transitions"
     static let hapticsFinish = "haptics_finish"
+
+    static let musicTrack = "music_track"
+    static let musicVolume = "music_volume"
+    static let ambientTrack = "ambient_track"
+    static let ambientVolume = "ambient_volume"
+    static let chimeTrack = "chime_track"
 }
 
 enum ThemeMode: String, CaseIterable {

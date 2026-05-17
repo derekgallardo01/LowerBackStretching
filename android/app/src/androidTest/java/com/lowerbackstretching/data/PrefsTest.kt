@@ -3,6 +3,10 @@ package com.lowerbackstretching.data
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import com.lowerbackstretching.audio.AmbientTrack
+import com.lowerbackstretching.audio.AudioDefaults
+import com.lowerbackstretching.audio.ChimeTrack
+import com.lowerbackstretching.audio.MusicTrack
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -69,5 +73,37 @@ class PrefsTest {
         prefs.saveInProgress(InProgressSession("p1", 1, 0))
         prefs.saveInProgress(InProgressSession("p2", 4, 3))
         assertThat(prefs.inProgressSession.first()).isEqualTo(InProgressSession("p2", 4, 3))
+    }
+
+    @Test
+    fun audio_defaults_when_nothing_written() = runBlocking {
+        assertThat(prefs.musicTrack.first()).isEqualTo(MusicTrack.NONE)
+        assertThat(prefs.ambientTrack.first()).isEqualTo(AmbientTrack.NONE)
+        assertThat(prefs.chimeTrack.first()).isEqualTo(ChimeTrack.NONE)
+        assertThat(prefs.musicVolume.first()).isEqualTo(AudioDefaults.MUSIC_VOLUME)
+        assertThat(prefs.ambientVolume.first()).isEqualTo(AudioDefaults.AMBIENT_VOLUME)
+    }
+
+    @Test
+    fun audio_track_and_volume_round_trip() = runBlocking {
+        prefs.setMusicTrack(MusicTrack.LOFI)
+        prefs.setMusicVolume(0.25f)
+        prefs.setAmbientTrack(AmbientTrack.OCEAN)
+        prefs.setAmbientVolume(0.9f)
+        prefs.setChimeTrack(ChimeTrack.BELL)
+
+        assertThat(prefs.musicTrack.first()).isEqualTo(MusicTrack.LOFI)
+        assertThat(prefs.musicVolume.first()).isEqualTo(0.25f)
+        assertThat(prefs.ambientTrack.first()).isEqualTo(AmbientTrack.OCEAN)
+        assertThat(prefs.ambientVolume.first()).isEqualTo(0.9f)
+        assertThat(prefs.chimeTrack.first()).isEqualTo(ChimeTrack.BELL)
+    }
+
+    @Test
+    fun audio_volume_clamps_to_unit_range() = runBlocking {
+        prefs.setMusicVolume(-1f)
+        assertThat(prefs.musicVolume.first()).isEqualTo(0f)
+        prefs.setMusicVolume(2f)
+        assertThat(prefs.musicVolume.first()).isEqualTo(1f)
     }
 }

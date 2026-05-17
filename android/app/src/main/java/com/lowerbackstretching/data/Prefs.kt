@@ -3,9 +3,14 @@ package com.lowerbackstretching.data
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.lowerbackstretching.audio.AmbientTrack
+import com.lowerbackstretching.audio.AudioDefaults
+import com.lowerbackstretching.audio.ChimeTrack
+import com.lowerbackstretching.audio.MusicTrack
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -23,6 +28,11 @@ object PrefKeys {
     val IN_PROGRESS_PROGRAM_ID = stringPreferencesKey("in_progress_program_id")
     val IN_PROGRESS_DAY = intPreferencesKey("in_progress_day")
     val IN_PROGRESS_INDEX = intPreferencesKey("in_progress_index")
+    val MUSIC_TRACK = stringPreferencesKey("music_track")
+    val MUSIC_VOLUME = floatPreferencesKey("music_volume")
+    val AMBIENT_TRACK = stringPreferencesKey("ambient_track")
+    val AMBIENT_VOLUME = floatPreferencesKey("ambient_volume")
+    val CHIME_TRACK = stringPreferencesKey("chime_track")
 }
 
 object ReminderDefaults {
@@ -68,6 +78,11 @@ class Prefs(private val context: Context) {
             index = prefs[PrefKeys.IN_PROGRESS_INDEX] ?: 0,
         )
     }
+    val musicTrack: Flow<MusicTrack> = context.dataStore.data.map { MusicTrack.fromStorage(it[PrefKeys.MUSIC_TRACK]) }
+    val musicVolume: Flow<Float> = context.dataStore.data.map { it[PrefKeys.MUSIC_VOLUME] ?: AudioDefaults.MUSIC_VOLUME }
+    val ambientTrack: Flow<AmbientTrack> = context.dataStore.data.map { AmbientTrack.fromStorage(it[PrefKeys.AMBIENT_TRACK]) }
+    val ambientVolume: Flow<Float> = context.dataStore.data.map { it[PrefKeys.AMBIENT_VOLUME] ?: AudioDefaults.AMBIENT_VOLUME }
+    val chimeTrack: Flow<ChimeTrack> = context.dataStore.data.map { ChimeTrack.fromStorage(it[PrefKeys.CHIME_TRACK]) }
 
     internal suspend fun setReminder(enabled: Boolean, hour: Int, minute: Int) {
         context.dataStore.edit {
@@ -111,6 +126,26 @@ class Prefs(private val context: Context) {
             it.remove(PrefKeys.IN_PROGRESS_DAY)
             it.remove(PrefKeys.IN_PROGRESS_INDEX)
         }
+    }
+
+    suspend fun setMusicTrack(track: MusicTrack) {
+        context.dataStore.edit { it[PrefKeys.MUSIC_TRACK] = track.storageValue }
+    }
+
+    suspend fun setMusicVolume(volume: Float) {
+        context.dataStore.edit { it[PrefKeys.MUSIC_VOLUME] = volume.coerceIn(0f, 1f) }
+    }
+
+    suspend fun setAmbientTrack(track: AmbientTrack) {
+        context.dataStore.edit { it[PrefKeys.AMBIENT_TRACK] = track.storageValue }
+    }
+
+    suspend fun setAmbientVolume(volume: Float) {
+        context.dataStore.edit { it[PrefKeys.AMBIENT_VOLUME] = volume.coerceIn(0f, 1f) }
+    }
+
+    suspend fun setChimeTrack(track: ChimeTrack) {
+        context.dataStore.edit { it[PrefKeys.CHIME_TRACK] = track.storageValue }
     }
 
     /** Test helper — clears all keys so the next read returns defaults. */

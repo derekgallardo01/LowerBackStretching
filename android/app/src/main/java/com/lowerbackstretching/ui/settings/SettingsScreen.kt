@@ -9,21 +9,34 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.audio.AmbientTrack
+import com.lowerbackstretching.audio.ChimeTrack
+import com.lowerbackstretching.audio.MusicTrack
 import com.lowerbackstretching.data.DurationUnit
 import com.lowerbackstretching.data.ThemeMode
 import com.lowerbackstretching.notifications.applyReminder
@@ -46,6 +59,11 @@ fun SettingsScreen(vm: AppViewModel = viewModel()) {
     val durationUnit by vm.prefs.durationUnit.collectAsState(initial = DurationUnit.SECONDS)
     val hapticsTransitions by vm.prefs.hapticsTransitions.collectAsState(initial = true)
     val hapticsFinish by vm.prefs.hapticsFinish.collectAsState(initial = true)
+    val musicTrack by vm.prefs.musicTrack.collectAsState(initial = MusicTrack.NONE)
+    val musicVolume by vm.prefs.musicVolume.collectAsState(initial = 0.4f)
+    val ambientTrack by vm.prefs.ambientTrack.collectAsState(initial = AmbientTrack.NONE)
+    val ambientVolume by vm.prefs.ambientVolume.collectAsState(initial = 0.6f)
+    val chimeTrack by vm.prefs.chimeTrack.collectAsState(initial = ChimeTrack.NONE)
 
     fun applyReminder(enabled: Boolean, hour: Int, minute: Int) {
         if (enabled) askNotificationPermission()
@@ -86,6 +104,19 @@ fun SettingsScreen(vm: AppViewModel = viewModel()) {
             onTransitionsChange = { scope.launch { vm.prefs.setHapticsTransitions(it) } },
             finish = hapticsFinish,
             onFinishChange = { scope.launch { vm.prefs.setHapticsFinish(it) } },
+        )
+
+        AudioCard(
+            music = musicTrack,
+            onMusicChange = { scope.launch { vm.prefs.setMusicTrack(it) } },
+            musicVolume = musicVolume,
+            onMusicVolumeChange = { scope.launch { vm.prefs.setMusicVolume(it) } },
+            ambient = ambientTrack,
+            onAmbientChange = { scope.launch { vm.prefs.setAmbientTrack(it) } },
+            ambientVolume = ambientVolume,
+            onAmbientVolumeChange = { scope.launch { vm.prefs.setAmbientVolume(it) } },
+            chime = chimeTrack,
+            onChimeChange = { scope.launch { vm.prefs.setChimeTrack(it) } },
         )
 
         AboutCard()
@@ -210,6 +241,95 @@ private fun HapticsRow(title: String, checked: Boolean, onChange: (Boolean) -> U
     ) {
         Text(title, style = MaterialTheme.typography.bodyMedium)
         Switch(checked = checked, onCheckedChange = onChange)
+    }
+}
+
+@Composable
+private fun AudioCard(
+    music: MusicTrack,
+    onMusicChange: (MusicTrack) -> Unit,
+    musicVolume: Float,
+    onMusicVolumeChange: (Float) -> Unit,
+    ambient: AmbientTrack,
+    onAmbientChange: (AmbientTrack) -> Unit,
+    ambientVolume: Float,
+    onAmbientVolumeChange: (Float) -> Unit,
+    chime: ChimeTrack,
+    onChimeChange: (ChimeTrack) -> Unit,
+) {
+    Card(shape = RoundedCornerShape(16.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            SectionHeader("Audio", topPadding = 0.dp)
+
+            TrackDropdown(
+                label = "Music",
+                options = MusicTrack.entries.map { it to it.displayName },
+                selected = music,
+                onChange = onMusicChange,
+            )
+            VolumeSlider(
+                label = "Music volume",
+                value = musicVolume,
+                onValueChange = onMusicVolumeChange,
+            )
+
+            TrackDropdown(
+                label = "Ambient",
+                options = AmbientTrack.entries.map { it to it.displayName },
+                selected = ambient,
+                onChange = onAmbientChange,
+            )
+            VolumeSlider(
+                label = "Ambient volume",
+                value = ambientVolume,
+                onValueChange = onAmbientVolumeChange,
+            )
+
+            TrackDropdown(
+                label = "Chime on transition",
+                options = ChimeTrack.entries.map { it to it.displayName },
+                selected = chime,
+                onChange = onChimeChange,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun <T> TrackDropdown(
+    label: String,
+    options: List<Pair<T, String>>,
+    selected: T,
+    onChange: (T) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val selectedLabel = options.firstOrNull { it.first == selected }?.second ?: ""
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
+        OutlinedTextField(
+            value = selectedLabel,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(label) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier.fillMaxWidth().menuAnchor(),
+        )
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            options.forEach { (value, optionLabel) ->
+                DropdownMenuItem(
+                    text = { Text(optionLabel) },
+                    onClick = { onChange(value); expanded = false },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun VolumeSlider(label: String, value: Float, onValueChange: (Float) -> Unit) {
+    Column {
+        Text(label, style = MaterialTheme.typography.bodyMedium)
+        Slider(value = value, onValueChange = onValueChange, valueRange = 0f..1f)
     }
 }
 

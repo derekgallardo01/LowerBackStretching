@@ -8,6 +8,11 @@ struct SettingsView: View {
     @AppStorage(SettingsKeys.durationUnit) private var durationUnitRaw: String = DurationUnit.seconds.storageValue
     @AppStorage(SettingsKeys.hapticsTransitions) private var hapticsTransitions: Bool = true
     @AppStorage(SettingsKeys.hapticsFinish) private var hapticsFinish: Bool = true
+    @AppStorage(SettingsKeys.musicTrack) private var musicTrackRaw: String = MusicTrack.none.storageValue
+    @AppStorage(SettingsKeys.musicVolume) private var musicVolume: Double = Double(AudioDefaults.musicVolume)
+    @AppStorage(SettingsKeys.ambientTrack) private var ambientTrackRaw: String = AmbientTrack.none.storageValue
+    @AppStorage(SettingsKeys.ambientVolume) private var ambientVolume: Double = Double(AudioDefaults.ambientVolume)
+    @AppStorage(SettingsKeys.chimeTrack) private var chimeTrackRaw: String = ChimeTrack.none.storageValue
 
     @State private var pickerDate: Date = .now
 
@@ -52,6 +57,43 @@ struct SettingsView: View {
             Section(header: Text("Haptics")) {
                 Toggle("Stretch transitions", isOn: $hapticsTransitions)
                 Toggle("Routine finish", isOn: $hapticsFinish)
+            }
+
+            Section(header: Text("Audio")) {
+                Picker("Music", selection: Binding(
+                    get: { MusicTrack.fromStorage(musicTrackRaw) },
+                    set: { musicTrackRaw = $0.storageValue },
+                )) {
+                    ForEach(MusicTrack.allCases, id: \.self) { t in
+                        Text(t.displayName).tag(t)
+                    }
+                }
+                VStack(alignment: .leading) {
+                    Text("Music volume")
+                    Slider(value: $musicVolume, in: 0...1)
+                }
+
+                Picker("Ambient", selection: Binding(
+                    get: { AmbientTrack.fromStorage(ambientTrackRaw) },
+                    set: { ambientTrackRaw = $0.storageValue },
+                )) {
+                    ForEach(AmbientTrack.allCases, id: \.self) { t in
+                        Text(t.displayName).tag(t)
+                    }
+                }
+                VStack(alignment: .leading) {
+                    Text("Ambient volume")
+                    Slider(value: $ambientVolume, in: 0...1)
+                }
+
+                Picker("Chime on transition", selection: Binding(
+                    get: { ChimeTrack.fromStorage(chimeTrackRaw) },
+                    set: { chimeTrackRaw = $0.storageValue },
+                )) {
+                    ForEach(ChimeTrack.allCases, id: \.self) { t in
+                        Text(t.displayName).tag(t)
+                    }
+                }
             }
 
             Section(header: Text("About")) {

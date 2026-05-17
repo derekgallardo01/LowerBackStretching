@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.lowerbackstretching.App
+import com.lowerbackstretching.audio.AudioController
 import com.lowerbackstretching.data.InProgressSession
 import com.lowerbackstretching.data.SyntheticProgramId
 import com.lowerbackstretching.data.model.Stretch
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
@@ -45,6 +47,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     private var tickerJob: Job? = null
     private var finishedJob: Job? = null
     private var transitionJob: Job? = null
+    private var audioJob: Job? = null
 
     fun loadProgram(programId: String, dayNumber: Int) {
         if (loaded && this.programId == programId && this.dayNumber == dayNumber) return
@@ -102,11 +105,26 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
 
     fun previous() = _engine.value?.previous()
 
+    /** Tear down audio and cancel running jobs. Call from the view's onDispose. */
+    fun stop() {
+        tickerJob?.cancel(); tickerJob = null
+        finishedJob?.cancel(); finishedJob = null
+        transitionJob?.cancel(); transitionJob = null
+        audioJob?.cancel(); audioJob = null
+        AudioController.stopAll()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stop()
+    }
+
     private fun initEngine(stretches: List<Stretch>, startIndex: Int = 0) {
         loaded = true
         tickerJob?.cancel()
         finishedJob?.cancel()
         transitionJob?.cancel()
+        audioJob?.cancel()
         val engine = PlayerEngine(stretches, startIndex = startIndex)
         _engine.value = engine
         // Persist the resume point on first frame (even before any tick)
@@ -145,8 +163,29 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
                         if (appCtx.prefs.hapticsTransitions.first()) {
                             Haptics.short(appCtx)
                         }
+                        val chime = appCtx.prefs.chimeTrack.first()
+                        AudioController.playChime(appCtx, chime)
                     }
                 }
         }
+        audioJob = viewModelScope.launch {
+            combine(
+                appCtx.prefs.musicTrack,
+                appCtx.prefs.musicVolume,
+                appCtx.prefs.ambientTrack,
+                appCtx.prefs.ambientVolume,
+            ) { music, mv, ambient, av -> AudioState(music, mv, ambient, av) }
+                .collect { s ->
+                    AudioController.setMusic(appCtx, s.music, s.musicVolume)
+                    AudioController.setAmbient(appCtx, s.ambient, s.ambientVolume)
+                }
+        }
     }
+
+    private data class AudioState(
+        val music: com.lowerbackstretching.audio.MusicTrack,
+        val musicVolume: Float,
+        val ambient: com.lowerbackstretching.audio.AmbientTrack,
+        val ambientVolume: Float,
+    )
 }

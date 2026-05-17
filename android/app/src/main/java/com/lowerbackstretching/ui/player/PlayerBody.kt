@@ -59,6 +59,9 @@ internal fun PlayerBody(
     val state by vm.state.collectAsState()
     val unit by appVm.prefs.durationUnit.collectAsState(initial = DurationUnit.SECONDS)
     KeepScreenOnAndLockPortrait()
+    DisposableEffect(vm) {
+        onDispose { vm.stop() }
+    }
 
     Scaffold(
         topBar = {
