@@ -28,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.data.BodyZone
+import com.lowerbackstretching.core.BodyZone
 import com.lowerbackstretching.data.shortSubtitle
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.InfoRow

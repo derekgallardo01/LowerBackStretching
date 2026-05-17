@@ -1,4 +1,4 @@
-package com.lowerbackstretching.data
+package com.lowerbackstretching.core
 
 /**
  * A tappable region on the body-diagram silhouette. Each zone maps to

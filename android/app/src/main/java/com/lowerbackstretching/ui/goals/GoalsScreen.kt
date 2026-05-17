@@ -27,8 +27,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.data.monthlyCompletions
-import com.lowerbackstretching.data.weeklyCompletions
+import com.lowerbackstretching.core.monthlyCompletions
+import com.lowerbackstretching.core.weeklyCompletions
 import com.lowerbackstretching.ui.AppViewModel
 import kotlinx.coroutines.launch
 

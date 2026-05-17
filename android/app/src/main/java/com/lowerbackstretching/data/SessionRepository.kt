@@ -1,5 +1,6 @@
 package com.lowerbackstretching.data
 
+import com.lowerbackstretching.core.SyntheticProgramId
 import com.lowerbackstretching.data.db.SessionDao
 import com.lowerbackstretching.data.db.SessionEntity
 import kotlinx.coroutines.flow.Flow

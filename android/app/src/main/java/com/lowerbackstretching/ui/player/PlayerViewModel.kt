@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.lowerbackstretching.App
 import com.lowerbackstretching.audio.AudioController
 import com.lowerbackstretching.data.InProgressSession
-import com.lowerbackstretching.data.SyntheticProgramId
+import com.lowerbackstretching.core.SyntheticProgramId
 import com.lowerbackstretching.data.model.Stretch
 import com.lowerbackstretching.notifications.Haptics
 import kotlinx.coroutines.ExperimentalCoroutinesApi

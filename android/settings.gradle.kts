@@ -15,5 +15,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "LowerBackStretching"
+include(":core")
 include(":app")
 include(":wear")

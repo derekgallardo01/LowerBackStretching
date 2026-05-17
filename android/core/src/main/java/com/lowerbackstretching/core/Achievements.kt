@@ -1,4 +1,4 @@
-package com.lowerbackstretching.data
+package com.lowerbackstretching.core
 
 enum class AchievementId {
     FIRST_SESSION,

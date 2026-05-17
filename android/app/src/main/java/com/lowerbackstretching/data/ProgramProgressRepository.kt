@@ -1,5 +1,7 @@
 package com.lowerbackstretching.data
 
+import com.lowerbackstretching.core.SessionType
+import com.lowerbackstretching.core.SyntheticProgramId
 import com.lowerbackstretching.data.db.ProgramProgressDao
 import com.lowerbackstretching.data.db.ProgramProgressEntity
 import kotlinx.coroutines.flow.Flow

@@ -33,10 +33,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.data.AchievementStatus
-import com.lowerbackstretching.data.evaluateAchievements
-import com.lowerbackstretching.data.levelFor
-import com.lowerbackstretching.data.xpForSession
+import com.lowerbackstretching.core.AchievementStatus
+import com.lowerbackstretching.core.evaluateAchievements
+import com.lowerbackstretching.core.levelFor
+import com.lowerbackstretching.core.xpForSession
 import com.lowerbackstretching.ui.AppViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

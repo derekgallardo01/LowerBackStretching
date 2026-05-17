@@ -1,4 +1,4 @@
-package com.lowerbackstretching.data
+package com.lowerbackstretching.core
 
 /**
  * Synthetic programId values stored on `SessionRecord` for sessions
