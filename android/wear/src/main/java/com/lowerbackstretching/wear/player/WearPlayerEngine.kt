@@ -33,6 +33,16 @@ class WearPlayerEngine(
                 if (it.durationSeconds == 0) 0f
                 else (it.durationSeconds - remainingSeconds).toFloat() / it.durationSeconds
             } ?: 0f
+
+        val routineProgress: Float
+            get() {
+                if (finished) return 1f
+                val total = stretches.sumOf { it.durationSeconds }
+                if (total == 0) return 0f
+                val elapsedBefore = stretches.take(index).sumOf { it.durationSeconds }
+                val elapsedInCurrent = (current?.durationSeconds ?: 0) - remainingSeconds
+                return ((elapsedBefore + elapsedInCurrent).toFloat() / total).coerceIn(0f, 1f)
+            }
     }
 
     private val _state = MutableStateFlow(

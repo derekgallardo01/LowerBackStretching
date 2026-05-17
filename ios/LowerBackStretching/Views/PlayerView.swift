@@ -112,10 +112,7 @@ struct PlayerBody: View {
                     ProgressView(value: engine.snapshot.progress).tint(.accentColor)
                     Text("\(formatDuration(engine.snapshot.remainingSeconds, unit: unit)) · \(engine.snapshot.index + 1) of \(engine.snapshot.stretches.count)")
                         .font(.caption.weight(.medium))
-                    // Thin "whole routine" bar under the per-stretch bar
-                    // — fills smoothly across all stretches so the user
-                    // always knows how close they are to finishing.
-                    ProgressView(value: max(0, min(1, engine.snapshot.routineProgress)))
+                    ProgressView(value: engine.snapshot.routineProgress)
                         .tint(.secondary)
                         .scaleEffect(x: 1, y: 0.5, anchor: .center)
 

@@ -103,4 +103,14 @@ class WearPlayerEngineTest {
         assertThat(finishedOnLast).isTrue()
         assertThat(engine.state.value.finished).isTrue()
     }
+
+    @Test fun `routineProgress matches the phone engine semantics`() {
+        val engine = WearPlayerEngine(listOf(stretch("a", 10), stretch("b", 30)))
+        assertThat(engine.state.value.routineProgress).isWithin(1e-6f).of(0f)
+        engine.tick()
+        assertThat(engine.state.value.routineProgress).isWithin(1e-6f).of(1f / 40f)
+        for (i in 0 until 9) engine.tick()
+        // Now at start of b: 10s of 40 elapsed.
+        assertThat(engine.state.value.routineProgress).isWithin(1e-6f).of(0.25f)
+    }
 }

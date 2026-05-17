@@ -5,12 +5,10 @@ import android.provider.CalendarContract
 import java.util.concurrent.TimeUnit
 
 /**
- * Build an Intent that opens the system calendar app's "new event"
- * screen pre-filled with a stretching break. The user finishes the
- * create flow there; no calendar permissions are required because
- * we're just handing the data off via [Intent.ACTION_INSERT].
- *
- * Pure builder — no Context needed.
+ * Returns an Intent that opens the system calendar's new-event flow
+ * with stretching-break details pre-filled. We never see the user's
+ * calendar — they finish the create flow in their calendar app —
+ * which is why this needs no permissions.
  */
 fun scheduleStretchBreakIntent(
     title: String = "Stretching break",

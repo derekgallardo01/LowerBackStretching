@@ -19,6 +19,15 @@ final class WatchPlayerEngine: ObservableObject {
             guard let c = current, c.durationSeconds > 0 else { return 0 }
             return Float(c.durationSeconds - remainingSeconds) / Float(c.durationSeconds)
         }
+
+        var routineProgress: Float {
+            if finished { return 1 }
+            let total = stretches.reduce(0) { $0 + $1.durationSeconds }
+            guard total > 0 else { return 0 }
+            let elapsedBefore = stretches.prefix(index).reduce(0) { $0 + $1.durationSeconds }
+            let elapsedInCurrent = (current?.durationSeconds ?? 0) - remainingSeconds
+            return min(1, max(0, Float(elapsedBefore + elapsedInCurrent) / Float(total)))
+        }
     }
 
     @Published private(set) var snapshot: Snapshot

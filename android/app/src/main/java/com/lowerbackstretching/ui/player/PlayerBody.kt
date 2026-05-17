@@ -150,15 +150,7 @@ internal fun PlayerBody(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
             )
-            // Thin "whole routine" bar under the per-stretch bar — fills
-            // smoothly across all stretches so the user always knows
-            // how close they are to finishing the entire session.
-            LinearProgressIndicator(
-                progress = { snapshot.routineProgress.coerceIn(0f, 1f) },
-                modifier = Modifier.fillMaxWidth().height(3.dp),
-                color = MaterialTheme.colorScheme.secondary,
-                trackColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
-            )
+            ThinProgressBar(progress = snapshot.routineProgress)
 
             Spacer(Modifier.height(8.dp))
 
@@ -205,9 +197,8 @@ private fun KeepScreenOnAndLockPortrait() {
 
 /**
  * Compact layout shown while the activity is in Picture-in-Picture
- * mode. Just the video + a remaining-seconds badge in the bottom-left
- * corner over a thin progress bar. No controls (PiP windows are too
- * small for them) — user taps the PiP to expand back to full app.
+ * mode. PiP windows are too small for controls — the user taps the
+ * PiP to expand back.
  */
 @Composable
 private fun PipPlayerLayout(videoId: String, remainingSeconds: Int, progress: Float) {
@@ -223,12 +214,19 @@ private fun PipPlayerLayout(videoId: String, remainingSeconds: Int, progress: Fl
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(8.dp),
             )
-            LinearProgressIndicator(
-                progress = { progress.coerceIn(0f, 1f) },
-                modifier = Modifier.fillMaxWidth().height(3.dp),
-            )
+            ThinProgressBar(progress = progress)
         }
     }
+}
+
+@Composable
+private fun ThinProgressBar(progress: Float) {
+    LinearProgressIndicator(
+        progress = { progress },
+        modifier = Modifier.fillMaxWidth().height(3.dp),
+        color = MaterialTheme.colorScheme.secondary,
+        trackColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
+    )
 }
 
 @Composable

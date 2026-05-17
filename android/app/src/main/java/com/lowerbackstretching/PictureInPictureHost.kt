@@ -5,14 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-/**
- * The single source of truth for Picture-in-Picture state, bridging
- * the activity (which owns the OS-level PiP transitions) with Compose
- * (which renders different layouts in PiP). The activity creates one
- * instance, exposes it through [LocalPictureInPictureHost], and reads
- * back the same instance to decide whether to call
- * `enterPictureInPictureMode()` on `onUserLeaveHint`.
- */
+/** Bridges activity-level PiP callbacks with Compose so the player can render a compact layout in PiP. */
 class PictureInPictureHost {
 
     /** True while the player is on screen and eligible for PiP. */
