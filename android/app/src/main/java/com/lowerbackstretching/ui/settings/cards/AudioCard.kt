@@ -19,6 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.core.AmbientTrack
@@ -107,6 +109,13 @@ private fun <T> TrackDropdown(
 private fun VolumeSlider(label: String, value: Float, onValueChange: (Float) -> Unit) {
     Column {
         Text(label, style = MaterialTheme.typography.bodyMedium)
-        Slider(value = value, onValueChange = onValueChange, valueRange = 0f..1f)
+        Slider(
+            value = value,
+            onValueChange = onValueChange,
+            valueRange = 0f..1f,
+            modifier = Modifier.semantics {
+                stateDescription = "$label ${(value * 100).toInt()} percent"
+            },
+        )
     }
 }

@@ -57,7 +57,7 @@ fun AchievementsScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
                 title = { Text("Achievements") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
             )

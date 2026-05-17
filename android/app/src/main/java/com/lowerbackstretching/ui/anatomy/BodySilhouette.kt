@@ -20,6 +20,9 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.lowerbackstretching.core.BodyZone
 
@@ -62,7 +65,8 @@ fun BodySilhouette(
                         .size(widthDp * r.w, heightDp * r.h)
                         .offset(widthDp * r.x, heightDp * r.y)
                         .clip(RoundedCornerShape(8.dp))
-                        .clickable { onZoneTap(zone) },
+                        .semantics { contentDescription = zone.displayName }
+                        .clickable(role = Role.Button) { onZoneTap(zone) },
                 )
             }
         }

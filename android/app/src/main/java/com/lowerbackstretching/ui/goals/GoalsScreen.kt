@@ -23,6 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -49,7 +51,7 @@ fun GoalsScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
                 title = { Text("Goals") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
             )
@@ -114,6 +116,7 @@ private fun GoalCard(
                 onValueChange = { onTargetChange(it.toInt()) },
                 valueRange = sliderRange,
                 steps = (sliderRange.endInclusive - sliderRange.start).toInt() - 1,
+                modifier = Modifier.semantics { stateDescription = "Target $target days" },
             )
         }
     }
