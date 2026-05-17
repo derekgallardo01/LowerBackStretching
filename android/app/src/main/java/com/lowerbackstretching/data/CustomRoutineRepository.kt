@@ -24,4 +24,40 @@ class CustomRoutineRepository(private val dao: CustomRoutineDao) {
     }
 
     suspend fun delete(routine: CustomRoutineEntity) = dao.delete(routine)
+
+    /** Copy a routine with a " (copy)" name suffix. Returns the new id. */
+    suspend fun duplicate(routine: CustomRoutineEntity): Long =
+        dao.insert(
+            routine.copy(
+                id = 0,
+                name = duplicateName(routine.name),
+                createdAtEpochMillis = System.currentTimeMillis(),
+                displayOrder = 0,
+                deletedAtEpochMillis = null,
+            )
+        )
+
+    /**
+     * Assign [orderedRoutineIds] indices 0..n-1 as their `displayOrder`.
+     * The caller provides the full desired order; ids not in the list
+     * are not touched.
+     */
+    suspend fun reorder(orderedRoutineIds: List<Long>) {
+        orderedRoutineIds.forEachIndexed { index, id ->
+            dao.setDisplayOrder(id, index)
+        }
+    }
+
+    suspend fun softDelete(routine: CustomRoutineEntity) {
+        dao.setDeletedAt(routine.id, System.currentTimeMillis())
+    }
+
+    suspend fun restore(routine: CustomRoutineEntity) {
+        dao.setDeletedAt(routine.id, null)
+    }
+}
+
+internal fun duplicateName(original: String): String {
+    val trimmed = original.trim()
+    return if (trimmed.endsWith("(copy)")) trimmed else "$trimmed (copy)"
 }

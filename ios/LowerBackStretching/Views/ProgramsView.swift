@@ -3,9 +3,19 @@ import SwiftData
 
 struct ProgramsView: View {
     @EnvironmentObject private var content: ContentStore
-    @Query(sort: [SortDescriptor(\CustomRoutine.createdAt, order: .reverse)]) private var customRoutines: [CustomRoutine]
+    @Environment(\.modelContext) private var modelContext
+    @Query(
+        filter: #Predicate<CustomRoutine> { $0.deletedAt == nil },
+        sort: [
+            SortDescriptor(\CustomRoutine.displayOrder, order: .forward),
+            SortDescriptor(\CustomRoutine.createdAt, order: .reverse),
+        ]
+    ) private var customRoutines: [CustomRoutine]
+
     @State private var selectedCategory: String = BodyParts.all
     @State private var showingBuilder: Bool = false
+    @State private var pendingDelete: CustomRoutine?
+    @State private var showUndo: Bool = false
 
     private var categories: [String] {
         [BodyParts.all] + Array(Set(content.programs.map(\.category))).sorted()
@@ -23,13 +33,7 @@ struct ProgramsView: View {
                 if !customRoutines.isEmpty {
                     SectionHeader("My routines")
                     ForEach(customRoutines) { routine in
-                        NavigationLink(value: routine) {
-                            InfoRow(
-                                title: routine.name,
-                                subtitle: routine.subtitle(totalSeconds: content.totalDurationSeconds(stretchIds: routine.stretchIds))
-                            )
-                        }
-                        .buttonStyle(.plain)
+                        routineRow(routine)
                     }
                     SectionHeader("Built-in programs").padding(.top, 8)
                 }
@@ -67,7 +71,88 @@ struct ProgramsView: View {
         .navigationDestination(for: CustomRoutine.self) { r in
             CustomRoutinePlayerView(routine: r)
         }
+        .overlay(alignment: .bottom) { undoBanner }
     }
 
-}
+    @ViewBuilder
+    private func routineRow(_ routine: CustomRoutine) -> some View {
+        NavigationLink(value: routine) {
+            InfoRow(
+                title: routine.name,
+                subtitle: routine.subtitle(totalSeconds: content.totalDurationSeconds(stretchIds: routine.stretchIds))
+            )
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            Button {
+                CustomRoutineService.duplicate(routine, in: modelContext)
+            } label: {
+                Label("Duplicate", systemImage: "doc.on.doc")
+            }
+            if let index = customRoutines.firstIndex(where: { $0.id == routine.id }), index > 0 {
+                Button {
+                    moveRoutine(routine, by: -1)
+                } label: {
+                    Label("Move up", systemImage: "arrow.up")
+                }
+            }
+            if let index = customRoutines.firstIndex(where: { $0.id == routine.id }),
+               index < customRoutines.count - 1 {
+                Button {
+                    moveRoutine(routine, by: 1)
+                } label: {
+                    Label("Move down", systemImage: "arrow.down")
+                }
+            }
+            Button(role: .destructive) {
+                softDelete(routine)
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+    }
 
+    @ViewBuilder
+    private var undoBanner: some View {
+        if showUndo, let target = pendingDelete {
+            HStack {
+                Text("Deleted \(target.name)").font(.subheadline)
+                Spacer()
+                Button("Undo") {
+                    CustomRoutineService.restore(target)
+                    pendingDelete = nil
+                    showUndo = false
+                }
+                .buttonStyle(.bordered)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 12))
+            .padding(.horizontal, 16)
+            .padding(.bottom, 20)
+            .transition(.move(edge: .bottom).combined(with: .opacity))
+        }
+    }
+
+    private func moveRoutine(_ routine: CustomRoutine, by delta: Int) {
+        guard let index = customRoutines.firstIndex(where: { $0.id == routine.id }) else { return }
+        let target = index + delta
+        guard target >= 0, target < customRoutines.count else { return }
+        var reordered = customRoutines
+        reordered.remove(at: index)
+        reordered.insert(routine, at: target)
+        CustomRoutineService.reorder(reordered)
+    }
+
+    private func softDelete(_ routine: CustomRoutine) {
+        CustomRoutineService.softDelete(routine)
+        pendingDelete = routine
+        withAnimation { showUndo = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            if pendingDelete?.id == routine.id {
+                withAnimation { showUndo = false }
+                pendingDelete = nil
+            }
+        }
+    }
+}
