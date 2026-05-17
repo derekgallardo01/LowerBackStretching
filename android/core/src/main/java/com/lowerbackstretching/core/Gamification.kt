@@ -65,6 +65,23 @@ fun xpProgress(totalXp: Int): XpProgress {
     )
 }
 
+/**
+ * Streak rule: today (or yesterday if today is missing — grace day)
+ * plus every consecutive prior day must be in [days]. The chain breaks
+ * on the first gap.
+ */
+fun computeStreak(days: Set<LocalDate>, today: LocalDate = LocalDate.now()): Int {
+    if (days.isEmpty()) return 0
+    var streak = 0
+    var cursor = today
+    if (cursor !in days) cursor = cursor.minusDays(1)
+    while (cursor in days) {
+        streak++
+        cursor = cursor.minusDays(1)
+    }
+    return streak
+}
+
 /** Longest run of consecutive completed days, ever. */
 fun longestStreak(days: Set<LocalDate>): Int {
     if (days.isEmpty()) return 0
