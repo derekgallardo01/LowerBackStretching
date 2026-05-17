@@ -3,18 +3,15 @@ package com.lowerbackstretching.ui.settings.cards
 import android.app.TimePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -40,28 +37,10 @@ fun ReminderCard(vm: AppViewModel = viewModel()) {
     }
 
     SettingsCard(verticalSpacing = 0.dp) {
-        ToggleRow(
-            enabled = enabled,
-            onToggle = { on -> apply(on, hour, minute) },
-        )
-        TimeRow(
-            formatted = formatTime(hour, minute),
-            onClick = {
-                TimePickerDialog(ctx, { _, h, m -> apply(enabled, h, m) },
-                    hour, minute, true).show()
-            },
-        )
-    }
-}
-
-@Composable
-private fun ToggleRow(enabled: Boolean, onToggle: (Boolean) -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(Modifier.padding(end = 12.dp)) {
+        SettingsToggleRow(
+            checked = enabled,
+            onChange = { on -> apply(on, hour, minute) },
+        ) {
             Text("Daily reminder", style = MaterialTheme.typography.titleMedium)
             Text(
                 "A nudge to do your routine.",
@@ -69,7 +48,13 @@ private fun ToggleRow(enabled: Boolean, onToggle: (Boolean) -> Unit) {
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             )
         }
-        Switch(checked = enabled, onCheckedChange = onToggle)
+        TimeRow(
+            formatted = formatTime(hour, minute),
+            onClick = {
+                TimePickerDialog(ctx, { _, h, m -> apply(enabled, h, m) },
+                    hour, minute, true).show()
+            },
+        )
     }
 }
 

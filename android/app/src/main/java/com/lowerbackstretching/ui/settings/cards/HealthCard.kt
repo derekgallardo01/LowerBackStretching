@@ -1,21 +1,13 @@
 package com.lowerbackstretching.ui.settings.cards
 
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.health.HealthController
@@ -47,7 +39,7 @@ fun HealthCard(vm: AppViewModel = viewModel()) {
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             )
             HealthController.Availability.Available -> {
-                ToggleRow(
+                LabeledToggle(
                     title = "Write stretching sessions",
                     subtitle = "Adds each completed session to Health Connect.",
                     checked = write,
@@ -56,7 +48,7 @@ fun HealthCard(vm: AppViewModel = viewModel()) {
                         if (on) launcher.launch(HealthController.allPermissions)
                     },
                 )
-                ToggleRow(
+                LabeledToggle(
                     title = "Read daily steps",
                     subtitle = "Suggests a cooldown stretch after long walks.",
                     checked = read,
@@ -71,25 +63,18 @@ fun HealthCard(vm: AppViewModel = viewModel()) {
 }
 
 @Composable
-private fun ToggleRow(
+private fun LabeledToggle(
     title: String,
     subtitle: String,
     checked: Boolean,
     onChange: (Boolean) -> Unit,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(Modifier.padding(end = 12.dp)) {
-            Text(title, style = MaterialTheme.typography.titleSmall)
-            Text(
-                subtitle,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-            )
-        }
-        Switch(checked = checked, onCheckedChange = onChange)
+    SettingsToggleRow(checked = checked, onChange = onChange) {
+        Text(title, style = MaterialTheme.typography.titleSmall)
+        Text(
+            subtitle,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+        )
     }
 }
