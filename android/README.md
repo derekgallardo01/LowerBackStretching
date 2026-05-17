@@ -33,15 +33,36 @@ a `signingConfigs.release` block to `app/build.gradle.kts`, then:
 
 ## Architecture
 
-- `App.kt` — Application class; constructs `AppDatabase`, repositories, and
-  the notification channel on startup.
-- `MainActivity.kt` — Single activity hosting Compose UI. Requests
-  `POST_NOTIFICATIONS` on first launch (Android 13+).
-- `data/` — JSON content loader, Room database, repositories.
-- `notifications/` — AlarmManager-based daily reminder. `BootReceiver`
-  re-schedules after reboot.
-- `ui/` — Compose screens (`home`, `programs`, `player`, `calendar`,
-  `settings`) and the YouTube embed component.
+Three Gradle modules:
+
+- **`:core`** — pure-JVM Kotlin library. Models (`Stretch`, `Program`,
+  `ProgramDay`, `GlossaryEntry`, `EducationalCard`), the generic
+  `PlayerEngine<T : Timed>` state machine, calendar math, gamification
+  formulas (`computeStreak`, `longestStreak`, `xpProgress`, ...),
+  achievements catalog, body-part / body-zone taxonomy, audio enums,
+  settings enums (`ThemeMode`, `DurationUnit`), routine deep-link
+  encoder/parser, cooldown-suggestion decision, flexibility delta math.
+  No Android dependency — drives both `:app` and `:wear`.
+- **`:app`** — the phone app. Depends on `:core`.
+  - `App.kt` — Application class; constructs `AppDatabase`, repositories,
+    `SyncController`, notification channel, audio singletons.
+  - `MainActivity.kt` — single activity hosting Compose UI; intercepts
+    `lowerbackstretching://routine?...` deep links for routine import.
+  - `data/` — Room database + DAOs, repositories, JSON content loader,
+    DataStore prefs.
+  - `notifications/` — AlarmManager-based daily reminder + permission
+    plumbing.
+  - `audio/` — `AudioController` wrapping `MediaPlayer` + `SoundPool`
+    for music / ambient / chime streams.
+  - `health/`, `share/`, `sync/` — Health Connect, QR/deep-link share,
+    cloud-sync interface (Firebase backend is opt-in).
+  - `ui/` — Compose screens (`home`, `programs`, `stretches`, `player`,
+    `calendar`, `settings`, `goals`, `achievements`, `flexibility`,
+    `anatomy`, `learn`, `share`, `onboarding`, `routines`) + shared
+    `components/`.
+- **`:wear`** — Wear OS companion. Depends on `:core`. Reuses the same
+  `PlayerEngine`; ships a slim `WatchStretch` and a minimal
+  Compose-Wear UI. Standalone — no Data Layer API yet.
 
 ## Picture-in-Picture
 
@@ -120,20 +141,38 @@ Two test source sets, both runnable from Studio (Run → Tests) or CLI.
 ### JVM unit tests (fast, no device)
 
 ```sh
-./gradlew :app:testDebugUnitTest
+./gradlew :core:test :app:testDebugUnitTest :wear:testDebugUnitTest
 ```
+
+Tests in **`:core`** cover the pure logic — no Android, no Room:
 
 | File | Covers |
 |------|--------|
-| `ComputeStreakTest` | streak rule: today, grace-day, gaps, year boundaries |
-| `CustomRoutineEntityTest` | CSV (de)serialization edge cases |
-| `CustomRoutineRepositoryTest` | insert/update with fake DAO |
-| `PlayerEngineTest` | 17 cases — tick, next/previous, pause, finish, progress |
-| `ReminderSchedulerTest` | next-occurrence math: same-day, next-day, month/year rollover |
+| `PlayerEngineTest` | tick, next/previous, pause, finish event, progress, routine-progress, startIndex |
+| `DisplayTest` | difficulty capitalization, subtitles, formatDuration, body-part filtering, stretchCountSubtitle |
 | `CalendarMonthTest` | grid math: leap year, boundary days, week starts |
-| `DisplayTest` | difficulty capitalization, subtitles, body-part filtering |
+| `ComputeStreakTest` | streak rule: today, grace-day, gaps |
+| `GamificationTest` | longestStreak, XP curve, level lookup, weekly/monthly completions |
+| `AchievementsTest` | unlock rules at various stat thresholds |
 | `BodyPartsTest` | display formatting, distinctSorted, filterOptions |
-| `SyntheticProgramIdTest` | session id prefixes for single/routine |
+| `BodyZoneTest` | tag → zone mapping |
+| `CooldownSuggestionTest` | opt-in / stretched-today / threshold gates |
+| `FlexibilityTest` | per-metric delta, missing-snapshot handling |
+| `RoutineShareLinkTest` | build / parse round-trip, malformed links |
+| `SyntheticProgramIdTest` | single/routine prefix classification |
+| `SettingsTest` | ThemeMode + DurationUnit storage round-trips and fallbacks |
+| `AudioTracksTest` | MusicTrack / AmbientTrack / ChimeTrack fromStorage |
+
+Tests in **`:app`** cover the Room-bound + Android-bound code:
+
+| File | Covers |
+|------|--------|
+| `CustomRoutineEntityTest` | CSV (de)serialization edge cases |
+| `CustomRoutineRepositoryTest` | insert/update/duplicate/reorder/softDelete with fake DAO |
+| `FlexibilityRepositoryTest` | record persists supplied measurements |
+| `ProgramProgressRepositoryTest` | advance + cap + reset, synthetic-id no-op |
+| `NoopSyncBackendTest` | every method returns the "not signed in" answer |
+| `ReminderSchedulerTest` | next-occurrence math: same-day, next-day, rollovers |
 | `FormatTest` | `formatTime(h, m)` zero-padding |
 
 ### Instrumented (Compose UI + Room DAO + full-app E2E)
@@ -164,12 +203,14 @@ confirms the layout works on both form factors.
 
 | File | Covers |
 |------|--------|
+| `AppDatabaseMigrationsTest` | Room migrations v2 → v6: column adds, table creates, defaults |
 | `ContentRepositoryTest` | bundled JSON integrity, totalDurationSeconds |
 | `SessionDaoTest` | Room insert/recent/completedDays/forDay |
 | `CustomRoutineDaoTest` | Room insert/update/delete/byId |
 | `SessionRepositoryIntegrationTest` | repository + real Room round-trip |
 | `PrefsTest` | DataStore defaults + round-trip |
 | `ReminderControllerTest` | `applyReminder` persists pref state |
+| `CalendarIntentTest` | "Add to system calendar" intent construction |
 | `HomeScreenTest` | header, streak card, program list |
 | `ProgramsScreenTest` | header, category filter, FAB callback |
 | `ProgramDetailScreenTest` | day rendering, onStartDay callback |
