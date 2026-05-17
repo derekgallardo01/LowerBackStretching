@@ -1,4 +1,4 @@
-package com.lowerbackstretching.health
+package com.lowerbackstretching.core
 
 /**
  * Pure decision function: should we show a "you walked X steps, try a

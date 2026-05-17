@@ -32,7 +32,7 @@ import com.lowerbackstretching.ui.player.PlayerScreen
 import com.lowerbackstretching.ui.player.SingleStretchPlayerScreen
 import com.lowerbackstretching.ui.programs.ProgramDetailScreen
 import com.lowerbackstretching.ui.programs.ProgramsScreen
-import com.lowerbackstretching.share.SharedRoutine
+import com.lowerbackstretching.core.SharedRoutine
 import com.lowerbackstretching.ui.routines.RoutineBuilderScreen
 import com.lowerbackstretching.ui.settings.SettingsScreen
 import com.lowerbackstretching.ui.share.ImportRoutineSheet

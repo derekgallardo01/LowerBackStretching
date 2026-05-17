@@ -37,7 +37,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.share.buildRoutineLink
+import com.lowerbackstretching.core.buildRoutineLink
 import com.lowerbackstretching.share.renderQrBitmap
 import com.lowerbackstretching.ui.AppViewModel
 

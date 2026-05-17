@@ -1,4 +1,4 @@
-package com.lowerbackstretching.health
+package com.lowerbackstretching.core
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test

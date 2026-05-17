@@ -1,4 +1,4 @@
-package com.lowerbackstretching.share
+package com.lowerbackstretching.core
 
 import java.net.URI
 import java.net.URLDecoder

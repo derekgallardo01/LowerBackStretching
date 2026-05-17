@@ -28,7 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.core.subtitle
 import com.lowerbackstretching.core.xpForSession
 import com.lowerbackstretching.core.xpProgress
-import com.lowerbackstretching.health.shouldShowCooldown
+import com.lowerbackstretching.core.shouldShowCooldown
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.InfoRow
 import com.lowerbackstretching.ui.components.ScreenHeader
