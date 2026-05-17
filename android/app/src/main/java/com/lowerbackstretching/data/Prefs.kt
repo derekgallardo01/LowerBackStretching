@@ -39,6 +39,7 @@ object PrefKeys {
     val MONTHLY_GOAL = intPreferencesKey("monthly_goal")
     val HEALTH_WRITE_ENABLED = booleanPreferencesKey("health_write_enabled")
     val HEALTH_READ_ENABLED = booleanPreferencesKey("health_read_enabled")
+    val CLOUD_SYNC_ENABLED = booleanPreferencesKey("cloud_sync_enabled")
 }
 
 object GoalDefaults {
@@ -99,6 +100,7 @@ class Prefs(private val context: Context) {
     val monthlyGoal: Flow<Int> = context.dataStore.data.map { it[PrefKeys.MONTHLY_GOAL] ?: GoalDefaults.MONTHLY }
     val healthWriteEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.HEALTH_WRITE_ENABLED] ?: false }
     val healthReadEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.HEALTH_READ_ENABLED] ?: false }
+    val cloudSyncEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.CLOUD_SYNC_ENABLED] ?: false }
 
     internal suspend fun setReminder(enabled: Boolean, hour: Int, minute: Int) {
         context.dataStore.edit {
@@ -182,6 +184,10 @@ class Prefs(private val context: Context) {
 
     suspend fun setHealthReadEnabled(enabled: Boolean) {
         context.dataStore.edit { it[PrefKeys.HEALTH_READ_ENABLED] = enabled }
+    }
+
+    suspend fun setCloudSyncEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[PrefKeys.CLOUD_SYNC_ENABLED] = enabled }
     }
 
     /** Test helper — clears all keys so the next read returns defaults. */

@@ -9,6 +9,9 @@ import com.lowerbackstretching.data.ProgramProgressRepository
 import com.lowerbackstretching.data.SessionRepository
 import com.lowerbackstretching.data.db.AppDatabase
 import com.lowerbackstretching.health.HealthController
+import com.lowerbackstretching.sync.NoopSyncBackend
+import com.lowerbackstretching.sync.SyncBackend
+import com.lowerbackstretching.sync.SyncController
 import com.lowerbackstretching.notifications.NotificationChannels
 
 class App : Application() {
@@ -27,6 +30,9 @@ class App : Application() {
     }
     val health: HealthController by lazy { HealthController(this) }
     val prefs: Prefs by lazy { Prefs(this) }
+    /** Swap to a real implementation (FirebaseSyncBackend, etc.) when ready. */
+    val syncBackend: SyncBackend by lazy { NoopSyncBackend() }
+    val sync: SyncController by lazy { SyncController(syncBackend, prefs) }
 
     override fun onCreate() {
         super.onCreate()

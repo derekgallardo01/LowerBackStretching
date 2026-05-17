@@ -72,6 +72,9 @@ fun SettingsScreen(vm: AppViewModel = viewModel()) {
     val healthLauncher = rememberLauncherForActivityResult(
         contract = vm.health.permissionsContract()
     ) { /* result is the granted Set<String>; flow re-emits the toggle state regardless. */ }
+    val cloudSyncEnabled by vm.prefs.cloudSyncEnabled.collectAsState(initial = false)
+    val syncBackendType = remember { vm.sync.backendType }
+    val syncHasRealBackend = remember { vm.sync.hasRealBackend }
 
     fun applyReminder(enabled: Boolean, hour: Int, minute: Int) {
         if (enabled) askNotificationPermission()
@@ -139,6 +142,13 @@ fun SettingsScreen(vm: AppViewModel = viewModel()) {
                 scope.launch { vm.prefs.setHealthReadEnabled(on) }
                 if (on) healthLauncher.launch(HealthController.allPermissions)
             },
+        )
+
+        CloudSyncCard(
+            enabled = cloudSyncEnabled,
+            backendType = syncBackendType,
+            hasRealBackend = syncHasRealBackend,
+            onEnabledChange = { on -> scope.launch { vm.sync.setEnabled(on) } },
         )
 
         AboutCard()
@@ -417,6 +427,50 @@ private fun HealthToggleRow(
             )
         }
         Switch(checked = checked, onCheckedChange = onChange)
+    }
+}
+
+@Composable
+private fun CloudSyncCard(
+    enabled: Boolean,
+    backendType: String,
+    hasRealBackend: Boolean,
+    onEnabledChange: (Boolean) -> Unit,
+) {
+    Card(shape = RoundedCornerShape(16.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            SectionHeader("Cloud sync", topPadding = 0.dp)
+            if (!hasRealBackend) {
+                Text(
+                    "Cloud sync is wired in but the Firebase backend isn't connected yet. " +
+                        "Set up the Firebase project (see firebase/README.md) and swap " +
+                        "App.syncBackend to FirebaseSyncBackend to enable.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                )
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(Modifier.padding(end = 12.dp)) {
+                        Text("Enable cloud sync", style = MaterialTheme.typography.titleSmall)
+                        Text(
+                            "Sessions, routines, and progress back up to your account.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        )
+                    }
+                    Switch(checked = enabled, onCheckedChange = onEnabledChange)
+                }
+            }
+            Text(
+                "Backend: $backendType",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+            )
+        }
     }
 }
 

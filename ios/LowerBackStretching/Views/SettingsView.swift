@@ -15,6 +15,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKeys.chimeTrack) private var chimeTrackRaw: String = ChimeTrack.none.storageValue
     @AppStorage(SettingsKeys.healthWriteEnabled) private var healthWriteEnabled: Bool = false
     @AppStorage(SettingsKeys.healthReadEnabled) private var healthReadEnabled: Bool = false
+    @AppStorage(SettingsKeys.cloudSyncEnabled) private var cloudSyncEnabled: Bool = false
 
     @State private var pickerDate: Date = .now
 
@@ -113,6 +114,23 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+            }
+
+            Section(header: Text("Cloud sync")) {
+                if SyncController.shared.hasRealBackend {
+                    Toggle("Enable cloud sync", isOn: $cloudSyncEnabled)
+                        .onChange(of: cloudSyncEnabled) { _, on in
+                            Task { await SyncController.shared.setEnabled(on) }
+                        }
+                    Text("Sessions, routines, and progress back up to your account.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Cloud sync is wired in but the Firebase backend isn't connected yet. Set up the Firebase project (see firebase/README.md) and assign a real backend to SyncController.shared.backend to enable.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                LabeledContent("Backend", value: SyncController.shared.backendType)
             }
 
             Section(header: Text("About")) {

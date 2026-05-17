@@ -34,6 +34,8 @@ enum SettingsKeys {
 
     static let healthWriteEnabled = "health_write_enabled"
     static let healthReadEnabled = "health_read_enabled"
+
+    static let cloudSyncEnabled = "cloud_sync_enabled"
 }
 
 enum GoalDefaults {
