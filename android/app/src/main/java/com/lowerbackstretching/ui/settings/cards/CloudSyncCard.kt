@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -30,42 +28,40 @@ fun CloudSyncCard(vm: AppViewModel = viewModel()) {
     val backendType = remember { vm.sync.backendType }
     val hasRealBackend = remember { vm.sync.hasRealBackend }
 
-    Card(shape = RoundedCornerShape(16.dp)) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            SectionHeader("Cloud sync", topPadding = 0.dp)
-            if (!hasRealBackend) {
-                Text(
-                    "Cloud sync is wired in but the Firebase backend isn't connected yet. " +
-                        "Set up the Firebase project (see firebase/README.md) and swap " +
-                        "App.syncBackend to FirebaseSyncBackend to enable.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                )
-            } else {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column(Modifier.padding(end = 12.dp)) {
-                        Text("Enable cloud sync", style = MaterialTheme.typography.titleSmall)
-                        Text(
-                            "Sessions, routines, and progress back up to your account.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                        )
-                    }
-                    Switch(
-                        checked = enabled,
-                        onCheckedChange = { on -> scope.launch { vm.sync.setEnabled(on) } },
+    SettingsCard(verticalSpacing = 8.dp) {
+        SectionHeader("Cloud sync", topPadding = 0.dp)
+        if (!hasRealBackend) {
+            Text(
+                "Cloud sync is wired in but the Firebase backend isn't connected yet. " +
+                    "Set up the Firebase project (see firebase/README.md) and swap " +
+                    "App.syncBackend to FirebaseSyncBackend to enable.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            )
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(Modifier.padding(end = 12.dp)) {
+                    Text("Enable cloud sync", style = MaterialTheme.typography.titleSmall)
+                    Text(
+                        "Sessions, routines, and progress back up to your account.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                     )
                 }
+                Switch(
+                    checked = enabled,
+                    onCheckedChange = { on -> scope.launch { vm.sync.setEnabled(on) } },
+                )
             }
-            Text(
-                "Backend: $backendType",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
-            )
         }
+        Text(
+            "Backend: $backendType",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
+        )
     }
 }

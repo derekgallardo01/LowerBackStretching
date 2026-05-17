@@ -1,11 +1,7 @@
 package com.lowerbackstretching.ui.settings.cards
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,41 +37,39 @@ fun AudioCard(vm: AppViewModel = viewModel()) {
     val ambientVolume by vm.prefs.ambientVolume.collectAsState(initial = 0.6f)
     val chime by vm.prefs.chimeTrack.collectAsState(initial = ChimeTrack.NONE)
 
-    Card(shape = RoundedCornerShape(16.dp)) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            SectionHeader("Audio", topPadding = 0.dp)
+    SettingsCard {
+        SectionHeader("Audio", topPadding = 0.dp)
 
-            TrackDropdown(
-                label = "Music",
-                options = MusicTrack.entries.map { it to it.displayName },
-                selected = music,
-                onChange = { scope.launch { vm.prefs.setMusicTrack(it) } },
-            )
-            VolumeSlider(
-                label = "Music volume",
-                value = musicVolume,
-                onValueChange = { scope.launch { vm.prefs.setMusicVolume(it) } },
-            )
+        TrackDropdown(
+            label = "Music",
+            options = MusicTrack.entries.map { it to it.displayName },
+            selected = music,
+            onChange = { scope.launch { vm.prefs.setMusicTrack(it) } },
+        )
+        VolumeSlider(
+            label = "Music volume",
+            value = musicVolume,
+            onValueChange = { scope.launch { vm.prefs.setMusicVolume(it) } },
+        )
 
-            TrackDropdown(
-                label = "Ambient",
-                options = AmbientTrack.entries.map { it to it.displayName },
-                selected = ambient,
-                onChange = { scope.launch { vm.prefs.setAmbientTrack(it) } },
-            )
-            VolumeSlider(
-                label = "Ambient volume",
-                value = ambientVolume,
-                onValueChange = { scope.launch { vm.prefs.setAmbientVolume(it) } },
-            )
+        TrackDropdown(
+            label = "Ambient",
+            options = AmbientTrack.entries.map { it to it.displayName },
+            selected = ambient,
+            onChange = { scope.launch { vm.prefs.setAmbientTrack(it) } },
+        )
+        VolumeSlider(
+            label = "Ambient volume",
+            value = ambientVolume,
+            onValueChange = { scope.launch { vm.prefs.setAmbientVolume(it) } },
+        )
 
-            TrackDropdown(
-                label = "Chime on transition",
-                options = ChimeTrack.entries.map { it to it.displayName },
-                selected = chime,
-                onChange = { scope.launch { vm.prefs.setChimeTrack(it) } },
-            )
-        }
+        TrackDropdown(
+            label = "Chime on transition",
+            options = ChimeTrack.entries.map { it to it.displayName },
+            selected = chime,
+            onChange = { scope.launch { vm.prefs.setChimeTrack(it) } },
+        )
     }
 }
 

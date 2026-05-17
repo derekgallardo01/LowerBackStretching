@@ -1,11 +1,6 @@
 package com.lowerbackstretching.ui.settings.cards
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -30,29 +25,27 @@ fun AppearanceCard(vm: AppViewModel = viewModel()) {
     val themeMode by vm.prefs.themeMode.collectAsState(initial = ThemeMode.SYSTEM)
     val durationUnit by vm.prefs.durationUnit.collectAsState(initial = DurationUnit.SECONDS)
 
-    Card(shape = RoundedCornerShape(16.dp)) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            SectionHeader("Appearance", topPadding = 0.dp)
-            Text("Theme", style = MaterialTheme.typography.bodyMedium)
-            Segmented(
-                options = listOf(
-                    ThemeMode.SYSTEM to "System",
-                    ThemeMode.LIGHT to "Light",
-                    ThemeMode.DARK to "Dark",
-                ),
-                selected = themeMode,
-                onChange = { scope.launch { vm.prefs.setThemeMode(it) } },
-            )
-            Text("Duration display", style = MaterialTheme.typography.bodyMedium)
-            Segmented(
-                options = listOf(
-                    DurationUnit.SECONDS to "Seconds",
-                    DurationUnit.MINUTES_SHORT to "Minutes",
-                ),
-                selected = durationUnit,
-                onChange = { scope.launch { vm.prefs.setDurationUnit(it) } },
-            )
-        }
+    SettingsCard {
+        SectionHeader("Appearance", topPadding = 0.dp)
+        Text("Theme", style = MaterialTheme.typography.bodyMedium)
+        Segmented(
+            options = listOf(
+                ThemeMode.SYSTEM to "System",
+                ThemeMode.LIGHT to "Light",
+                ThemeMode.DARK to "Dark",
+            ),
+            selected = themeMode,
+            onChange = { scope.launch { vm.prefs.setThemeMode(it) } },
+        )
+        Text("Duration display", style = MaterialTheme.typography.bodyMedium)
+        Segmented(
+            options = listOf(
+                DurationUnit.SECONDS to "Seconds",
+                DurationUnit.MINUTES_SHORT to "Minutes",
+            ),
+            selected = durationUnit,
+            onChange = { scope.launch { vm.prefs.setDurationUnit(it) } },
+        )
     }
 }
 

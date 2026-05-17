@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -41,20 +39,18 @@ fun ReminderCard(vm: AppViewModel = viewModel()) {
         scope.launch { vm.prefs.applyReminder(ctx, enabled, hour, minute) }
     }
 
-    Card(shape = RoundedCornerShape(16.dp)) {
-        Column(Modifier.padding(16.dp)) {
-            ToggleRow(
-                enabled = enabled,
-                onToggle = { on -> apply(on, hour, minute) },
-            )
-            TimeRow(
-                formatted = formatTime(hour, minute),
-                onClick = {
-                    TimePickerDialog(ctx, { _, h, m -> apply(enabled, h, m) },
-                        hour, minute, true).show()
-                },
-            )
-        }
+    SettingsCard(verticalSpacing = 0.dp) {
+        ToggleRow(
+            enabled = enabled,
+            onToggle = { on -> apply(on, hour, minute) },
+        )
+        TimeRow(
+            formatted = formatTime(hour, minute),
+            onClick = {
+                TimePickerDialog(ctx, { _, h, m -> apply(enabled, h, m) },
+                    hour, minute, true).show()
+            },
+        )
     }
 }
 

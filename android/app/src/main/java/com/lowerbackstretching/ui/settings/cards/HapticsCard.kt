@@ -1,12 +1,9 @@
 package com.lowerbackstretching.ui.settings.cards
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -28,20 +25,18 @@ fun HapticsCard(vm: AppViewModel = viewModel()) {
     val transitions by vm.prefs.hapticsTransitions.collectAsState(initial = true)
     val finish by vm.prefs.hapticsFinish.collectAsState(initial = true)
 
-    Card(shape = RoundedCornerShape(16.dp)) {
-        Column(Modifier.padding(16.dp)) {
-            SectionHeader("Haptics", topPadding = 0.dp)
-            HapticsToggleRow(
-                title = "Stretch transitions",
-                checked = transitions,
-                onChange = { scope.launch { vm.prefs.setHapticsTransitions(it) } },
-            )
-            HapticsToggleRow(
-                title = "Routine finish",
-                checked = finish,
-                onChange = { scope.launch { vm.prefs.setHapticsFinish(it) } },
-            )
-        }
+    SettingsCard(verticalSpacing = 0.dp) {
+        SectionHeader("Haptics", topPadding = 0.dp)
+        HapticsToggleRow(
+            title = "Stretch transitions",
+            checked = transitions,
+            onChange = { scope.launch { vm.prefs.setHapticsTransitions(it) } },
+        )
+        HapticsToggleRow(
+            title = "Routine finish",
+            checked = finish,
+            onChange = { scope.launch { vm.prefs.setHapticsFinish(it) } },
+        )
     }
 }
 
