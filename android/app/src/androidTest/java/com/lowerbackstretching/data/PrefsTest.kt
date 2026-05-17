@@ -7,6 +7,7 @@ import com.lowerbackstretching.audio.AmbientTrack
 import com.lowerbackstretching.audio.AudioDefaults
 import com.lowerbackstretching.audio.ChimeTrack
 import com.lowerbackstretching.audio.MusicTrack
+import com.lowerbackstretching.core.InProgressSession
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Before

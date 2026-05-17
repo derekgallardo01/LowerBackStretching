@@ -29,7 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.data.BodyParts
+import com.lowerbackstretching.core.BodyParts
 import com.lowerbackstretching.data.DurationUnit
 import com.lowerbackstretching.data.formatDuration
 import com.lowerbackstretching.core.model.EducationalCard

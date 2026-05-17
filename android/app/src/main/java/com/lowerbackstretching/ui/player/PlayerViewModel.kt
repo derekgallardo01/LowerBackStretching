@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.lowerbackstretching.App
 import com.lowerbackstretching.audio.AudioController
-import com.lowerbackstretching.data.InProgressSession
+import com.lowerbackstretching.core.InProgressSession
 import com.lowerbackstretching.core.SyntheticProgramId
 import com.lowerbackstretching.core.model.Stretch
 import com.lowerbackstretching.core.player.PlayerEngine

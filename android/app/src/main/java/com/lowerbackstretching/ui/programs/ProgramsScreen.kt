@@ -26,7 +26,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.data.BodyParts.ALL
+import com.lowerbackstretching.core.BodyParts.ALL
 import com.lowerbackstretching.data.db.CustomRoutineEntity
 import com.lowerbackstretching.data.subtitle
 import com.lowerbackstretching.ui.AppViewModel

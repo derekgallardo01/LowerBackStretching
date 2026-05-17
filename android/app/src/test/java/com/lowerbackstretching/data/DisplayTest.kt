@@ -1,6 +1,7 @@
 package com.lowerbackstretching.data
 
 import com.google.common.truth.Truth.assertThat
+import com.lowerbackstretching.core.BodyParts
 import com.lowerbackstretching.core.model.Program
 import com.lowerbackstretching.core.model.ProgramDay
 import com.lowerbackstretching.core.model.Stretch

@@ -1,4 +1,4 @@
-package com.lowerbackstretching.data
+package com.lowerbackstretching.core
 
 /**
  * Persistent record of a routine the user started but didn't finish.
