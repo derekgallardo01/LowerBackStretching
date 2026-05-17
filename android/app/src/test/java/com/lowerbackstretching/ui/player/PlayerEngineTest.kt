@@ -214,4 +214,39 @@ class PlayerEngineTest {
         )
         assertThat(engine.state.value.index).isEqualTo(1)
     }
+
+    @Test
+    fun routineProgress_is_zero_at_first_frame() {
+        val engine = PlayerEngine(listOf(stretch("a", 10), stretch("b", 20)))
+        assertThat(engine.state.value.routineProgress).isWithin(1e-6f).of(0f)
+    }
+
+    @Test
+    fun routineProgress_advances_proportionally_within_a_stretch() {
+        val engine = PlayerEngine(listOf(stretch("a", 10), stretch("b", 30)))
+        engine.tick() // 1s of 40 total
+        assertThat(engine.state.value.routineProgress).isWithin(1e-6f).of(1f / 40f)
+    }
+
+    @Test
+    fun routineProgress_jumps_when_a_stretch_completes() {
+        val engine = PlayerEngine(listOf(stretch("a", 10), stretch("b", 30)))
+        for (i in 0 until 10) engine.tick() // finish first stretch
+        // We're now at the start of stretch b: 10 of 40 seconds elapsed.
+        assertThat(engine.state.value.routineProgress).isWithin(1e-6f).of(0.25f)
+    }
+
+    @Test
+    fun routineProgress_is_one_when_finished() {
+        val engine = PlayerEngine(listOf(stretch("a", 2)))
+        for (i in 0 until 2) engine.tick()
+        assertThat(engine.state.value.finished).isTrue()
+        assertThat(engine.state.value.routineProgress).isEqualTo(1f)
+    }
+
+    @Test
+    fun routineProgress_zero_for_zero_duration_stretches() {
+        val engine = PlayerEngine(listOf(stretch("a", 0), stretch("b", 0)))
+        assertThat(engine.state.value.routineProgress).isEqualTo(0f)
+    }
 }

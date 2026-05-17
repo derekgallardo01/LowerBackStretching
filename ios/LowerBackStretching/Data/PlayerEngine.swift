@@ -22,6 +22,18 @@ final class PlayerEngine: ObservableObject {
             guard let current, current.durationSeconds > 0 else { return 0 }
             return Double(current.durationSeconds - remainingSeconds) / Double(current.durationSeconds)
         }
+
+        /// Progress across the entire routine, weighted by per-stretch
+        /// duration. 0 at first frame, 1 at the moment the last stretch
+        /// finishes.
+        var routineProgress: Double {
+            if finished { return 1 }
+            let total = stretches.reduce(0) { $0 + $1.durationSeconds }
+            guard total > 0 else { return 0 }
+            let elapsedBefore = stretches.prefix(index).reduce(0) { $0 + $1.durationSeconds }
+            let elapsedInCurrent = (current?.durationSeconds ?? 0) - remainingSeconds
+            return min(1, max(0, Double(elapsedBefore + elapsedInCurrent) / Double(total)))
+        }
     }
 
     /// Set exactly once when the routine completes. Views observe this

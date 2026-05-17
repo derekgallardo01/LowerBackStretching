@@ -128,6 +128,15 @@ internal fun PlayerBody(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
             )
+            // Thin "whole routine" bar under the per-stretch bar — fills
+            // smoothly across all stretches so the user always knows
+            // how close they are to finishing the entire session.
+            LinearProgressIndicator(
+                progress = { snapshot.routineProgress.coerceIn(0f, 1f) },
+                modifier = Modifier.fillMaxWidth().height(3.dp),
+                color = MaterialTheme.colorScheme.secondary,
+                trackColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
+            )
 
             Spacer(Modifier.height(8.dp))
 

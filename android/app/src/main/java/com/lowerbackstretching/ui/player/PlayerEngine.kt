@@ -37,6 +37,21 @@ class PlayerEngine(
                 if (it.durationSeconds == 0) 0f
                 else (it.durationSeconds - remainingSeconds).toFloat() / it.durationSeconds
             } ?: 0f
+
+        /**
+         * Progress across the entire routine, weighted by per-stretch
+         * duration. 0 at first frame, 1 at the moment the last stretch
+         * finishes.
+         */
+        val routineProgress: Float
+            get() {
+                if (finished) return 1f
+                val total = stretches.sumOf { it.durationSeconds }
+                if (total == 0) return 0f
+                val elapsedBefore = stretches.take(index).sumOf { it.durationSeconds }
+                val elapsedInCurrent = (current?.durationSeconds ?: 0) - remainingSeconds
+                return ((elapsedBefore + elapsedInCurrent).toFloat() / total).coerceIn(0f, 1f)
+            }
     }
 
     /** Emitted exactly once when the routine completes. */

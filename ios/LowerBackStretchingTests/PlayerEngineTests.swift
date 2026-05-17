@@ -177,4 +177,34 @@ final class PlayerEngineTests: XCTestCase {
         )
         XCTAssertEqual(engine.snapshot.index, 1)
     }
+
+    func testRoutineProgressIsZeroAtFirstFrame() {
+        let engine = PlayerEngine(stretches: [stretch("a", 10), stretch("b", 20)])
+        XCTAssertEqual(engine.snapshot.routineProgress, 0, accuracy: 1e-6)
+    }
+
+    func testRoutineProgressAdvancesProportionallyWithinAStretch() {
+        let engine = PlayerEngine(stretches: [stretch("a", 10), stretch("b", 30)])
+        _ = engine.tick() // 1s of 40 total
+        XCTAssertEqual(engine.snapshot.routineProgress, 1.0 / 40.0, accuracy: 1e-6)
+    }
+
+    func testRoutineProgressJumpsWhenAStretchCompletes() {
+        let engine = PlayerEngine(stretches: [stretch("a", 10), stretch("b", 30)])
+        for _ in 0..<10 { _ = engine.tick() } // finish first stretch
+        // 10 of 40 seconds elapsed.
+        XCTAssertEqual(engine.snapshot.routineProgress, 0.25, accuracy: 1e-6)
+    }
+
+    func testRoutineProgressIsOneWhenFinished() {
+        let engine = PlayerEngine(stretches: [stretch("a", 2)])
+        for _ in 0..<2 { _ = engine.tick() }
+        XCTAssertTrue(engine.snapshot.finished)
+        XCTAssertEqual(engine.snapshot.routineProgress, 1.0)
+    }
+
+    func testRoutineProgressZeroForZeroDurationStretches() {
+        let engine = PlayerEngine(stretches: [stretch("a", 0), stretch("b", 0)])
+        XCTAssertEqual(engine.snapshot.routineProgress, 0)
+    }
 }
