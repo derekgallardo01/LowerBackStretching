@@ -6,15 +6,24 @@ on:
     paths:
       - 'android/**'
       - '.github/workflows/android-tests.yml'
+      - '.github/scripts/**'
   pull_request:
     paths:
       - 'android/**'
       - '.github/workflows/android-tests.yml'
+      - '.github/scripts/**'
 
 # Cancel any in-flight run for the same branch when a newer commit lands.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+# Pre-empt the Sept 2026 Node 20 → Node 24 forced upgrade. The actions
+# we depend on still ship Node 20 binaries; this env var asks the
+# runner to invoke them under Node 24 today. Drop once each action
+# publishes a Node 24 release.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   unit-tests:
@@ -43,55 +52,19 @@ jobs:
         with:
           gradle-version: '8.7'
 
-      # Each gradle invocation: if it fails, print the Kotlin error
-      # lines from its captured stdout BEFORE re-exiting. The errors
-      # then appear at the BOTTOM of the failing step (where the user
-      # actually looks), as ::error:: annotations, AND in the run
-      # summary. Three places — no way to miss them.
-      - name: Compile :core (main + test)
-        run: |
-          gradle :core:compileKotlin :core:compileTestKotlin \
-            --stacktrace --console=plain 2>&1 | tee /tmp/core.log
-          rc=${PIPESTATUS[0]}
-          if [ $rc -ne 0 ]; then bash $GITHUB_WORKSPACE/.github/scripts/print-kotlin-errors.sh /tmp/core.log; fi
-          exit $rc
-
-      - name: Compile :app (debug + test)
-        run: |
-          gradle :app:compileDebugKotlin :app:compileDebugUnitTestKotlin \
-            --stacktrace --console=plain 2>&1 | tee /tmp/app.log
-          rc=${PIPESTATUS[0]}
-          if [ $rc -ne 0 ]; then bash $GITHUB_WORKSPACE/.github/scripts/print-kotlin-errors.sh /tmp/app.log; fi
-          exit $rc
-
-      - name: Compile :wear (debug + test)
-        run: |
-          gradle :wear:compileDebugKotlin :wear:compileDebugUnitTestKotlin \
-            --stacktrace --console=plain 2>&1 | tee /tmp/wear.log
-          rc=${PIPESTATUS[0]}
-          if [ $rc -ne 0 ]; then bash $GITHUB_WORKSPACE/.github/scripts/print-kotlin-errors.sh /tmp/wear.log; fi
-          exit $rc
-
+      # The test task implicitly compiles main + test, so any Kotlin
+      # compile error surfaces here. The wrapper script tees stdout to
+      # /tmp/*.log and runs print-kotlin-errors.sh on failure so the
+      # e:/error: lines appear inline, as ::error:: annotations, and
+      # in the run summary.
       - name: Run :core unit tests
-        run: |
-          gradle :core:test --stacktrace --console=plain 2>&1 | tee /tmp/core-test.log
-          rc=${PIPESTATUS[0]}
-          if [ $rc -ne 0 ]; then bash $GITHUB_WORKSPACE/.github/scripts/print-kotlin-errors.sh /tmp/core-test.log; fi
-          exit $rc
+        run: bash "$GITHUB_WORKSPACE/.github/scripts/gradle-with-diag.sh" /tmp/core.log :core:test
 
       - name: Run :app unit tests
-        run: |
-          gradle :app:testDebugUnitTest --stacktrace --console=plain 2>&1 | tee /tmp/app-test.log
-          rc=${PIPESTATUS[0]}
-          if [ $rc -ne 0 ]; then bash $GITHUB_WORKSPACE/.github/scripts/print-kotlin-errors.sh /tmp/app-test.log; fi
-          exit $rc
+        run: bash "$GITHUB_WORKSPACE/.github/scripts/gradle-with-diag.sh" /tmp/app.log :app:testDebugUnitTest
 
       - name: Run :wear unit tests
-        run: |
-          gradle :wear:testDebugUnitTest --stacktrace --console=plain 2>&1 | tee /tmp/wear-test.log
-          rc=${PIPESTATUS[0]}
-          if [ $rc -ne 0 ]; then bash $GITHUB_WORKSPACE/.github/scripts/print-kotlin-errors.sh /tmp/wear-test.log; fi
-          exit $rc
+        run: bash "$GITHUB_WORKSPACE/.github/scripts/gradle-with-diag.sh" /tmp/wear.log :wear:testDebugUnitTest
 
       - name: Upload test reports
         if: failure()
