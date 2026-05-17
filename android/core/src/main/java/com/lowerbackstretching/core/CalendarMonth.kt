@@ -1,4 +1,4 @@
-package com.lowerbackstretching.data
+package com.lowerbackstretching.core
 
 import java.time.DayOfWeek
 import java.time.LocalDate

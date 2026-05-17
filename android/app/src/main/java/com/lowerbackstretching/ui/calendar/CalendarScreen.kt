@@ -36,7 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.data.CalendarMonth
+import com.lowerbackstretching.core.CalendarMonth
 import com.lowerbackstretching.data.db.SessionEntity
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.InfoRow
