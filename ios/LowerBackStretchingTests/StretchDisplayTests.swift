@@ -78,4 +78,11 @@ final class StretchDisplayTests: XCTestCase {
         XCTAssertEqual(day.headerTitle, "Day 3 · Gentle")
         XCTAssertEqual(day.subtitle(totalSeconds: 180), "2 stretches · 3 min")
     }
+
+    func testStretchCountSubtitleMatchesProgramDayShape() {
+        XCTAssertEqual(stretchCountSubtitle(stretchCount: 5, totalSeconds: 300), "5 stretches · 5 min")
+        XCTAssertEqual(stretchCountSubtitle(stretchCount: 0, totalSeconds: 0), "0 stretches · 0 min")
+        // Truncates to whole minutes — the Android mirror does the same.
+        XCTAssertEqual(stretchCountSubtitle(stretchCount: 3, totalSeconds: 119), "3 stretches · 1 min")
+    }
 }

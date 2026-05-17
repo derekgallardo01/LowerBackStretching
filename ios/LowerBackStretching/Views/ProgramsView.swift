@@ -83,7 +83,10 @@ struct ProgramsView: View {
         NavigationLink(value: routine) {
             InfoRow(
                 title: routine.name,
-                subtitle: routine.subtitle(totalSeconds: content.totalDurationSeconds(stretchIds: routine.stretchIds))
+                subtitle: stretchCountSubtitle(
+                    stretchCount: routine.stretchIds.count,
+                    totalSeconds: content.totalDurationSeconds(stretchIds: routine.stretchIds)
+                )
             )
         }
         .buttonStyle(.plain)

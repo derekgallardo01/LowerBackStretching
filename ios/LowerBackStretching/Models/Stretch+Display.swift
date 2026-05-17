@@ -44,12 +44,13 @@ extension ProgramDay {
 
     /// "5 stretches · 3 min"
     func subtitle(totalSeconds: Int) -> String {
-        "\(stretchIds.count) stretches · \(totalSeconds / 60) min"
+        stretchCountSubtitle(stretchCount: stretchIds.count, totalSeconds: totalSeconds)
     }
 }
 
-extension CustomRoutine {
-    func subtitle(totalSeconds: Int) -> String {
-        "\(stretchIds.count) stretches · \(totalSeconds / 60) min"
-    }
+/// "5 stretches · 3 min" — pure helper for any UI row that knows the
+/// stretch count + a precomputed total duration. Mirrors Android's
+/// :core stretchCountSubtitle(stretchCount, totalSeconds).
+func stretchCountSubtitle(stretchCount: Int, totalSeconds: Int) -> String {
+    "\(stretchCount) stretches · \(totalSeconds / 60) min"
 }
