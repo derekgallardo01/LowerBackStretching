@@ -39,14 +39,14 @@ class PlayerEngine<T : Timed>(
     startIndex: Int = 0,
 ) {
 
-    data class Snapshot<T : Timed>(
-        val stretches: List<T>,
+    data class Snapshot<S : Timed>(
+        val stretches: List<S>,
         val index: Int,
         val remainingSeconds: Int,
         val running: Boolean,
         val finished: Boolean,
     ) {
-        val current: T? get() = stretches.getOrNull(index)
+        val current: S? get() = stretches.getOrNull(index)
 
         val progress: Float
             get() = current?.let {
