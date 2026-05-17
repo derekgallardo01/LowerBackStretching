@@ -49,8 +49,10 @@ fun ProgramsScreen(
     val customRoutines by vm.customRoutines.all().collectAsState(initial = emptyList())
     val categories = remember(programs) { listOf(ALL) + programs.map { it.category }.distinct() }
     var selectedCategory by remember { mutableStateOf(ALL) }
-    val visiblePrograms = if (selectedCategory == ALL) programs
-                          else programs.filter { it.category == selectedCategory }
+    val visiblePrograms = remember(selectedCategory, programs) {
+        if (selectedCategory == ALL) programs
+        else programs.filter { it.category == selectedCategory }
+    }
 
     val scope = rememberCoroutineScope()
     val snackbarHost = remember { SnackbarHostState() }

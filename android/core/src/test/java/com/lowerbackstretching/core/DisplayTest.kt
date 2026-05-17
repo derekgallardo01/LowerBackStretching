@@ -94,4 +94,15 @@ class DisplayTest {
         assertThat(day.headerTitle).isEqualTo("Day 3 · Gentle")
         assertThat(day.subtitle(totalSeconds = 180)).isEqualTo("2 stretches · 3 min")
     }
+
+    @Test
+    fun stretchCountSubtitle_matches_programDay_subtitle_shape() {
+        assertThat(stretchCountSubtitle(stretchCount = 5, totalSeconds = 300))
+            .isEqualTo("5 stretches · 5 min")
+        assertThat(stretchCountSubtitle(stretchCount = 0, totalSeconds = 0))
+            .isEqualTo("0 stretches · 0 min")
+        // Truncates to whole minutes — the iOS mirror does the same.
+        assertThat(stretchCountSubtitle(stretchCount = 3, totalSeconds = 119))
+            .isEqualTo("3 stretches · 1 min")
+    }
 }
