@@ -199,9 +199,9 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private data class AudioState(
-        val music: com.lowerbackstretching.audio.MusicTrack,
+        val music: com.lowerbackstretching.core.MusicTrack,
         val musicVolume: Float,
-        val ambient: com.lowerbackstretching.audio.AmbientTrack,
+        val ambient: com.lowerbackstretching.core.AmbientTrack,
         val ambientVolume: Float,
     )
 }

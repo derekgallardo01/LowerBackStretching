@@ -3,10 +3,10 @@ package com.lowerbackstretching.data
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
-import com.lowerbackstretching.audio.AmbientTrack
-import com.lowerbackstretching.audio.AudioDefaults
-import com.lowerbackstretching.audio.ChimeTrack
-import com.lowerbackstretching.audio.MusicTrack
+import com.lowerbackstretching.core.AmbientTrack
+import com.lowerbackstretching.core.AudioDefaults
+import com.lowerbackstretching.core.ChimeTrack
+import com.lowerbackstretching.core.MusicTrack
 import com.lowerbackstretching.core.InProgressSession
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

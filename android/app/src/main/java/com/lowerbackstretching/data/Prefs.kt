@@ -8,10 +8,10 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.lowerbackstretching.audio.AmbientTrack
-import com.lowerbackstretching.audio.AudioDefaults
-import com.lowerbackstretching.audio.ChimeTrack
-import com.lowerbackstretching.audio.MusicTrack
+import com.lowerbackstretching.core.AmbientTrack
+import com.lowerbackstretching.core.AudioDefaults
+import com.lowerbackstretching.core.ChimeTrack
+import com.lowerbackstretching.core.MusicTrack
 import com.lowerbackstretching.core.DurationUnit
 import com.lowerbackstretching.core.InProgressSession
 import com.lowerbackstretching.core.ThemeMode

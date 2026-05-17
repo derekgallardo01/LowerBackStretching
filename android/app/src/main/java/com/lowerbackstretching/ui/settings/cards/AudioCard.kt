@@ -25,9 +25,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.audio.AmbientTrack
-import com.lowerbackstretching.audio.ChimeTrack
-import com.lowerbackstretching.audio.MusicTrack
+import com.lowerbackstretching.core.AmbientTrack
+import com.lowerbackstretching.core.ChimeTrack
+import com.lowerbackstretching.core.MusicTrack
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.SectionHeader
 import kotlinx.coroutines.launch

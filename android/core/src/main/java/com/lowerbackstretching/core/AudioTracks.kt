@@ -1,4 +1,4 @@
-package com.lowerbackstretching.audio
+package com.lowerbackstretching.core
 
 /**
  * Catalogue of audio assets shipped with the app. Each entry maps a
