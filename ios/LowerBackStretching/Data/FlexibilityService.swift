@@ -34,8 +34,13 @@ struct FlexibilityDelta: Equatable {
 }
 
 /// Pure helper mirroring Android's flexibilityDelta. Returns nil per
-/// metric if either snapshot is missing that metric.
-func flexibilityDelta(latest: FlexibilityTest?, previous: FlexibilityTest?) -> FlexibilityDelta {
+/// metric if either snapshot is missing that metric. Takes the
+/// `FlexibilityMeasurement` protocol so callers can pass any conforming
+/// value (the `@Model` FlexibilityTest, a test fixture, etc.).
+func flexibilityDelta(
+    latest: FlexibilityMeasurement?,
+    previous: FlexibilityMeasurement?
+) -> FlexibilityDelta {
     guard let latest, let previous else {
         return FlexibilityDelta(sitAndReachCm: nil, toeTouchCm: nil, shoulderReachCm: nil)
     }
