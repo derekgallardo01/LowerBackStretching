@@ -8,6 +8,10 @@ import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Build
 import android.util.Log
+import com.lowerbackstretching.core.AmbientTrack
+import com.lowerbackstretching.core.AudioDefaults
+import com.lowerbackstretching.core.ChimeTrack
+import com.lowerbackstretching.core.MusicTrack
 
 /**
  * Wraps platform audio APIs for the three streams the app cares about:
