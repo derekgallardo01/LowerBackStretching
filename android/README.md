@@ -87,7 +87,9 @@ Wave 5 added an optional integration with Health Connect (Google's
 cross-app health data store).
 
 - Dependency: `androidx.health.connect:connect-client` (declared in
-  `libs.versions.toml`).
+  `libs.versions.toml`). Pinned to `1.1.0-alpha07` — the newer
+  `1.1.0-rc02` requires compileSdk 36 and AGP 8.9.1+, which would
+  ripple through the whole project. Bump together when you're ready.
 - Permissions: `health.WRITE_EXERCISE` (to log stretching sessions)
   and `health.READ_STEPS` (to suggest a cooldown after long walks).
   Both declared in `AndroidManifest.xml` and gated behind user
