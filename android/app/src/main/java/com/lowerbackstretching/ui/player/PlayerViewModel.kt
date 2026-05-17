@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.lowerbackstretching.App
+import com.lowerbackstretching.data.InProgressSession
 import com.lowerbackstretching.data.SyntheticProgramId
 import com.lowerbackstretching.data.model.Stretch
 import com.lowerbackstretching.notifications.Haptics
@@ -50,7 +51,12 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         val program = appCtx.contentRepository.program(programId) ?: return
         this.programId = programId
         this.dayNumber = dayNumber
-        initEngine(appCtx.contentRepository.stretchesFor(program, dayNumber))
+        viewModelScope.launch {
+            initEngine(
+                stretches = appCtx.contentRepository.stretchesFor(program, dayNumber),
+                startIndex = resumeIndexFor(programId, dayNumber),
+            )
+        }
     }
 
     fun loadSingle(stretchId: String) {
@@ -59,7 +65,12 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         val stretch = appCtx.contentRepository.stretch(stretchId) ?: return
         this.programId = pid
         this.dayNumber = 0
-        initEngine(listOf(stretch))
+        viewModelScope.launch {
+            initEngine(
+                stretches = listOf(stretch),
+                startIndex = resumeIndexFor(pid, 0),
+            )
+        }
     }
 
     fun loadCustomRoutine(routineId: Long) {
@@ -70,8 +81,17 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
             val stretches = routine.stretchIds.mapNotNull { appCtx.contentRepository.stretch(it) }
             programId = pid
             dayNumber = 0
-            initEngine(stretches)
+            initEngine(
+                stretches = stretches,
+                startIndex = resumeIndexFor(pid, 0),
+            )
         }
+    }
+
+    /** Returns the saved index if it matches this source, else 0. */
+    private suspend fun resumeIndexFor(programId: String, dayNumber: Int): Int {
+        val saved = appCtx.prefs.inProgressSession.first() ?: return 0
+        return if (saved.programId == programId && saved.dayNumber == dayNumber) saved.index else 0
     }
 
     fun togglePlay() = _engine.value?.togglePlay()
@@ -82,13 +102,20 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
 
     fun previous() = _engine.value?.previous()
 
-    private fun initEngine(stretches: List<Stretch>) {
+    private fun initEngine(stretches: List<Stretch>, startIndex: Int = 0) {
         loaded = true
         tickerJob?.cancel()
         finishedJob?.cancel()
         transitionJob?.cancel()
-        val engine = PlayerEngine(stretches)
+        val engine = PlayerEngine(stretches, startIndex = startIndex)
         _engine.value = engine
+        // Persist the resume point on first frame (even before any tick)
+        // so a force-kill on the very first stretch still resumes here.
+        viewModelScope.launch {
+            appCtx.prefs.saveInProgress(
+                InProgressSession(programId, dayNumber, engine.state.value.index)
+            )
+        }
         tickerJob = viewModelScope.launch {
             while (true) {
                 delay(1000)
@@ -102,17 +129,22 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
                     day = dayNumber,
                     durationSeconds = event.totalDurationSeconds,
                 )
+                appCtx.prefs.clearInProgress()
                 if (appCtx.prefs.hapticsFinish.first()) Haptics.finish(appCtx)
             }
         }
-        // Buzz when the stretch index advances (but not on the initial frame).
         transitionJob = viewModelScope.launch {
             engine.state
                 .distinctUntilChangedBy { it.index }
                 .drop(1)
-                .collect {
-                    if (!it.finished && appCtx.prefs.hapticsTransitions.first()) {
-                        Haptics.short(appCtx)
+                .collect { snapshot ->
+                    if (!snapshot.finished) {
+                        appCtx.prefs.saveInProgress(
+                            InProgressSession(programId, dayNumber, snapshot.index)
+                        )
+                        if (appCtx.prefs.hapticsTransitions.first()) {
+                            Haptics.short(appCtx)
+                        }
                     }
                 }
         }

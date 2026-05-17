@@ -154,4 +154,27 @@ final class PlayerEngineTests: XCTestCase {
         _ = engine.next()
         XCTAssertEqual(engine.finishedEvent?.totalDurationSeconds, 10)
     }
+
+    func testStartIndexSeeksToGivenStretch() {
+        let engine = PlayerEngine(
+            stretches: [stretch("a", 10), stretch("b", 20), stretch("c", 30)],
+            startIndex: 1
+        )
+        XCTAssertEqual(engine.snapshot.index, 1)
+        XCTAssertEqual(engine.snapshot.remainingSeconds, 20)
+        XCTAssertEqual(engine.snapshot.current?.id, "b")
+    }
+
+    func testStartIndexNegativeIsClampedToZero() {
+        let engine = PlayerEngine(stretches: [stretch("a", 10)], startIndex: -3)
+        XCTAssertEqual(engine.snapshot.index, 0)
+    }
+
+    func testStartIndexPastEndIsClamped() {
+        let engine = PlayerEngine(
+            stretches: [stretch("a", 10), stretch("b", 20)],
+            startIndex: 99
+        )
+        XCTAssertEqual(engine.snapshot.index, 1)
+    }
 }

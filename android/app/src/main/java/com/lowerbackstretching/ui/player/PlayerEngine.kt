@@ -14,8 +14,14 @@ import kotlinx.coroutines.flow.update
  * it's directly unit-testable. The viewmodel drives [tick] on a
  * one-second cadence and listens for the [finishedEvents] flow to record
  * the session exactly once.
+ *
+ * `startIndex` lets the viewmodel resume an interrupted routine — pass
+ * the saved index and the engine starts at that stretch.
  */
-class PlayerEngine(initialStretches: List<Stretch>) {
+class PlayerEngine(
+    initialStretches: List<Stretch>,
+    startIndex: Int = 0,
+) {
 
     data class Snapshot(
         val stretches: List<Stretch>,
@@ -36,11 +42,13 @@ class PlayerEngine(initialStretches: List<Stretch>) {
     /** Emitted exactly once when the routine completes. */
     data class FinishedEvent(val totalDurationSeconds: Int)
 
+    private val safeStartIndex = startIndex.coerceIn(0, (initialStretches.size - 1).coerceAtLeast(0))
+
     private val _state = MutableStateFlow(
         Snapshot(
             stretches = initialStretches,
-            index = 0,
-            remainingSeconds = initialStretches.firstOrNull()?.durationSeconds ?: 0,
+            index = safeStartIndex,
+            remainingSeconds = initialStretches.getOrNull(safeStartIndex)?.durationSeconds ?: 0,
             running = initialStretches.isNotEmpty(),
             finished = initialStretches.isEmpty(),
         )

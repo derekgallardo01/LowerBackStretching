@@ -34,12 +34,17 @@ final class PlayerEngine: ObservableObject {
     @Published private(set) var finishedEvent: FinishedEvent?
     let totalDurationSeconds: Int
 
-    init(stretches: [Stretch]) {
+    /// `startIndex` lets the caller resume an interrupted routine — pass
+    /// the saved index and the engine starts at that stretch.
+    init(stretches: [Stretch], startIndex: Int = 0) {
         self.totalDurationSeconds = stretches.reduce(0) { $0 + $1.durationSeconds }
+        let safe = max(0, min(startIndex, stretches.count - 1))
+        let index = stretches.isEmpty ? 0 : safe
         self.snapshot = Snapshot(
             stretches: stretches,
-            index: 0,
-            remainingSeconds: stretches.first?.durationSeconds ?? 0,
+            index: index,
+            remainingSeconds: stretches.indices.contains(index)
+                ? stretches[index].durationSeconds : 0,
             running: !stretches.isEmpty,
             finished: stretches.isEmpty
         )

@@ -69,7 +69,10 @@ struct PlayerBody: View {
         self.title = title
         self.programId = programId
         self.dayNumber = dayNumber
-        _engine = StateObject(wrappedValue: PlayerEngine(stretches: stretches))
+        let startIndex = InProgressStore.resumeIndex(for: programId, dayNumber: dayNumber)
+        _engine = StateObject(
+            wrappedValue: PlayerEngine(stretches: stretches, startIndex: startIndex)
+        )
     }
 
     var body: some View {
@@ -125,15 +128,24 @@ struct PlayerBody: View {
                 durationSeconds: event.totalDurationSeconds,
                 in: modelContext
             )
+            InProgressStore.clear()
             if hapticsFinish { Haptics.finish() }
         }
         .onChange(of: engine.snapshot.index) { oldValue, newValue in
-            // Buzz when the stretch index advances mid-routine (skip
-            // the initial 0 -> ... transition when nothing was there).
             guard newValue != oldValue, !engine.snapshot.finished else { return }
+            InProgressStore.save(
+                InProgressSession(programId: programId, dayNumber: dayNumber, index: newValue)
+            )
             if hapticsTransitions { Haptics.short() }
         }
-        .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
+        .onAppear {
+            UIApplication.shared.isIdleTimerDisabled = true
+            // Persist resume point on first frame too (covers force-kill
+            // before any index advance).
+            InProgressStore.save(
+                InProgressSession(programId: programId, dayNumber: dayNumber, index: engine.snapshot.index)
+            )
+        }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
         .task {
             while !Task.isCancelled {

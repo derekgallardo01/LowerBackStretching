@@ -20,6 +20,9 @@ object PrefKeys {
     val DURATION_UNIT = stringPreferencesKey("duration_unit")
     val HAPTICS_TRANSITIONS = booleanPreferencesKey("haptics_transitions")
     val HAPTICS_FINISH = booleanPreferencesKey("haptics_finish")
+    val IN_PROGRESS_PROGRAM_ID = stringPreferencesKey("in_progress_program_id")
+    val IN_PROGRESS_DAY = intPreferencesKey("in_progress_day")
+    val IN_PROGRESS_INDEX = intPreferencesKey("in_progress_index")
 }
 
 object ReminderDefaults {
@@ -57,6 +60,14 @@ class Prefs(private val context: Context) {
     val durationUnit: Flow<DurationUnit> = context.dataStore.data.map { DurationUnit.fromStorage(it[PrefKeys.DURATION_UNIT]) }
     val hapticsTransitions: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.HAPTICS_TRANSITIONS] ?: true }
     val hapticsFinish: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.HAPTICS_FINISH] ?: true }
+    val inProgressSession: Flow<InProgressSession?> = context.dataStore.data.map { prefs ->
+        val pid = prefs[PrefKeys.IN_PROGRESS_PROGRAM_ID] ?: return@map null
+        InProgressSession(
+            programId = pid,
+            dayNumber = prefs[PrefKeys.IN_PROGRESS_DAY] ?: 0,
+            index = prefs[PrefKeys.IN_PROGRESS_INDEX] ?: 0,
+        )
+    }
 
     internal suspend fun setReminder(enabled: Boolean, hour: Int, minute: Int) {
         context.dataStore.edit {
@@ -84,6 +95,22 @@ class Prefs(private val context: Context) {
 
     suspend fun setHapticsFinish(enabled: Boolean) {
         context.dataStore.edit { it[PrefKeys.HAPTICS_FINISH] = enabled }
+    }
+
+    suspend fun saveInProgress(session: InProgressSession) {
+        context.dataStore.edit {
+            it[PrefKeys.IN_PROGRESS_PROGRAM_ID] = session.programId
+            it[PrefKeys.IN_PROGRESS_DAY] = session.dayNumber
+            it[PrefKeys.IN_PROGRESS_INDEX] = session.index
+        }
+    }
+
+    suspend fun clearInProgress() {
+        context.dataStore.edit {
+            it.remove(PrefKeys.IN_PROGRESS_PROGRAM_ID)
+            it.remove(PrefKeys.IN_PROGRESS_DAY)
+            it.remove(PrefKeys.IN_PROGRESS_INDEX)
+        }
     }
 
     /** Test helper — clears all keys so the next read returns defaults. */

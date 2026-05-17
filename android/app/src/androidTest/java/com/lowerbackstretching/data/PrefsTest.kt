@@ -51,4 +51,23 @@ class PrefsTest {
         prefs.markOnboardingDone()
         assertThat(prefs.onboardingDone.first()).isTrue()
     }
+
+    @Test
+    fun inProgress_round_trip_and_clear() = runBlocking {
+        assertThat(prefs.inProgressSession.first()).isNull()
+
+        prefs.saveInProgress(InProgressSession("lower-back-relief-7day", 3, 2))
+        val read = prefs.inProgressSession.first()
+        assertThat(read).isEqualTo(InProgressSession("lower-back-relief-7day", 3, 2))
+
+        prefs.clearInProgress()
+        assertThat(prefs.inProgressSession.first()).isNull()
+    }
+
+    @Test
+    fun saveInProgress_overwrites_previous_record() = runBlocking {
+        prefs.saveInProgress(InProgressSession("p1", 1, 0))
+        prefs.saveInProgress(InProgressSession("p2", 4, 3))
+        assertThat(prefs.inProgressSession.first()).isEqualTo(InProgressSession("p2", 4, 3))
+    }
 }

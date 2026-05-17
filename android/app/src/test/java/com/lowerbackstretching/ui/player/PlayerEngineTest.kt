@@ -187,4 +187,31 @@ class PlayerEngineTest {
         val event = withTimeout(1000) { engine.finishedEvents.first() }
         assertThat(event.totalDurationSeconds).isEqualTo(10)
     }
+
+    @Test
+    fun startIndex_seeks_to_given_stretch() {
+        val engine = PlayerEngine(
+            initialStretches = listOf(stretch("a", 10), stretch("b", 20), stretch("c", 30)),
+            startIndex = 1,
+        )
+        val s = engine.state.value
+        assertThat(s.index).isEqualTo(1)
+        assertThat(s.remainingSeconds).isEqualTo(20)
+        assertThat(s.current?.id).isEqualTo("b")
+    }
+
+    @Test
+    fun startIndex_negative_is_clamped_to_zero() {
+        val engine = PlayerEngine(listOf(stretch("a", 10)), startIndex = -3)
+        assertThat(engine.state.value.index).isEqualTo(0)
+    }
+
+    @Test
+    fun startIndex_past_end_is_clamped() {
+        val engine = PlayerEngine(
+            initialStretches = listOf(stretch("a", 10), stretch("b", 20)),
+            startIndex = 99,
+        )
+        assertThat(engine.state.value.index).isEqualTo(1)
+    }
 }
