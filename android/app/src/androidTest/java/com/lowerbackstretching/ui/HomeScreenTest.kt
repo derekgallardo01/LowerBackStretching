@@ -20,14 +20,7 @@ class HomeScreenTest {
     fun renders_welcome_back_and_streak_card() {
         rule.setContent {
             AppTheme {
-                HomeScreen(
-                    onOpenProgram = {},
-                    onOpenAchievements = {},
-                    onOpenGoals = {},
-                    onOpenFlexibility = {},
-                    onOpenGlossary = {},
-                    onOpenBodyDiagram = {},
-                )
+                HomeScreen(onAction = {})
             }
         }
         rule.onNodeWithText("Welcome back").assertIsDisplayed()
@@ -39,14 +32,7 @@ class HomeScreenTest {
     fun shows_programs_section_with_built_in_programs() {
         rule.setContent {
             AppTheme {
-                HomeScreen(
-                    onOpenProgram = {},
-                    onOpenAchievements = {},
-                    onOpenGoals = {},
-                    onOpenFlexibility = {},
-                    onOpenGlossary = {},
-                    onOpenBodyDiagram = {},
-                )
+                HomeScreen(onAction = {})
             }
         }
         rule.onNodeWithText("Programs").assertIsDisplayed()

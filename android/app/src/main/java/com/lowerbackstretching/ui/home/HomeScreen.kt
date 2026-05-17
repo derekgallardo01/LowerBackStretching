@@ -23,33 +23,38 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lowerbackstretching.calendar.scheduleStretchBreakIntent
 import com.lowerbackstretching.data.subtitle
 import com.lowerbackstretching.data.xpForSession
 import com.lowerbackstretching.data.xpProgress
 import com.lowerbackstretching.health.shouldShowCooldown
 import com.lowerbackstretching.ui.AppViewModel
-import java.time.LocalDate
 import com.lowerbackstretching.ui.components.InfoRow
 import com.lowerbackstretching.ui.components.ScreenHeader
 import com.lowerbackstretching.ui.components.SectionHeader
 import com.lowerbackstretching.ui.components.Stat
+import java.time.LocalDate
 
+/**
+ * Every navigation / system-intent the Home screen can trigger.
+ * AppNav owns the routing; HomeScreen just emits the intent.
+ */
+sealed interface HomeAction {
+    data class OpenProgram(val id: String) : HomeAction
+    data object OpenAchievements : HomeAction
+    data object OpenGoals : HomeAction
+    data object OpenFlexibility : HomeAction
+    data object OpenGlossary : HomeAction
+    data object OpenBodyDiagram : HomeAction
+    data object ScheduleBreak : HomeAction
+}
 
 @Composable
 fun HomeScreen(
-    onOpenProgram: (String) -> Unit,
-    onOpenAchievements: () -> Unit,
-    onOpenGoals: () -> Unit,
-    onOpenFlexibility: () -> Unit,
-    onOpenGlossary: () -> Unit,
-    onOpenBodyDiagram: () -> Unit,
+    onAction: (HomeAction) -> Unit,
     vm: AppViewModel = viewModel(),
 ) {
-    val ctx = LocalContext.current
     val streak by vm.sessions.streak().collectAsState(initial = 0)
     val total by vm.sessions.count().collectAsState(initial = 0)
     val totalSeconds by vm.sessions.totalDurationSeconds().collectAsState(initial = 0)
@@ -74,67 +79,36 @@ fun HomeScreen(
                 CooldownCard(
                     steps = stepsToday ?: 0L,
                     onAction = {
-                        vm.content.programs.firstOrNull()?.let { onOpenProgram(it.id) }
+                        vm.content.programs.firstOrNull()?.let {
+                            onAction(HomeAction.OpenProgram(it.id))
+                        }
                     },
                 )
             }
         }
-        item { StatsCard(streak = streak, total = total, level = xp.level, xpProgress = xp.progress, xpIntoLevel = xp.xpIntoLevel, xpToNextLevel = xp.xpToNextLevel) }
         item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                QuickCard(
-                    modifier = Modifier.weight(1f),
-                    title = "Goals",
-                    body = "Weekly & monthly targets",
-                    onClick = onOpenGoals,
-                )
-                QuickCard(
-                    modifier = Modifier.weight(1f),
-                    title = "Achievements",
-                    body = "Badges & milestones",
-                    onClick = onOpenAchievements,
-                )
-            }
+            StatsCard(
+                streak = streak,
+                total = total,
+                level = xp.level,
+                xpProgress = xp.progress,
+                xpIntoLevel = xp.xpIntoLevel,
+                xpToNextLevel = xp.xpToNextLevel,
+            )
         }
-        item {
+        items(quickActionRows) { row ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                QuickCard(
-                    modifier = Modifier.weight(1f),
-                    title = "Flexibility self-test",
-                    body = "Track your reach over time",
-                    onClick = onOpenFlexibility,
-                )
-                QuickCard(
-                    modifier = Modifier.weight(1f),
-                    title = "Glossary",
-                    body = "Anatomy & stretching terms",
-                    onClick = onOpenGlossary,
-                )
-            }
-        }
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                QuickCard(
-                    modifier = Modifier.weight(1f),
-                    title = "Tap where it hurts",
-                    body = "Find a stretch by body area",
-                    onClick = onOpenBodyDiagram,
-                )
-                QuickCard(
-                    modifier = Modifier.weight(1f),
-                    title = "Schedule a break",
-                    body = "Add to your calendar",
-                    onClick = { ctx.startActivity(scheduleStretchBreakIntent()) },
-                )
+                row.forEach { quick ->
+                    QuickCard(
+                        modifier = Modifier.weight(1f),
+                        title = quick.title,
+                        body = quick.subtitle,
+                        onClick = { onAction(quick.action) },
+                    )
+                }
             }
         }
         item { SectionHeader("Programs") }
@@ -143,11 +117,32 @@ fun HomeScreen(
                 title = program.title,
                 subtitle = program.subtitle,
                 body = program.summary,
-                onClick = { onOpenProgram(program.id) },
+                onClick = { onAction(HomeAction.OpenProgram(program.id)) },
             )
         }
     }
 }
+
+private data class QuickActionSpec(
+    val title: String,
+    val subtitle: String,
+    val action: HomeAction,
+)
+
+private val quickActionRows: List<List<QuickActionSpec>> = listOf(
+    listOf(
+        QuickActionSpec("Goals", "Weekly & monthly targets", HomeAction.OpenGoals),
+        QuickActionSpec("Achievements", "Badges & milestones", HomeAction.OpenAchievements),
+    ),
+    listOf(
+        QuickActionSpec("Flexibility self-test", "Track your reach over time", HomeAction.OpenFlexibility),
+        QuickActionSpec("Glossary", "Anatomy & stretching terms", HomeAction.OpenGlossary),
+    ),
+    listOf(
+        QuickActionSpec("Tap where it hurts", "Find a stretch by body area", HomeAction.OpenBodyDiagram),
+        QuickActionSpec("Schedule a break", "Add to your calendar", HomeAction.ScheduleBreak),
+    ),
+)
 
 @Composable
 private fun StatsCard(

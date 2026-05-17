@@ -16,12 +16,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.lowerbackstretching.calendar.scheduleStretchBreakIntent
 import com.lowerbackstretching.data.Prefs
 import com.lowerbackstretching.ui.achievements.AchievementsScreen
 import com.lowerbackstretching.ui.anatomy.BodyDiagramScreen
 import com.lowerbackstretching.ui.calendar.CalendarScreen
 import com.lowerbackstretching.ui.flexibility.FlexibilityScreen
 import com.lowerbackstretching.ui.goals.GoalsScreen
+import com.lowerbackstretching.ui.home.HomeAction
 import com.lowerbackstretching.ui.home.HomeScreen
 import com.lowerbackstretching.ui.learn.GlossaryScreen
 import com.lowerbackstretching.ui.onboarding.OnboardingScreen
@@ -93,14 +95,18 @@ private fun AppRoot(
             modifier = Modifier.padding(inner),
         ) {
             composable(Tab.Home.path) {
-                HomeScreen(
-                    onOpenProgram = { id -> nav.navigate(Dest.program(id)) },
-                    onOpenAchievements = { nav.navigate(Dest.achievements) },
-                    onOpenGoals = { nav.navigate(Dest.goals) },
-                    onOpenFlexibility = { nav.navigate(Dest.flexibility) },
-                    onOpenGlossary = { nav.navigate(Dest.glossary) },
-                    onOpenBodyDiagram = { nav.navigate(Dest.bodyDiagram) },
-                )
+                val ctx = LocalContext.current
+                HomeScreen(onAction = { action ->
+                    when (action) {
+                        is HomeAction.OpenProgram -> nav.navigate(Dest.program(action.id))
+                        HomeAction.OpenAchievements -> nav.navigate(Dest.achievements)
+                        HomeAction.OpenGoals -> nav.navigate(Dest.goals)
+                        HomeAction.OpenFlexibility -> nav.navigate(Dest.flexibility)
+                        HomeAction.OpenGlossary -> nav.navigate(Dest.glossary)
+                        HomeAction.OpenBodyDiagram -> nav.navigate(Dest.bodyDiagram)
+                        HomeAction.ScheduleBreak -> ctx.startActivity(scheduleStretchBreakIntent())
+                    }
+                })
             }
             composable(Dest.bodyDiagram) {
                 BodyDiagramScreen(
