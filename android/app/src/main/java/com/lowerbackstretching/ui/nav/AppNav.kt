@@ -30,13 +30,19 @@ import com.lowerbackstretching.ui.player.PlayerScreen
 import com.lowerbackstretching.ui.player.SingleStretchPlayerScreen
 import com.lowerbackstretching.ui.programs.ProgramDetailScreen
 import com.lowerbackstretching.ui.programs.ProgramsScreen
+import com.lowerbackstretching.share.SharedRoutine
 import com.lowerbackstretching.ui.routines.RoutineBuilderScreen
 import com.lowerbackstretching.ui.settings.SettingsScreen
+import com.lowerbackstretching.ui.share.ImportRoutineSheet
+import com.lowerbackstretching.ui.share.ShareRoutineScreen
 import com.lowerbackstretching.ui.stretches.StretchDetailScreen
 import com.lowerbackstretching.ui.stretches.StretchesScreen
 
 @Composable
-fun AppNav() {
+fun AppNav(
+    pendingImport: SharedRoutine? = null,
+    onConsumeImport: () -> Unit = {},
+) {
     val ctx = LocalContext.current
     val prefs = remember(ctx) { Prefs(ctx) }
     val onboardingDone by prefs.onboardingDone.collectAsState(initial = null)
@@ -44,12 +50,15 @@ fun AppNav() {
     when (onboardingDone) {
         null -> Unit
         false -> OnboardingScreen(onDone = { /* DataStore flow triggers recomposition */ })
-        true -> AppRoot()
+        true -> AppRoot(pendingImport = pendingImport, onConsumeImport = onConsumeImport)
     }
 }
 
 @Composable
-private fun AppRoot() {
+private fun AppRoot(
+    pendingImport: SharedRoutine? = null,
+    onConsumeImport: () -> Unit = {},
+) {
     val nav = rememberNavController()
     val entry by nav.currentBackStackEntryAsState()
     val currentRoute = entry?.destination?.route
@@ -116,7 +125,12 @@ private fun AppRoot() {
                     onOpenProgram = { id -> nav.navigate(Dest.program(id)) },
                     onOpenCustomRoutine = { rid -> nav.navigate(Dest.routinePlayer(rid)) },
                     onCreateRoutine = { nav.navigate(Dest.routineNew) },
+                    onShareRoutine = { rid -> nav.navigate(Dest.shareRoutine(rid)) },
                 )
+            }
+            composable(Dest.shareRoutineTemplate) { backStack ->
+                val id = backStack.arguments?.getString("id")?.toLongOrNull() ?: return@composable
+                ShareRoutineScreen(routineId = id, onBack = { nav.popBackStack() })
             }
             composable(Dest.routineNew) {
                 RoutineBuilderScreen(
@@ -176,5 +190,9 @@ private fun AppRoot() {
             composable(Tab.Calendar.path) { CalendarScreen() }
             composable(Tab.Settings.path) { SettingsScreen() }
         }
+    }
+
+    if (pendingImport != null) {
+        ImportRoutineSheet(routine = pendingImport, onDismiss = onConsumeImport)
     }
 }

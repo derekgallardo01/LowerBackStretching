@@ -16,6 +16,7 @@ struct ProgramsView: View {
     @State private var showingBuilder: Bool = false
     @State private var pendingDelete: CustomRoutine?
     @State private var showUndo: Bool = false
+    @State private var sharingRoutine: CustomRoutine?
 
     private var categories: [String] {
         [BodyParts.all] + Array(Set(content.programs.map(\.category))).sorted()
@@ -72,6 +73,9 @@ struct ProgramsView: View {
             CustomRoutinePlayerView(routine: r)
         }
         .overlay(alignment: .bottom) { undoBanner }
+        .sheet(item: $sharingRoutine) { routine in
+            NavigationStack { ShareRoutineView(routine: routine) }
+        }
     }
 
     @ViewBuilder
@@ -84,6 +88,11 @@ struct ProgramsView: View {
         }
         .buttonStyle(.plain)
         .contextMenu {
+            Button {
+                sharingRoutine = routine
+            } label: {
+                Label("Share", systemImage: "square.and.arrow.up")
+            }
             Button {
                 CustomRoutineService.duplicate(routine, in: modelContext)
             } label: {

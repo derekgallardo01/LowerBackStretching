@@ -99,6 +99,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.health.connect.client)
+    implementation(libs.zxing.core)
 
     implementation(libs.kotlinx.serialization.json)
 

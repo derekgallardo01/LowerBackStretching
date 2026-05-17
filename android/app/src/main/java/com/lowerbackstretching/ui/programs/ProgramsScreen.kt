@@ -41,6 +41,7 @@ fun ProgramsScreen(
     onOpenProgram: (String) -> Unit,
     onOpenCustomRoutine: (Long) -> Unit,
     onCreateRoutine: () -> Unit,
+    onShareRoutine: (Long) -> Unit = {},
     vm: AppViewModel = viewModel(),
 ) {
     val programs = vm.content.programs
@@ -104,6 +105,10 @@ fun ProgramsScreen(
             routineName = target.name,
             canMoveUp = index > 0,
             canMoveDown = index >= 0 && index < customRoutines.size - 1,
+            onShare = {
+                actionsTarget = null
+                onShareRoutine(target.id)
+            },
             onDuplicate = {
                 scope.launch { vm.customRoutines.duplicate(target) }
                 actionsTarget = null

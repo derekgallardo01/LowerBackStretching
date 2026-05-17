@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +34,7 @@ fun RoutineActionsSheet(
     routineName: String,
     canMoveUp: Boolean,
     canMoveDown: Boolean,
+    onShare: () -> Unit,
     onDuplicate: () -> Unit,
     onMoveUp: () -> Unit,
     onMoveDown: () -> Unit,
@@ -46,6 +48,12 @@ fun RoutineActionsSheet(
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(routineName, style = MaterialTheme.typography.titleMedium)
+            ActionRow(
+                icon = Icons.Filled.Share,
+                label = "Share",
+                onClick = onShare,
+                enabled = true,
+            )
             ActionRow(
                 icon = Icons.Filled.ContentCopy,
                 label = "Duplicate",

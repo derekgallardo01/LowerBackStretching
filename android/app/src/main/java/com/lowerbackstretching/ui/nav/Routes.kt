@@ -49,4 +49,7 @@ object Dest {
     const val flexibility = "flexibility"
     const val glossary = "glossary"
     const val bodyDiagram = "body-diagram"
+
+    const val shareRoutineTemplate = "share/routine/{id}"
+    fun shareRoutine(routineId: Long) = "share/routine/$routineId"
 }

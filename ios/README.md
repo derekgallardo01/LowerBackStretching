@@ -36,7 +36,15 @@ files break easily. Steps:
    Without the capability, `HKHealthStore.isHealthDataAvailable()`
    returns false and the Settings section shows "Apple Health isn't
    available on this device." instead of the toggles.
-8. Build & Run on a simulator (notifications also work in the simulator since
+8. **Custom URL scheme (Wave 8 — share routine via link/QR).**
+   Info.plist → CFBundleURLTypes → add an entry:
+     - URL identifier: `com.lowerbackstretching.routine`
+     - URL schemes: `lowerbackstretching`
+   Without this, tapping a shared routine link won't open the app.
+   Pasting the link into Safari on a device with the app installed
+   will then prompt to open the app, fire `.onOpenURL`, and the
+   import sheet appears.
+9. Build & Run on a simulator (notifications also work in the simulator since
    iOS 16). HealthKit only works on real devices — the simulator returns
    false for `isHealthDataAvailable()`.
 
