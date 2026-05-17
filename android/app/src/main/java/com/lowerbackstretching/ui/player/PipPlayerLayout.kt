@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.lowerbackstretching.core.DurationUnit
+import com.lowerbackstretching.core.formatDuration
 import com.lowerbackstretching.ui.components.YouTubePlayerView
 
 /**
@@ -21,7 +23,12 @@ import com.lowerbackstretching.ui.components.YouTubePlayerView
  * PiP to expand back.
  */
 @Composable
-internal fun PipPlayerLayout(videoId: String, remainingSeconds: Int, progress: Float) {
+internal fun PipPlayerLayout(
+    videoId: String,
+    remainingSeconds: Int,
+    progress: Float,
+    durationUnit: DurationUnit,
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         YouTubePlayerView(videoId = videoId, modifier = Modifier.fillMaxSize())
         Column(
@@ -30,7 +37,7 @@ internal fun PipPlayerLayout(videoId: String, remainingSeconds: Int, progress: F
                 .fillMaxWidth(),
         ) {
             Text(
-                "${remainingSeconds}s",
+                formatDuration(remainingSeconds, durationUnit),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(8.dp),
             )

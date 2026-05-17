@@ -86,6 +86,7 @@ internal fun PlayerBody(
                 videoId = current.youtubeId,
                 remainingSeconds = snapshot.remainingSeconds,
                 progress = snapshot.routineProgress,
+                durationUnit = unit,
             )
         } else {
             FinishedView(modifier = Modifier.fillMaxSize(), onDone = onFinished)
