@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.SkipNext
@@ -33,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,8 +42,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.DurationUnit
+import com.lowerbackstretching.data.bodyZonesForTags
 import com.lowerbackstretching.data.formatDuration
 import com.lowerbackstretching.ui.AppViewModel
+import com.lowerbackstretching.ui.anatomy.BodySilhouette
 import com.lowerbackstretching.ui.components.YouTubePlayerView
 
 /**
@@ -92,8 +96,25 @@ internal fun PlayerBody(
         ) {
             YouTubePlayerView(videoId = current.youtubeId, modifier = Modifier.fillMaxWidth())
 
-            Text(current.name, style = MaterialTheme.typography.headlineMedium)
-            Text(current.description, style = MaterialTheme.typography.bodyMedium)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.Top,
+            ) {
+                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(current.name, style = MaterialTheme.typography.headlineMedium)
+                    Text(current.description, style = MaterialTheme.typography.bodyMedium)
+                }
+                val zones = remember(current.bodyParts) { bodyZonesForTags(current.bodyParts) }
+                if (zones.isNotEmpty()) {
+                    Box(modifier = Modifier.width(64.dp)) {
+                        BodySilhouette(
+                            modifier = Modifier.fillMaxWidth(),
+                            highlightedZones = zones,
+                        )
+                    }
+                }
+            }
 
             current.whatYouShouldFeel?.let { WhatYouShouldFeelOverlay(it) }
 

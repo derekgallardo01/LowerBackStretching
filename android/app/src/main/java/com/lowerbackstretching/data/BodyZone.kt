@@ -26,3 +26,29 @@ enum class BodyZone(
 
 /** Rectangle in [0..1] x [0..1] silhouette space. */
 data class NormalizedRect(val x: Float, val y: Float, val w: Float, val h: Float)
+
+/**
+ * Map a stretch's free-form `bodyParts` tags to the structured
+ * [BodyZone] set the silhouette knows how to draw. Multiple tags can
+ * highlight the same zone ("spine" lights up neck, upper back, and
+ * lower back); unknown tags ("core", "groin", "quads") are silently
+ * dropped because no zone exists for them yet.
+ */
+fun bodyZonesForTags(tags: List<String>): Set<BodyZone> {
+    val zones = mutableSetOf<BodyZone>()
+    for (tag in tags) when (tag) {
+        "spine" -> {
+            zones += BodyZone.NECK
+            zones += BodyZone.UPPER_BACK
+            zones += BodyZone.LOWER_BACK
+        }
+        "upper-back" -> zones += BodyZone.UPPER_BACK
+        "lower-back" -> zones += BodyZone.LOWER_BACK
+        "hips", "groin" -> zones += BodyZone.HIPS
+        "glutes" -> zones += BodyZone.GLUTES
+        "hamstrings" -> zones += BodyZone.HAMSTRINGS
+        "calves" -> zones += BodyZone.CALVES
+        // "core", "quads" — intentionally unmapped; front-view-only zones.
+    }
+    return zones
+}

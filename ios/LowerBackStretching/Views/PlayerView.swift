@@ -92,8 +92,18 @@ struct PlayerBody: View {
                         .aspectRatio(16.0 / 9.0, contentMode: .fit)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
 
-                    Text(current.name).font(.title2.weight(.semibold))
-                    Text(current.description).font(.body).foregroundStyle(.secondary)
+                    HStack(alignment: .top, spacing: 16) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(current.name).font(.title2.weight(.semibold))
+                            Text(current.description).font(.body).foregroundStyle(.secondary)
+                        }
+                        Spacer(minLength: 0)
+                        let zones = bodyZones(forTags: current.bodyParts)
+                        if !zones.isEmpty {
+                            BodySilhouette(highlightedZones: zones)
+                                .frame(width: 50)
+                        }
+                    }
 
                     if let feel = current.whatYouShouldFeel {
                         WhatYouShouldFeelOverlay(text: feel)

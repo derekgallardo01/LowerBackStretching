@@ -63,3 +63,35 @@ struct NormalizedRect: Equatable {
     let w: CGFloat
     let h: CGFloat
 }
+
+/// Map a stretch's free-form `bodyParts` tags to the structured
+/// `BodyZone` set the silhouette knows how to draw. Multiple tags can
+/// highlight the same zone ("spine" lights up neck, upper back, and
+/// lower back); unknown tags ("core", "groin", "quads") are silently
+/// dropped because no zone exists for them yet.
+func bodyZones(forTags tags: [String]) -> Set<BodyZone> {
+    var zones: Set<BodyZone> = []
+    for tag in tags {
+        switch tag {
+        case "spine":
+            zones.insert(.neck)
+            zones.insert(.upperBack)
+            zones.insert(.lowerBack)
+        case "upper-back":
+            zones.insert(.upperBack)
+        case "lower-back":
+            zones.insert(.lowerBack)
+        case "hips", "groin":
+            zones.insert(.hips)
+        case "glutes":
+            zones.insert(.glutes)
+        case "hamstrings":
+            zones.insert(.hamstrings)
+        case "calves":
+            zones.insert(.calves)
+        default:
+            break // "core", "quads" — intentionally unmapped.
+        }
+    }
+    return zones
+}
