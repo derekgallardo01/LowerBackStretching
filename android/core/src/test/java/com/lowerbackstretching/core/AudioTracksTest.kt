@@ -1,9 +1,9 @@
-package com.lowerbackstretching.audio
+package com.lowerbackstretching.core
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class TracksTest {
+class AudioTracksTest {
 
     @Test
     fun music_fromStorage_round_trips_all_cases() {
