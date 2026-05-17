@@ -1,6 +1,6 @@
 package com.lowerbackstretching.data
 
-import com.lowerbackstretching.data.model.Stretch
+import com.lowerbackstretching.core.model.Stretch
 
 /**
  * Helpers for the `bodyParts: List<String>` field on [Stretch]. Strings on

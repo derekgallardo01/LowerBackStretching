@@ -1,7 +1,7 @@
 package com.lowerbackstretching.ui.player
 
 import com.google.common.truth.Truth.assertThat
-import com.lowerbackstretching.data.model.Stretch
+import com.lowerbackstretching.core.model.Stretch
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runCurrent

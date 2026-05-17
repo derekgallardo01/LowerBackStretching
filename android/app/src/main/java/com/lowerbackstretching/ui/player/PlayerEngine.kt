@@ -1,6 +1,6 @@
 package com.lowerbackstretching.ui.player
 
-import com.lowerbackstretching.data.model.Stretch
+import com.lowerbackstretching.core.model.Stretch
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow

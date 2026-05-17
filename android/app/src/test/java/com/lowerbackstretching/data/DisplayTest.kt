@@ -1,9 +1,9 @@
 package com.lowerbackstretching.data
 
 import com.google.common.truth.Truth.assertThat
-import com.lowerbackstretching.data.model.Program
-import com.lowerbackstretching.data.model.ProgramDay
-import com.lowerbackstretching.data.model.Stretch
+import com.lowerbackstretching.core.model.Program
+import com.lowerbackstretching.core.model.ProgramDay
+import com.lowerbackstretching.core.model.Stretch
 import org.junit.Test
 
 class DisplayTest {

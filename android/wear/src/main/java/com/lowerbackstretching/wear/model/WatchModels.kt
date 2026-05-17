@@ -3,7 +3,7 @@ package com.lowerbackstretching.wear.model
 import kotlinx.serialization.Serializable
 
 /**
- * Slim mirror of the phone-side [com.lowerbackstretching.data.model.Stretch].
+ * Slim mirror of the phone-side [com.lowerbackstretching.core.model.Stretch].
  * The watch only needs the id, name, and duration to drive the timer;
  * the video, description, educational cards, and so on stay phone-only.
  *

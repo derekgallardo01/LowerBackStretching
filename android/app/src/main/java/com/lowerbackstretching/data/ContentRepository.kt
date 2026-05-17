@@ -1,9 +1,9 @@
 package com.lowerbackstretching.data
 
 import android.content.Context
-import com.lowerbackstretching.data.model.GlossaryEntry
-import com.lowerbackstretching.data.model.Program
-import com.lowerbackstretching.data.model.Stretch
+import com.lowerbackstretching.core.model.GlossaryEntry
+import com.lowerbackstretching.core.model.Program
+import com.lowerbackstretching.core.model.Stretch
 import kotlinx.serialization.json.Json
 
 class ContentRepository(private val context: Context) {

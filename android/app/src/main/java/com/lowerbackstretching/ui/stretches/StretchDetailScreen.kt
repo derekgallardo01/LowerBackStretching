@@ -32,7 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.BodyParts
 import com.lowerbackstretching.data.DurationUnit
 import com.lowerbackstretching.data.formatDuration
-import com.lowerbackstretching.data.model.EducationalCard
+import com.lowerbackstretching.core.model.EducationalCard
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.DifficultyDots
 import com.lowerbackstretching.ui.components.SectionHeader

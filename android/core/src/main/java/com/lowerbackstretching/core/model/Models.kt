@@ -1,4 +1,4 @@
-package com.lowerbackstretching.data.model
+package com.lowerbackstretching.core.model
 
 import kotlinx.serialization.Serializable
 

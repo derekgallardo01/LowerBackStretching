@@ -1,9 +1,9 @@
 package com.lowerbackstretching.data
 
 import com.lowerbackstretching.data.db.CustomRoutineEntity
-import com.lowerbackstretching.data.model.Program
-import com.lowerbackstretching.data.model.ProgramDay
-import com.lowerbackstretching.data.model.Stretch
+import com.lowerbackstretching.core.model.Program
+import com.lowerbackstretching.core.model.ProgramDay
+import com.lowerbackstretching.core.model.Stretch
 
 /**
  * User-facing strings derived from models. Lives next to the model
