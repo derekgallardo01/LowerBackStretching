@@ -1,0 +1,10 @@
+{
+  "name": "Quick lower-back",
+  "stretches": [
+    { "id": "cat-cow",       "name": "Cat-Cow",            "durationSeconds": 30 },
+    { "id": "child-pose",    "name": "Child's Pose",       "durationSeconds": 30 },
+    { "id": "knee-to-chest", "name": "Knee to Chest",      "durationSeconds": 30 },
+    { "id": "supine-twist",  "name": "Supine Spinal Twist","durationSeconds": 30 },
+    { "id": "pelvic-tilt",   "name": "Pelvic Tilt",        "durationSeconds": 30 }
+  ]
+}
