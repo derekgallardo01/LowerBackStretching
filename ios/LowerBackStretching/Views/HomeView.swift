@@ -11,7 +11,7 @@ struct HomeView: View {
     private var totalSeconds: Int { sessions.reduce(0) { $0 + $1.durationSeconds } }
     private var xpStats: XpProgress { xpProgress(totalXp: xp(forSessionSeconds: totalSeconds)) }
 
-    enum Quick: Hashable { case achievements, goals }
+    enum Quick: Hashable { case achievements, goals, flexibility }
 
     var body: some View {
         ScrollView {
@@ -30,6 +30,10 @@ struct HomeView: View {
                     }
                     .buttonStyle(.plain)
                 }
+                NavigationLink(value: Quick.flexibility) {
+                    QuickCard(title: "Flexibility self-test", bodyText: "Track your reach over time")
+                }
+                .buttonStyle(.plain)
 
                 SectionHeader("Programs").padding(.top, 4)
 
@@ -53,6 +57,7 @@ struct HomeView: View {
             switch quick {
             case .achievements: AchievementsView()
             case .goals: GoalsView()
+            case .flexibility: FlexibilityView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)

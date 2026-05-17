@@ -18,6 +18,7 @@ struct LowerBackStretchingApp: App {
         )
         return try! ModelContainer(
             for: SessionRecord.self, CustomRoutine.self, ProgramProgress.self,
+            FlexibilityTest.self,
             configurations: config
         )
     }()

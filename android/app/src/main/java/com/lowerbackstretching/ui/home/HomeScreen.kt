@@ -37,6 +37,7 @@ fun HomeScreen(
     onOpenProgram: (String) -> Unit,
     onOpenAchievements: () -> Unit,
     onOpenGoals: () -> Unit,
+    onOpenFlexibility: () -> Unit,
     vm: AppViewModel = viewModel(),
 ) {
     val streak by vm.sessions.streak().collectAsState(initial = 0)
@@ -68,6 +69,14 @@ fun HomeScreen(
                     onClick = onOpenAchievements,
                 )
             }
+        }
+        item {
+            QuickCard(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Flexibility self-test",
+                body = "Track your reach over time",
+                onClick = onOpenFlexibility,
+            )
         }
         item { SectionHeader("Programs") }
         items(vm.content.programs, key = { it.id }) { program ->

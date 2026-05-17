@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.lowerbackstretching.data.Prefs
 import com.lowerbackstretching.ui.achievements.AchievementsScreen
 import com.lowerbackstretching.ui.calendar.CalendarScreen
+import com.lowerbackstretching.ui.flexibility.FlexibilityScreen
 import com.lowerbackstretching.ui.goals.GoalsScreen
 import com.lowerbackstretching.ui.home.HomeScreen
 import com.lowerbackstretching.ui.onboarding.OnboardingScreen
@@ -85,6 +86,7 @@ private fun AppRoot() {
                     onOpenProgram = { id -> nav.navigate(Dest.program(id)) },
                     onOpenAchievements = { nav.navigate(Dest.achievements) },
                     onOpenGoals = { nav.navigate(Dest.goals) },
+                    onOpenFlexibility = { nav.navigate(Dest.flexibility) },
                 )
             }
             composable(Dest.achievements) {
@@ -92,6 +94,9 @@ private fun AppRoot() {
             }
             composable(Dest.goals) {
                 GoalsScreen(onBack = { nav.popBackStack() })
+            }
+            composable(Dest.flexibility) {
+                FlexibilityScreen(onBack = { nav.popBackStack() })
             }
             composable(Tab.Programs.path) {
                 ProgramsScreen(

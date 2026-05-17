@@ -1,0 +1,61 @@
+package com.lowerbackstretching.data
+
+import com.google.common.truth.Truth.assertThat
+import com.lowerbackstretching.data.db.FlexibilityTestDao
+import com.lowerbackstretching.data.db.FlexibilityTestEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.test.runTest
+import org.junit.Test
+
+class FlexibilityRepositoryTest {
+
+    @Test
+    fun `record writes a row with the supplied measurements`() = runTest {
+        val dao = FakeDao()
+        val repo = FlexibilityRepository(dao)
+        repo.record(sitAndReachCm = 12.5f, toeTouchCm = -4f, shoulderReachCm = null)
+        val saved = dao.inserted.last()
+        assertThat(saved.sitAndReachCm).isEqualTo(12.5f)
+        assertThat(saved.toeTouchCm).isEqualTo(-4f)
+        assertThat(saved.shoulderReachCm).isNull()
+    }
+
+    @Test
+    fun `flexibilityDelta returns null deltas when either snapshot is missing`() {
+        val now = FlexibilityTestEntity(recordedAtEpochMillis = 0, sitAndReachCm = 10f, toeTouchCm = null, shoulderReachCm = 5f)
+        assertThat(flexibilityDelta(now, null).sitAndReachCm).isNull()
+        assertThat(flexibilityDelta(null, now).toeTouchCm).isNull()
+    }
+
+    @Test
+    fun `flexibilityDelta subtracts per-metric and skips when one side is null`() {
+        val now  = FlexibilityTestEntity(recordedAtEpochMillis = 1, sitAndReachCm = 12f, toeTouchCm = null, shoulderReachCm = 7f)
+        val prev = FlexibilityTestEntity(recordedAtEpochMillis = 0, sitAndReachCm = 10f, toeTouchCm = 3f,   shoulderReachCm = null)
+        val delta = flexibilityDelta(now, prev)
+        assertThat(delta.sitAndReachCm).isEqualTo(2f)
+        assertThat(delta.toeTouchCm).isNull()
+        assertThat(delta.shoulderReachCm).isNull()
+    }
+
+    private class FakeDao : FlexibilityTestDao {
+        val inserted = mutableListOf<FlexibilityTestEntity>()
+        private val rows = MutableStateFlow<List<FlexibilityTestEntity>>(emptyList())
+
+        override suspend fun insert(test: FlexibilityTestEntity): Long {
+            inserted += test
+            rows.value = rows.value + test.copy(id = (inserted.size).toLong())
+            return inserted.size.toLong()
+        }
+
+        override suspend fun delete(test: FlexibilityTestEntity) {
+            rows.value = rows.value.filterNot { it.id == test.id }
+        }
+
+        override fun all(): Flow<List<FlexibilityTestEntity>> = rows
+
+        override fun latest(): Flow<FlexibilityTestEntity?> =
+            rows.map { list -> list.maxByOrNull { it.recordedAtEpochMillis } }
+    }
+}

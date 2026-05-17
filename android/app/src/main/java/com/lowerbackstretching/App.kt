@@ -3,6 +3,7 @@ package com.lowerbackstretching
 import android.app.Application
 import com.lowerbackstretching.data.ContentRepository
 import com.lowerbackstretching.data.CustomRoutineRepository
+import com.lowerbackstretching.data.FlexibilityRepository
 import com.lowerbackstretching.data.Prefs
 import com.lowerbackstretching.data.ProgramProgressRepository
 import com.lowerbackstretching.data.SessionRepository
@@ -19,6 +20,9 @@ class App : Application() {
     }
     val programProgressRepository: ProgramProgressRepository by lazy {
         ProgramProgressRepository(database.programProgressDao())
+    }
+    val flexibilityRepository: FlexibilityRepository by lazy {
+        FlexibilityRepository(database.flexibilityTestDao())
     }
     val prefs: Prefs by lazy { Prefs(this) }
 

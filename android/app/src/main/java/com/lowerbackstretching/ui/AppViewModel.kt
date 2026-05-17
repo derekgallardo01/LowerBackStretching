@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.lowerbackstretching.App
 import com.lowerbackstretching.data.ContentRepository
 import com.lowerbackstretching.data.CustomRoutineRepository
+import com.lowerbackstretching.data.FlexibilityRepository
 import com.lowerbackstretching.data.Prefs
 import com.lowerbackstretching.data.ProgramProgressRepository
 import com.lowerbackstretching.data.SessionRepository
@@ -20,5 +21,6 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     val sessions: SessionRepository get() = appCtx.sessionRepository
     val customRoutines: CustomRoutineRepository get() = appCtx.customRoutineRepository
     val programProgress: ProgramProgressRepository get() = appCtx.programProgressRepository
+    val flexibility: FlexibilityRepository get() = appCtx.flexibilityRepository
     val prefs: Prefs get() = appCtx.prefs
 }

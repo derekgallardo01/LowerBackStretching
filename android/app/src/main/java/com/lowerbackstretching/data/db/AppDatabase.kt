@@ -8,14 +8,20 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
-    entities = [SessionEntity::class, CustomRoutineEntity::class, ProgramProgressEntity::class],
-    version = 5,
+    entities = [
+        SessionEntity::class,
+        CustomRoutineEntity::class,
+        ProgramProgressEntity::class,
+        FlexibilityTestEntity::class,
+    ],
+    version = 6,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
     abstract fun customRoutineDao(): CustomRoutineDao
     abstract fun programProgressDao(): ProgramProgressDao
+    abstract fun flexibilityTestDao(): FlexibilityTestDao
 
     companion object {
         @Volatile private var instance: AppDatabase? = null
@@ -53,13 +59,27 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        /** v5 → v6: create flexibility_tests table for self-test snapshots. */
+        internal val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS flexibility_tests (" +
+                        "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                        "recordedAtEpochMillis INTEGER NOT NULL, " +
+                        "sitAndReachCm REAL, " +
+                        "toeTouchCm REAL, " +
+                        "shoulderReachCm REAL)"
+                )
+            }
+        }
+
         fun get(context: Context): AppDatabase = instance ?: synchronized(this) {
             instance ?: Room.databaseBuilder(
                 context.applicationContext,
                 AppDatabase::class.java,
                 "lowerback.db",
             )
-                .addMigrations(MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                .addMigrations(MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
                 .fallbackToDestructiveMigration()
                 .build()
                 .also { instance = it }
