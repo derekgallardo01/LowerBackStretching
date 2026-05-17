@@ -1,0 +1,12 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "sessions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "completedAtEpochMillis", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
