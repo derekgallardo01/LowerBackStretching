@@ -19,7 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
-import androidx.wear.compose.material.LinearProgressIndicator
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
@@ -84,10 +83,6 @@ fun WearPlayerScreen() {
             Text(
                 "${snapshot.remainingSeconds}s",
                 style = MaterialTheme.typography.display2,
-            )
-            LinearProgressIndicator(
-                progress = snapshot.progress.coerceIn(0f, 1f),
-                modifier = Modifier.fillMaxWidth(),
             )
             Text(
                 "${snapshot.index + 1} of ${snapshot.stretches.size}",
