@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UIKit
 
 struct PlayerView: View {
     let programId: String
@@ -59,6 +60,8 @@ struct PlayerBody: View {
     @StateObject private var engine: PlayerEngine
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @AppStorage(SettingsKeys.hapticsTransitions) private var hapticsTransitions: Bool = true
+    @AppStorage(SettingsKeys.hapticsFinish) private var hapticsFinish: Bool = true
 
     init(stretches: [Stretch], title: String, programId: String, dayNumber: Int) {
         self.title = title
@@ -120,7 +123,16 @@ struct PlayerBody: View {
                 durationSeconds: event.totalDurationSeconds,
                 in: modelContext
             )
+            if hapticsFinish { Haptics.finish() }
         }
+        .onChange(of: engine.snapshot.index) { oldValue, newValue in
+            // Buzz when the stretch index advances mid-routine (skip
+            // the initial 0 -> ... transition when nothing was there).
+            guard newValue != oldValue, !engine.snapshot.finished else { return }
+            if hapticsTransitions { Haptics.short() }
+        }
+        .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
+        .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
         .task {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 1_000_000_000)

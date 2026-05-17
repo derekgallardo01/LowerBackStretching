@@ -6,12 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.lowerbackstretching.App
 import com.lowerbackstretching.data.SyntheticProgramId
 import com.lowerbackstretching.data.model.Stretch
+import com.lowerbackstretching.notifications.Haptics
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
@@ -39,6 +43,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     private var loaded: Boolean = false
     private var tickerJob: Job? = null
     private var finishedJob: Job? = null
+    private var transitionJob: Job? = null
 
     fun loadProgram(programId: String, dayNumber: Int) {
         if (loaded && this.programId == programId && this.dayNumber == dayNumber) return
@@ -81,6 +86,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         loaded = true
         tickerJob?.cancel()
         finishedJob?.cancel()
+        transitionJob?.cancel()
         val engine = PlayerEngine(stretches)
         _engine.value = engine
         tickerJob = viewModelScope.launch {
@@ -96,7 +102,19 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
                     day = dayNumber,
                     durationSeconds = event.totalDurationSeconds,
                 )
+                if (appCtx.prefs.hapticsFinish.first()) Haptics.finish(appCtx)
             }
+        }
+        // Buzz when the stretch index advances (but not on the initial frame).
+        transitionJob = viewModelScope.launch {
+            engine.state
+                .distinctUntilChangedBy { it.index }
+                .drop(1)
+                .collect {
+                    if (!it.finished && appCtx.prefs.hapticsTransitions.first()) {
+                        Haptics.short(appCtx)
+                    }
+                }
         }
     }
 }

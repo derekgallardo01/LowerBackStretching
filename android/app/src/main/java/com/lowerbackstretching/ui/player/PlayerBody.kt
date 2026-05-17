@@ -1,5 +1,8 @@
 package com.lowerbackstretching.ui.player
 
+import android.content.pm.ActivityInfo
+import android.view.WindowManager
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,18 +27,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.lowerbackstretching.ui.components.YouTubePlayerView
 
 /**
- * The shared player UI used by all three [PlayerScreen] entry points. Reads
- * `vm.state` and renders the current stretch, progress bar, and controls.
- * Renders [FinishedView] once the routine completes.
+ * The shared player UI used by all three [PlayerScreen] entry points.
+ * Reads `vm.state` and renders the current stretch, progress bar, and
+ * controls. Renders [FinishedView] once the routine completes. Holds
+ * the screen on and locks portrait orientation while visible.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +52,7 @@ internal fun PlayerBody(
     vm: PlayerViewModel,
 ) {
     val state by vm.state.collectAsState()
+    KeepScreenOnAndLockPortrait()
 
     Scaffold(
         topBar = {
@@ -103,6 +110,28 @@ internal fun PlayerBody(
                 IconButton(onClick = vm::next) {
                     Icon(Icons.Filled.SkipNext, contentDescription = "Next", modifier = Modifier.size(36.dp))
                 }
+            }
+        }
+    }
+}
+
+/**
+ * While composed: window keeps the screen on and the activity is locked
+ * to portrait. Cleared on dispose so other screens behave normally.
+ */
+@Composable
+private fun KeepScreenOnAndLockPortrait() {
+    val context = LocalContext.current
+    DisposableEffect(context) {
+        val activity = context as? ComponentActivity
+        val window = activity?.window
+        val priorOrientation = activity?.requestedOrientation
+        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        onDispose {
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            if (priorOrientation != null) {
+                activity.requestedOrientation = priorOrientation
             }
         }
     }

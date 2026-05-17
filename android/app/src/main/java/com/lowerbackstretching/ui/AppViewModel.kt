@@ -18,5 +18,5 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     val content: ContentRepository get() = appCtx.contentRepository
     val sessions: SessionRepository get() = appCtx.sessionRepository
     val customRoutines: CustomRoutineRepository get() = appCtx.customRoutineRepository
-    val prefs: Prefs by lazy { Prefs(appCtx) }
+    val prefs: Prefs get() = appCtx.prefs
 }

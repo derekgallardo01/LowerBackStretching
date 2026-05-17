@@ -3,6 +3,7 @@ package com.lowerbackstretching
 import android.app.Application
 import com.lowerbackstretching.data.ContentRepository
 import com.lowerbackstretching.data.CustomRoutineRepository
+import com.lowerbackstretching.data.Prefs
 import com.lowerbackstretching.data.SessionRepository
 import com.lowerbackstretching.data.db.AppDatabase
 import com.lowerbackstretching.notifications.NotificationChannels
@@ -15,6 +16,7 @@ class App : Application() {
     val customRoutineRepository: CustomRoutineRepository by lazy {
         CustomRoutineRepository(database.customRoutineDao())
     }
+    val prefs: Prefs by lazy { Prefs(this) }
 
     override fun onCreate() {
         super.onCreate()
