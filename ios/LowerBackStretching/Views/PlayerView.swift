@@ -95,6 +95,10 @@ struct PlayerBody: View {
                     Text(current.name).font(.title2.weight(.semibold))
                     Text(current.description).font(.body).foregroundStyle(.secondary)
 
+                    if let feel = current.whatYouShouldFeel {
+                        WhatYouShouldFeelOverlay(text: feel)
+                    }
+
                     ProgressView(value: engine.snapshot.progress).tint(.accentColor)
                     Text("\(formatDuration(engine.snapshot.remainingSeconds, unit: unit)) · \(engine.snapshot.index + 1) of \(engine.snapshot.stretches.count)")
                         .font(.caption.weight(.medium))
@@ -201,6 +205,25 @@ struct PlayerBody: View {
             AmbientTrack.fromStorage(ambientTrackRaw),
             volume: Float(ambientVolume)
         )
+    }
+}
+
+private struct WhatYouShouldFeelOverlay: View {
+    let text: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: "leaf.fill")
+                .foregroundStyle(Color.accentColor)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("What you should feel")
+                    .font(.caption.weight(.semibold))
+                Text(text).font(.subheadline)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(Color.accentColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
     }
 }
 

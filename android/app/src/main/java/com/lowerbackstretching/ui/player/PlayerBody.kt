@@ -17,6 +17,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -92,6 +95,8 @@ internal fun PlayerBody(
             Text(current.name, style = MaterialTheme.typography.headlineMedium)
             Text(current.description, style = MaterialTheme.typography.bodyMedium)
 
+            current.whatYouShouldFeel?.let { WhatYouShouldFeelOverlay(it) }
+
             LinearProgressIndicator(
                 progress = { snapshot.progress.coerceIn(0f, 1f) },
                 modifier = Modifier.fillMaxWidth().height(8.dp),
@@ -141,6 +146,27 @@ private fun KeepScreenOnAndLockPortrait() {
             window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             if (priorOrientation != null) {
                 activity.requestedOrientation = priorOrientation
+            }
+        }
+    }
+}
+
+@Composable
+private fun WhatYouShouldFeelOverlay(text: String) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.tertiaryContainer,
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Icon(Icons.Filled.Spa, contentDescription = null)
+            Column {
+                Text("What you should feel", style = MaterialTheme.typography.labelMedium)
+                Text(text, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
