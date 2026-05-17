@@ -12,7 +12,7 @@ struct LowerBackStretchingApp: App {
             isStoredInMemoryOnly: TestLaunchArgs.isResetData
         )
         return try! ModelContainer(
-            for: SessionRecord.self, CustomRoutine.self,
+            for: SessionRecord.self, CustomRoutine.self, ProgramProgress.self,
             configurations: config
         )
     }()

@@ -58,6 +58,7 @@ struct PlayerBody: View {
     let dayNumber: Int
 
     @StateObject private var engine: PlayerEngine
+    @EnvironmentObject private var content: ContentStore
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @AppStorage(SettingsKeys.hapticsTransitions) private var hapticsTransitions: Bool = true
@@ -133,6 +134,14 @@ struct PlayerBody: View {
                 durationSeconds: event.totalDurationSeconds,
                 in: modelContext
             )
+            if let program = content.program(id: programId) {
+                ProgramProgressService.advance(
+                    programId: programId,
+                    completedDay: dayNumber,
+                    totalDays: program.days.count,
+                    in: modelContext
+                )
+            }
             InProgressStore.clear()
             if hapticsFinish { Haptics.finish() }
         }

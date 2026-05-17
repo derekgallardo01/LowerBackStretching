@@ -8,13 +8,14 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
-    entities = [SessionEntity::class, CustomRoutineEntity::class],
-    version = 4,
+    entities = [SessionEntity::class, CustomRoutineEntity::class, ProgramProgressEntity::class],
+    version = 5,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
     abstract fun customRoutineDao(): CustomRoutineDao
+    abstract fun programProgressDao(): ProgramProgressDao
 
     companion object {
         @Volatile private var instance: AppDatabase? = null
@@ -40,13 +41,25 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        /** v4 → v5: create program_progress table for per-program day bookmarks. */
+        internal val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS program_progress (" +
+                        "programId TEXT NOT NULL PRIMARY KEY, " +
+                        "currentDay INTEGER NOT NULL, " +
+                        "updatedAtEpochMillis INTEGER NOT NULL)"
+                )
+            }
+        }
+
         fun get(context: Context): AppDatabase = instance ?: synchronized(this) {
             instance ?: Room.databaseBuilder(
                 context.applicationContext,
                 AppDatabase::class.java,
                 "lowerback.db",
             )
-                .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
+                .addMigrations(MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                 .fallbackToDestructiveMigration()
                 .build()
                 .also { instance = it }

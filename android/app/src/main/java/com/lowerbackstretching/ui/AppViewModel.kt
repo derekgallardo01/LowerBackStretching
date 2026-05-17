@@ -6,6 +6,7 @@ import com.lowerbackstretching.App
 import com.lowerbackstretching.data.ContentRepository
 import com.lowerbackstretching.data.CustomRoutineRepository
 import com.lowerbackstretching.data.Prefs
+import com.lowerbackstretching.data.ProgramProgressRepository
 import com.lowerbackstretching.data.SessionRepository
 
 /**
@@ -18,5 +19,6 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     val content: ContentRepository get() = appCtx.contentRepository
     val sessions: SessionRepository get() = appCtx.sessionRepository
     val customRoutines: CustomRoutineRepository get() = appCtx.customRoutineRepository
+    val programProgress: ProgramProgressRepository get() = appCtx.programProgressRepository
     val prefs: Prefs get() = appCtx.prefs
 }

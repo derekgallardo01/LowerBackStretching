@@ -147,6 +147,13 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
                     day = dayNumber,
                     durationSeconds = event.totalDurationSeconds,
                 )
+                appCtx.contentRepository.program(programId)?.let { program ->
+                    appCtx.programProgressRepository.advance(
+                        programId = programId,
+                        completedDay = dayNumber,
+                        totalDays = program.days.size,
+                    )
+                }
                 appCtx.prefs.clearInProgress()
                 if (appCtx.prefs.hapticsFinish.first()) Haptics.finish(appCtx)
             }
