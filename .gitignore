@@ -1,2 +1,17 @@
 .claude/
 .DS_Store
+
+# Release signing — never commit the keystore or its credentials.
+keystore.properties
+*.jks
+*.keystore
+
+# Local IDE / build artifacts.
+.idea/
+.gradle/
+android/.gradle/
+android/.idea/
+android/local.properties
+android/app/build/
+android/core/build/
+android/wear/build/

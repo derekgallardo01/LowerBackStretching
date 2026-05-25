@@ -1,4 +1,6 @@
 import com.android.build.api.dsl.ManagedVirtualDevice
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -17,10 +19,28 @@ android {
         minSdk = 26
         targetSdk = 34
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
+    }
+
+    // Release signing — keystore details live in `keystore.properties` at
+    // the repo root (gitignored). When that file is absent (CI build without
+    // secrets, fresh clone, etc.) we skip the signing config and the release
+    // build will refuse to bundle, which is correct: Play won't accept an
+    // unsigned AAB anyway. See PLAY_STORE_SUBMISSION.md for the exact format.
+    signingConfigs {
+        create("release") {
+            val propsFile = rootProject.file("keystore.properties")
+            if (propsFile.exists()) {
+                val props = Properties().apply { load(FileInputStream(propsFile)) }
+                storeFile = file(props["storeFile"] as String)
+                storePassword = props["storePassword"] as String
+                keyAlias = props["keyAlias"] as String
+                keyPassword = props["keyPassword"] as String
+            }
+        }
     }
 
     buildTypes {
@@ -30,6 +50,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (rootProject.file("keystore.properties").exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 
