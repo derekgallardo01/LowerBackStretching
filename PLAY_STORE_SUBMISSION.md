@@ -15,7 +15,7 @@ These can't be inferred from the code. Lock them in before opening Play Console.
 | Pricing | **Free** | Easiest path for a v1 wellness app. Paid + IAP can come later. |
 | Target audience age range | **18+** | Health/exercise app with self-reported pain data. Below 18 invites COPPA + family-program complexity. |
 | Category | **Health & Fitness** | Primary. |
-| Tags (up to 5) | `Stretching`, `Back pain`, `Posture`, `Mobility`, `Wellness` | Picked when filling the listing. |
+| Tags (up to 5) | **`Stretching`**, **`Yoga`**, **`Posture`**, **`Mobility`**, **`Mindfulness`** | Picked from Play Console's dropdown. Alternates if any aren't available: `Wellness`, `Pain relief`, `Pilates`, `Recovery`. Avoid: `Weight loss`, `Cardio`, `HIIT`, `Meditation` (wrong frame). |
 | Distribution countries | **All countries** (default) | Restrict later if needed. |
 | Privacy policy URL | **You must host one.** | See §6 — template is in [PRIVACY.md](PRIVACY.md). Easiest: a GitHub Pages site or a free Carrd/Notion page. |
 | Developer account name | Your decision | Will appear in the listing. |
@@ -27,13 +27,13 @@ These can't be inferred from the code. Lock them in before opening Play Console.
 
 - [ ] Google Play Developer Account created and verified ($25 one-time fee, ID verification can take 1–3 days)
 - [ ] Decide on the items in §0
-- [ ] Host the privacy policy at a stable URL (see §6)
+- [x] Privacy policy live at <https://derekgallardo01.github.io/LowerBackStretching/PRIVACY> (§6)
 - [x] `versionName = "1.0.0"` and signing scaffold wired in [android/app/build.gradle.kts](android/app/build.gradle.kts) (§3)
 - [x] 512×512 Play Store icon generated at [play-store-icon-512.png](play-store-icon-512.png) (§2)
+- [x] 1024×500 feature graphic generated at [feature-graphic-1024x500.png](feature-graphic-1024x500.png) (§7)
+- [x] 8 phone + 8 tablet screenshots captured at [screenshots/phone/](screenshots/phone/) and [screenshots/tablet/](screenshots/tablet/) via the new `GeneratePlayScreenshotsTest` (§7)
 - [ ] Generate an upload keystore (see §3b)
 - [ ] Build a signed release AAB (see §4)
-- [ ] Take 8 screenshots on a Pixel device/emulator (see §7)
-- [ ] Take a 1024×500 feature graphic (see §7)
 
 ---
 
@@ -217,7 +217,7 @@ First release. 25+ guided stretches, programs for lower-back relief, daily remin
 
 ### Categorization
 - **Category:** Health & Fitness
-- **Tags:** Stretching, Back pain, Posture, Mobility, Wellness
+- **Tags:** Stretching, Yoga, Posture, Mobility, Mindfulness (see §0 for alternates)
 - **App access:** All functionality available without login
 - **Ads:** No
 - **Content rating:** see §8
