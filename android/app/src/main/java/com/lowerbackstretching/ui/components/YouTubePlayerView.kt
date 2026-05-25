@@ -37,11 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 
 /**
- * Lightweight YouTube embed using a WebView + iframe API. Avoids the heavy
- * `YouTubeAndroidPlayerApi` dependency and works without Google Play Services.
+ * YouTube embed via WebView using the YT IFrame Player API.
  *
- * If the channel disables embedding, the iframe renders a "video unavailable"
- * message inside its frame - that's a content curation problem, not a code one.
+ * Uses the official IFrame API JS (not a bare iframe) plus a real Chrome
+ * mobile User-Agent so YouTube's embedder verification — tightened in
+ * July 2025 and the cause of the "Error 152" failures on stock-WebView
+ * embeds — treats the player as a normal embed.
  *
  * Shows a loading skeleton until the WebView signals onPageFinished, and
  * a friendly offline placeholder when the device has no internet so the
@@ -84,31 +85,27 @@ fun YouTubePlayerView(
                             mediaPlaybackRequiresUserGesture = !autoplay
                             domStorageEnabled = true
                             cacheMode = WebSettings.LOAD_DEFAULT
+                            // Default Android WebView UA trips YouTube's embedder
+                            // verification (Error 152). A normal Chrome mobile UA
+                            // gets treated as a regular embed.
+                            userAgentString = CHROME_MOBILE_UA
                         }
                     }
                 },
                 update = { web ->
+                    val loadKey = "$videoId|$startSeconds|$autoplay"
+                    if (web.tag == loadKey) return@AndroidView
+                    web.tag = loadKey
+                    isLoading = true
                     val auto = if (autoplay) 1 else 0
-                    val startParam = if (startSeconds > 0) "&start=$startSeconds" else ""
-                    val html = """
-                        <!DOCTYPE html>
-                        <html><head>
-                          <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-                          <style>
-                            html, body { margin:0; padding:0; height:100%; background:#000; }
-                            .wrap { position:relative; width:100%; height:100%; }
-                            iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
-                          </style>
-                        </head><body>
-                          <div class="wrap">
-                            <iframe
-                              src="https://www.youtube.com/embed/$videoId?playsinline=1&rel=0&modestbranding=1&autoplay=$auto$startParam"
-                              allow="autoplay; encrypted-media; picture-in-picture"
-                              allowfullscreen></iframe>
-                          </div>
-                        </body></html>
-                    """.trimIndent()
-                    web.loadDataWithBaseURL("https://www.youtube.com", html, "text/html", "UTF-8", null)
+                    val html = buildPlayerHtml(videoId, auto, startSeconds)
+                    web.loadDataWithBaseURL(
+                        "https://www.youtube.com",
+                        html,
+                        "text/html",
+                        "UTF-8",
+                        null,
+                    )
                 },
             )
             if (isLoading) {
@@ -118,6 +115,43 @@ fun YouTubePlayerView(
             OfflineOverlay()
         }
     }
+}
+
+private const val CHROME_MOBILE_UA =
+    "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 " +
+        "(KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+
+private fun buildPlayerHtml(videoId: String, autoplay: Int, startSeconds: Int): String {
+    return """
+        <!DOCTYPE html>
+        <html><head>
+          <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+          <style>
+            html, body { margin:0; padding:0; height:100%; background:#000; overflow:hidden; }
+            #player { width:100%; height:100%; }
+          </style>
+        </head><body>
+          <div id="player"></div>
+          <script src="https://www.youtube.com/iframe_api"></script>
+          <script>
+            function onYouTubeIframeAPIReady() {
+              new YT.Player('player', {
+                videoId: '$videoId',
+                playerVars: {
+                  playsinline: 1,
+                  rel: 0,
+                  modestbranding: 1,
+                  autoplay: $autoplay,
+                  start: $startSeconds,
+                  enablejsapi: 1,
+                  origin: 'https://www.youtube.com',
+                  widget_referrer: 'https://www.youtube.com'
+                }
+              });
+            }
+          </script>
+        </body></html>
+    """.trimIndent()
 }
 
 @Composable
