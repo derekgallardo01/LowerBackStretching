@@ -26,15 +26,17 @@ android {
     }
 
     // Release signing — keystore details live in `keystore.properties` at
-    // the repo root (gitignored). When that file is absent (CI build without
-    // secrets, fresh clone, etc.) we skip the signing config and the release
-    // build will refuse to bundle, which is correct: Play won't accept an
-    // unsigned AAB anyway. See PLAY_STORE_SUBMISSION.md for the exact format.
+    // the repo root (gitignored). Gradle's root project is the `android/`
+    // subdirectory (settings.gradle.kts lives there), so the props file is
+    // one level up. When the file is absent (CI without secrets, fresh
+    // clone) we skip the signing config; the release build won't be signed
+    // and Play will reject it — exactly what we want as a guard. See
+    // PLAY_STORE_SUBMISSION.md for the exact format.
+    val keystorePropsFile = rootProject.file("../keystore.properties")
     signingConfigs {
         create("release") {
-            val propsFile = rootProject.file("keystore.properties")
-            if (propsFile.exists()) {
-                val props = Properties().apply { load(FileInputStream(propsFile)) }
+            if (keystorePropsFile.exists()) {
+                val props = Properties().apply { load(FileInputStream(keystorePropsFile)) }
                 storeFile = file(props["storeFile"] as String)
                 storePassword = props["storePassword"] as String
                 keyAlias = props["keyAlias"] as String
@@ -50,7 +52,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            if (rootProject.file("keystore.properties").exists()) {
+            if (keystorePropsFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
