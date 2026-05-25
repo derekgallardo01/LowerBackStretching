@@ -9,6 +9,9 @@ import java.util.Calendar
 object ReminderScheduler {
 
     private const val REQUEST_CODE = 1001
+    private const val STREAK_NUDGE_REQUEST_CODE = 1002
+    /** Evening hour at which we check whether the user's streak is about to break. */
+    const val STREAK_NUDGE_HOUR = 20
 
     fun schedule(context: Context, hour: Int, minute: Int) {
         val alarmManager = context.getSystemService(AlarmManager::class.java)
@@ -23,6 +26,22 @@ object ReminderScheduler {
     fun cancel(context: Context) {
         val alarmManager = context.getSystemService(AlarmManager::class.java)
         existingPendingIntent(context)?.let { alarmManager.cancel(it) }
+    }
+
+    /** Daily check at 20:00 — receiver decides whether the streak is actually at risk. */
+    fun scheduleStreakNudge(context: Context) {
+        val alarmManager = context.getSystemService(AlarmManager::class.java)
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            nextOccurrence(STREAK_NUDGE_HOUR, 0, Calendar.getInstance()),
+            AlarmManager.INTERVAL_DAY,
+            createStreakNudgePendingIntent(context),
+        )
+    }
+
+    fun cancelStreakNudge(context: Context) {
+        val alarmManager = context.getSystemService(AlarmManager::class.java)
+        existingStreakNudgePendingIntent(context)?.let { alarmManager.cancel(it) }
     }
 
     /** Creates or updates the broadcast PendingIntent. Never null. */
@@ -40,6 +59,22 @@ object ReminderScheduler {
             context,
             REQUEST_CODE,
             Intent(context, ReminderReceiver::class.java),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE,
+        )
+
+    private fun createStreakNudgePendingIntent(context: Context): PendingIntent =
+        PendingIntent.getBroadcast(
+            context,
+            STREAK_NUDGE_REQUEST_CODE,
+            Intent(context, StreakNudgeReceiver::class.java),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+
+    private fun existingStreakNudgePendingIntent(context: Context): PendingIntent? =
+        PendingIntent.getBroadcast(
+            context,
+            STREAK_NUDGE_REQUEST_CODE,
+            Intent(context, StreakNudgeReceiver::class.java),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE,
         )
 }

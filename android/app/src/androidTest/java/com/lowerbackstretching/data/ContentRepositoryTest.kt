@@ -3,6 +3,7 @@ package com.lowerbackstretching.data
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import com.lowerbackstretching.core.BodyZone
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -19,7 +20,9 @@ class ContentRepositoryTest {
             assertThat(s.name).isNotEmpty()
             assertThat(s.durationSeconds).isGreaterThan(0)
             assertThat(s.bodyParts).isNotEmpty()
-            assertThat(s.youtubeId).isNotEmpty()
+            // youtubeId may be empty ("no video yet" sentinel) but should
+            // never be a PLACEHOLDER_* dev marker shipped to users.
+            assertThat(s.youtubeId.startsWith("PLACEHOLDER_")).isFalse()
         }
     }
 

@@ -25,12 +25,17 @@ import com.lowerbackstretching.ui.components.YouTubePlayerView
 @Composable
 internal fun PipPlayerLayout(
     videoId: String,
+    startSeconds: Int,
     remainingSeconds: Int,
     progress: Float,
     durationUnit: DurationUnit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        YouTubePlayerView(videoId = videoId, modifier = Modifier.fillMaxSize())
+        YouTubePlayerView(
+            videoId = videoId,
+            startSeconds = startSeconds,
+            modifier = Modifier.fillMaxSize(),
+        )
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)

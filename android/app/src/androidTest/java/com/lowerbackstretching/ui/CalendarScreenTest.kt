@@ -40,7 +40,6 @@ class CalendarScreenTest {
         rule.onNodeWithText("Streak").assertIsDisplayed()
         rule.onNodeWithText("Sessions").assertIsDisplayed()
         rule.onNodeWithText("Active days").assertIsDisplayed()
-        rule.onNodeWithText("No sessions yet. Start a routine to track your progress.")
-            .assertIsDisplayed()
+        rule.onNodeWithText("Your consistency journey starts here.").assertIsDisplayed()
     }
 }

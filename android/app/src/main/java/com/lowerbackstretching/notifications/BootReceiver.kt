@@ -15,11 +15,13 @@ class BootReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.Default).launch {
             try {
                 val prefs = Prefs(context)
-                val enabled = prefs.reminderEnabled.first()
-                if (enabled) {
+                if (prefs.reminderEnabled.first()) {
                     val hour = prefs.reminderHour.first()
                     val minute = prefs.reminderMinute.first()
                     ReminderScheduler.schedule(context, hour, minute)
+                }
+                if (prefs.streakNudgeEnabled.first()) {
+                    ReminderScheduler.scheduleStreakNudge(context)
                 }
             } finally {
                 pendingResult.finish()

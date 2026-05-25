@@ -72,6 +72,7 @@ fun StretchDetailScreen(
         ) {
             YouTubePlayerView(
                 videoId = stretch.youtubeId,
+                startSeconds = stretch.videoStartSeconds,
                 modifier = Modifier.fillMaxWidth(),
                 autoplay = false,
             )

@@ -25,9 +25,9 @@ class SessionRepository(private val dao: SessionDao) {
     fun recent(limit: Int = 20): Flow<List<SessionEntity>> =
         dao.recent(limit)
 
-    suspend fun recordCompletion(programId: String, day: Int, durationSeconds: Int) {
+    suspend fun recordCompletion(programId: String, day: Int, durationSeconds: Int): Long {
         val now = System.currentTimeMillis()
-        dao.insert(
+        return dao.insert(
             SessionEntity(
                 programId = programId,
                 dayNumber = day,

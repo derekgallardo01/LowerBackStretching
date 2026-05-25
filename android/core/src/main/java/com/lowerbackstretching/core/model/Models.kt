@@ -12,6 +12,10 @@ data class Stretch(
     val difficulty: String,
     val description: String,
     val youtubeId: String,
+    /** Seconds into the video where the actual demo starts. Used to
+     *  skip channel intros / talking heads / sponsor reads. 0 = play
+     *  from the beginning. */
+    val videoStartSeconds: Int = 0,
     /** A one-line summary of why this stretch helps. Optional. */
     val whyThisStretch: String? = null,
     /** Deeper how-to / anatomy / education cards shown on the detail screen. */

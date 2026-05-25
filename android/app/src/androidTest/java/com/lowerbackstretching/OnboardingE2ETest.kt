@@ -52,15 +52,51 @@ class OnboardingE2ETest {
 
     @Test
     fun stepping_through_all_pages_completes_onboarding() {
+        // Page order: value-hook → safety-check → build-your-own → consistency → reminder.
+        // Page 2 (safety-check) uses "None of these apply" instead of "Next".
         rule.waitUntil(timeoutMillis = 5_000) {
             rule.onAllNodesWithText("Next").fetchSemanticsNodes().isNotEmpty()
         }
-        repeat(3) { rule.onNodeWithText("Next").performClick() }
+        rule.onNodeWithText("Next").performClick()
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("None of these apply").fetchSemanticsNodes().isNotEmpty()
+        }
+        rule.onNodeWithText("None of these apply").performClick()
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Next").fetchSemanticsNodes().isNotEmpty()
+        }
+        rule.onNodeWithText("Next").performClick()
+        rule.onNodeWithText("Next").performClick()
         rule.onNodeWithText("Turn on reminders").performClick()
 
         rule.waitUntil(timeoutMillis = 5_000) {
             rule.onAllNodesWithText("Welcome back").fetchSemanticsNodes().isNotEmpty()
         }
         rule.onNodeWithText("Welcome back").assertIsDisplayed()
+    }
+
+    @Test
+    fun tapping_one_or_more_applies_on_safety_check_opens_advisory_then_dismisses_back() {
+        // Advance to the safety check page.
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Next").fetchSemanticsNodes().isNotEmpty()
+        }
+        rule.onNodeWithText("Next").performClick()
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("One or more applies").fetchSemanticsNodes().isNotEmpty()
+        }
+        rule.onNodeWithText("One or more applies").performClick()
+
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Please see a doctor before stretching.")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+        rule.onNodeWithText("I've already seen a doctor").performClick()
+
+        // Advisory dismissed → onboarding advances to the next page.
+        rule.waitUntil(timeoutMillis = 5_000) {
+            rule.onAllNodesWithText("Build your own").fetchSemanticsNodes().isNotEmpty()
+        }
+        rule.onNodeWithText("Build your own").assertIsDisplayed()
     }
 }

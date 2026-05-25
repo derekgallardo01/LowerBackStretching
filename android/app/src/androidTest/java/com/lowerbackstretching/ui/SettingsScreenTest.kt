@@ -34,10 +34,14 @@ class SettingsScreenTest {
             rule.onAllNodesWithText("Settings").fetchSemanticsNodes().isNotEmpty()
         }
         rule.onNodeWithText("Settings").assertIsDisplayed()
+        // Above-the-fold cards on a typical phone: SafetyCard, Reminder.
+        rule.onNodeWithText("Safety check").assertIsDisplayed()
         rule.onNodeWithText("Daily reminder").assertIsDisplayed()
         rule.onNodeWithText("Reminder time").assertIsDisplayed()
-        rule.onNodeWithText("About").assertIsDisplayed()
-        // After resetForTests(), defaults apply: hour=8, minute=0.
+        // Defaults from resetForTests: hour=8, minute=0.
         rule.onNodeWithText("08:00").assertIsDisplayed()
+        // Below-the-fold cards: assert composition exists (the scrollable
+        // Column has these but they may not be in view on small screens).
+        rule.onNodeWithText("About").assertExists()
     }
 }

@@ -21,7 +21,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,8 +36,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.data.ReminderDefaults
 import com.lowerbackstretching.notifications.applyReminder
+import com.lowerbackstretching.notifications.applyStreakNudge
 import com.lowerbackstretching.notifications.rememberNotificationPermissionAsk
 import com.lowerbackstretching.ui.AppViewModel
+import com.lowerbackstretching.ui.safety.RedFlagAdvisoryScreen
+import com.lowerbackstretching.ui.safety.SafetyCheckPage
 import kotlinx.coroutines.launch
 
 @Composable
@@ -47,6 +54,10 @@ fun OnboardingScreen(
     val pages = onboardingPages
     val pager = rememberPagerState(pageCount = { pages.size })
     val isLast = pager.currentPage == pages.size - 1
+    val currentPage = pages[pager.currentPage]
+    val isSafetyPage = currentPage is OnboardingPage.SafetyCheck
+
+    var showAdvisory by remember { mutableStateOf(false) }
 
     fun finish(turnOnReminders: Boolean) {
         if (turnOnReminders) askNotificationPermission()
@@ -58,49 +69,89 @@ fun OnboardingScreen(
                     hour = ReminderDefaults.HOUR,
                     minute = ReminderDefaults.MINUTE,
                 )
+                // Streak-at-risk nudge — fires at 20:00 only if the user has an
+                // active streak and hasn't stretched yet today. Shipped opt-in
+                // alongside the morning reminder so users discover both at once.
+                vm.prefs.applyStreakNudge(ctx, enabled = true)
             }
             vm.prefs.markOnboardingDone()
             onDone()
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.SpaceBetween,
-    ) {
-        HorizontalPager(
-            state = pager,
-            modifier = Modifier.fillMaxWidth().weight(1f),
-        ) { index ->
-            PageView(pages[index])
+    fun advance() {
+        if (isSafetyPage) {
+            scope.launch { vm.prefs.setRedFlagScreeningCompletedAt(System.currentTimeMillis()) }
+        }
+        if (isLast) {
+            finish(turnOnReminders = true)
+        } else {
+            scope.launch { pager.animateScrollToPage(pager.currentPage + 1) }
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(24.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            HorizontalPager(
+                state = pager,
+                modifier = Modifier.fillMaxWidth().weight(1f),
+            ) { index ->
+                when (val page = pages[index]) {
+                    is OnboardingPage.Standard -> PageView(page)
+                    is OnboardingPage.SafetyCheck -> SafetyCheckPage(
+                        onOneApplies = { showAdvisory = true },
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+            DotsIndicator(currentPage = pager.currentPage, totalPages = pages.size)
+            Spacer(Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TextButton(onClick = { finish(turnOnReminders = false) }) { Text("Skip") }
+
+                Button(onClick = ::advance) {
+                    Text(
+                        when {
+                            isSafetyPage -> "None of these apply"
+                            isLast -> "Turn on reminders"
+                            else -> "Next"
+                        }
+                    )
+                }
+            }
         }
 
-        Spacer(Modifier.height(16.dp))
-        DotsIndicator(currentPage = pager.currentPage, totalPages = pages.size)
-        Spacer(Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            TextButton(onClick = { finish(turnOnReminders = false) }) { Text("Skip") }
-
-            Button(onClick = {
-                if (isLast) {
-                    finish(turnOnReminders = true)
-                } else {
-                    scope.launch { pager.animateScrollToPage(pager.currentPage + 1) }
-                }
-            }) {
-                Text(if (isLast) "Turn on reminders" else "Next")
+        if (showAdvisory) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background,
+            ) {
+                RedFlagAdvisoryScreen(
+                    onSeenDoctor = {
+                        showAdvisory = false
+                        advance()
+                    },
+                    onContinueAnyway = {
+                        showAdvisory = false
+                        advance()
+                    },
+                )
             }
         }
     }
 }
 
 @Composable
-private fun PageView(page: OnboardingPage) {
+private fun PageView(page: OnboardingPage.Standard) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

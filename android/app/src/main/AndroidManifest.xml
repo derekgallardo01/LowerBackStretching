@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- Health Connect: opt-in writes for stretching sessions, opt-in reads
          for daily step count. Both gated by user preferences in Settings. -->
@@ -51,6 +52,10 @@
 
         <receiver
             android:name=".notifications.ReminderReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".notifications.StreakNudgeReceiver"
             android:exported="false" />
 
         <receiver

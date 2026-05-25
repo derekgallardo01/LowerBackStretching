@@ -40,7 +40,10 @@ fun InfoRow(
     trailing: @Composable (() -> Unit)? = null,
 ) {
     val shape = RoundedCornerShape(14.dp)
-    val cardModifier = modifier.fillMaxWidth()
+    val isInteractive = onClick != null
+    val cardModifier = modifier
+        .fillMaxWidth()
+        .let { if (isInteractive) it.pressScale() else it }
 
     when {
         onClick != null && onLongClick != null -> {

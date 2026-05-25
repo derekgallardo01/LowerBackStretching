@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.lowerbackstretching.ui.programs.ProgramDetailScreen
 import com.lowerbackstretching.ui.theme.AppTheme
@@ -29,8 +30,11 @@ class ProgramDetailScreenTest {
             }
         }
         rule.onNodeWithText("Lower Back Relief").assertIsDisplayed()
-        rule.onNodeWithText("Day 1 · Gentle Start").assertIsDisplayed()
-        rule.onNodeWithText("Day 7 · Putting It Together").assertIsDisplayed()
+        // Day 1 has a " · Today" suffix when it's the current day (default for a
+        // fresh program-progress flow).
+        rule.onNodeWithText("Gentle Start", substring = true).assertIsDisplayed()
+        rule.onNodeWithText("Putting It Together", substring = true)
+            .performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -45,7 +49,8 @@ class ProgramDetailScreenTest {
                 )
             }
         }
-        rule.onNodeWithText("Day 3 · Hips Meet Back").performClick()
+        rule.onNodeWithText("Hips Meet Back", substring = true)
+            .performScrollTo().performClick()
         assert(started == 3) { "expected day 3, got $started" }
     }
 }

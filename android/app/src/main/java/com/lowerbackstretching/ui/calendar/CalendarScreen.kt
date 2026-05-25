@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,6 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.core.CalendarMonth
 import com.lowerbackstretching.data.db.SessionEntity
 import com.lowerbackstretching.ui.AppViewModel
+import com.lowerbackstretching.ui.components.EmptyState
 import com.lowerbackstretching.ui.components.InfoRow
 import com.lowerbackstretching.ui.components.ScreenHeader
 import com.lowerbackstretching.ui.components.SectionHeader
@@ -86,11 +88,10 @@ fun CalendarScreen(vm: AppViewModel = viewModel()) {
 
         if (recent.isEmpty()) {
             item {
-                Text(
-                    "No sessions yet. Start a routine to track your progress.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    modifier = Modifier.padding(top = 8.dp),
+                EmptyState(
+                    icon = Icons.Filled.CalendarMonth,
+                    title = "Your consistency journey starts here.",
+                    body = "Finish your first session and you'll see it on this calendar.",
                 )
             }
         } else {

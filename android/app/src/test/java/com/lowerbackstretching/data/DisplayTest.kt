@@ -1,0 +1,73 @@
+package com.lowerbackstretching.data
+
+import com.google.common.truth.Truth.assertThat
+import com.lowerbackstretching.data.model.Program
+import com.lowerbackstretching.data.model.ProgramDay
+import com.lowerbackstretching.data.model.Stretch
+import org.junit.Test
+
+class DisplayTest {
+
+    private fun stretch(
+        id: String = "s",
+        difficulty: String = "easy",
+        seconds: Int = 30,
+        bodyParts: List<String> = listOf("lower-back"),
+    ) = Stretch(
+        id = id,
+        name = id,
+        bodyParts = bodyParts,
+        durationSeconds = seconds,
+        difficulty = difficulty,
+        description = "",
+        youtubeId = "x",
+    )
+
+    @Test
+    fun difficultyDisplay_capitalizes_first_letter() {
+        assertThat(stretch(difficulty = "easy").difficultyDisplay).isEqualTo("Easy")
+        assertThat(stretch(difficulty = "medium").difficultyDisplay).isEqualTo("Medium")
+        assertThat(stretch(difficulty = "hard").difficultyDisplay).isEqualTo("Hard")
+    }
+
+    @Test
+    fun shortSubtitle_renders_duration_difficulty_and_body_parts() {
+        val s = stretch(seconds = 45, difficulty = "easy", bodyParts = listOf("lower-back", "spine"))
+        assertThat(s.shortSubtitle).isEqualTo("45s · Easy · lower back · spine")
+    }
+
+    @Test
+    fun filteredBy_with_ALL_returns_everything() {
+        val list = listOf(stretch(id = "a"), stretch(id = "b", bodyParts = listOf("calves")))
+        assertThat(list.filteredBy(BodyParts.ALL)).hasSize(2)
+    }
+
+    @Test
+    fun filteredBy_narrows_to_one_body_part() {
+        val list = listOf(
+            stretch(id = "a", bodyParts = listOf("lower-back")),
+            stretch(id = "b", bodyParts = listOf("calves")),
+            stretch(id = "c", bodyParts = listOf("calves", "hamstrings")),
+        )
+        assertThat(list.filteredBy("calves").map { it.id }).containsExactly("b", "c").inOrder()
+    }
+
+    @Test
+    fun program_subtitle_renders_day_count_and_category() {
+        val program = Program(
+            id = "p", title = "X", category = "lower-back",
+            summary = "", days = listOf(
+                ProgramDay(day = 1, title = "d1", stretchIds = listOf("a")),
+                ProgramDay(day = 2, title = "d2", stretchIds = listOf("a")),
+            ),
+        )
+        assertThat(program.subtitle).isEqualTo("2-day · lower back")
+    }
+
+    @Test
+    fun programDay_headerTitle_and_subtitle() {
+        val day = ProgramDay(day = 3, title = "Gentle", stretchIds = listOf("a", "b"))
+        assertThat(day.headerTitle).isEqualTo("Day 3 · Gentle")
+        assertThat(day.subtitle(totalSeconds = 180)).isEqualTo("2 stretches · 3 min")
+    }
+}

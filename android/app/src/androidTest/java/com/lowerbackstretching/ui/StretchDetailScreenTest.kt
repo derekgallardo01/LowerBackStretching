@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.lowerbackstretching.ui.stretches.StretchDetailScreen
 import com.lowerbackstretching.ui.theme.AppTheme
@@ -25,7 +26,7 @@ class StretchDetailScreenTest {
             }
         }
         rule.onNodeWithText("Cat-Cow").assertIsDisplayed()
-        rule.onNodeWithText("  Practice this stretch").assertIsDisplayed()
+        rule.onNodeWithText("  Practice this stretch").performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -40,7 +41,7 @@ class StretchDetailScreenTest {
                 )
             }
         }
-        rule.onNodeWithText("  Practice this stretch").performClick()
+        rule.onNodeWithText("  Practice this stretch").performScrollTo().performClick()
         assert(practiced) { "expected onPractice to fire" }
     }
 }

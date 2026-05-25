@@ -13,8 +13,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase
         CustomRoutineEntity::class,
         ProgramProgressEntity::class,
         FlexibilityTestEntity::class,
+        PainLogEntity::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -22,6 +23,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun customRoutineDao(): CustomRoutineDao
     abstract fun programProgressDao(): ProgramProgressDao
     abstract fun flexibilityTestDao(): FlexibilityTestDao
+    abstract fun painLogDao(): PainLogDao
 
     companion object {
         @Volatile private var instance: AppDatabase? = null
@@ -73,13 +75,42 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        /** v6 → v7: create pain_logs table for per-session pre/post ratings. */
+        internal val MIGRATION_6_7 = object : Migration(6, 7) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS pain_logs (" +
+                        "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                        "recordedAtEpochMillis INTEGER NOT NULL, " +
+                        "painLevel INTEGER NOT NULL, " +
+                        "bodyLocationTag TEXT, " +
+                        "context TEXT NOT NULL, " +
+                        "sessionId INTEGER)"
+                )
+                db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS index_pain_logs_recordedAtEpochMillis " +
+                        "ON pain_logs(recordedAtEpochMillis)"
+                )
+                db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS index_pain_logs_sessionId " +
+                        "ON pain_logs(sessionId)"
+                )
+            }
+        }
+
         fun get(context: Context): AppDatabase = instance ?: synchronized(this) {
             instance ?: Room.databaseBuilder(
                 context.applicationContext,
                 AppDatabase::class.java,
                 "lowerback.db",
             )
-                .addMigrations(MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
+                .addMigrations(
+                    MIGRATION_2_3,
+                    MIGRATION_3_4,
+                    MIGRATION_4_5,
+                    MIGRATION_5_6,
+                    MIGRATION_6_7,
+                )
                 .fallbackToDestructiveMigration()
                 .build()
                 .also { instance = it }

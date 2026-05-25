@@ -16,3 +16,18 @@ suspend fun Prefs.applyReminder(context: Context, enabled: Boolean, hour: Int, m
         ReminderScheduler.cancel(context)
     }
 }
+
+/**
+ * Single source of truth for "user changed the streak-at-risk nudge."
+ * Persists the preference and re-(scheduling|cancelling) the AlarmManager
+ * alarm so the two never drift. The receiver gates posting per-day on
+ * the current streak and whether the user already stretched today.
+ */
+suspend fun Prefs.applyStreakNudge(context: Context, enabled: Boolean) {
+    setStreakNudgeEnabled(enabled)
+    if (enabled) {
+        ReminderScheduler.scheduleStreakNudge(context)
+    } else {
+        ReminderScheduler.cancelStreakNudge(context)
+    }
+}

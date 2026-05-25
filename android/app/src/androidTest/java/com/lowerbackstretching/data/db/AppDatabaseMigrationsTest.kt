@@ -1,7 +1,7 @@
 package com.lowerbackstretching.data.db
 
 import android.content.Context
-import android.database.sqlite.SQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.test.core.app.ApplicationProvider
@@ -41,18 +41,17 @@ class AppDatabaseMigrationsTest {
     }
 
     /** Open a fresh database with [setup] establishing the starting schema. */
-    private fun openWithSchema(setup: (SQLiteDatabase) -> Unit): androidx.sqlite.db.SupportSQLiteDatabase {
+    private fun openWithSchema(setup: (SupportSQLiteDatabase) -> Unit): SupportSQLiteDatabase {
         val factory = FrameworkSQLiteOpenHelperFactory()
         helper = factory.create(
             SupportSQLiteOpenHelper.Configuration.builder(context)
                 .name(dbName)
                 .callback(object : SupportSQLiteOpenHelper.Callback(1) {
-                    override fun onCreate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
-                        // Raw cast: the underlying impl is android.database.sqlite.SQLiteDatabase
-                        setup(db as android.database.sqlite.SQLiteDatabase)
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        setup(db)
                     }
                     override fun onUpgrade(
-                        db: androidx.sqlite.db.SupportSQLiteDatabase, oldVersion: Int, newVersion: Int,
+                        db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int,
                     ) = Unit
                 })
                 .build()
@@ -150,6 +149,49 @@ class AppDatabaseMigrationsTest {
             assertThat(c.getFloat(1)).isEqualTo(12.5f)
             assertThat(c.isNull(2)).isTrue()
             assertThat(c.isNull(3)).isTrue()
+        }
+    }
+
+    @Test fun migration_6_to_7_creates_pain_logs_table_with_indices() {
+        val db = openWithSchema { /* no pain_logs yet */ }
+
+        AppDatabase.MIGRATION_6_7.migrate(db)
+
+        // Round-trip insert covering both PRE (sessionId NULL) and POST rows.
+        db.execSQL(
+            "INSERT INTO pain_logs(recordedAtEpochMillis, painLevel, bodyLocationTag, " +
+                "context, sessionId) " +
+                "VALUES (1640995200000, 6, 'lower-back', 'PRE_SESSION', NULL)"
+        )
+        db.execSQL(
+            "INSERT INTO pain_logs(recordedAtEpochMillis, painLevel, bodyLocationTag, " +
+                "context, sessionId) " +
+                "VALUES (1640995260000, 3, NULL, 'POST_SESSION', 99)"
+        )
+        db.query(
+            "SELECT painLevel, bodyLocationTag, context, sessionId FROM pain_logs " +
+                "ORDER BY recordedAtEpochMillis ASC"
+        ).use { c ->
+            assertThat(c.moveToFirst()).isTrue()
+            assertThat(c.getInt(0)).isEqualTo(6)
+            assertThat(c.getString(1)).isEqualTo("lower-back")
+            assertThat(c.getString(2)).isEqualTo("PRE_SESSION")
+            assertThat(c.isNull(3)).isTrue()
+            assertThat(c.moveToNext()).isTrue()
+            assertThat(c.getInt(0)).isEqualTo(3)
+            assertThat(c.isNull(1)).isTrue()
+            assertThat(c.getString(2)).isEqualTo("POST_SESSION")
+            assertThat(c.getLong(3)).isEqualTo(99L)
+        }
+
+        // Indices must be present so the hot-path queries don't full-scan.
+        db.query(
+            "SELECT name FROM sqlite_master WHERE type = 'index' AND tbl_name = 'pain_logs'"
+        ).use { c ->
+            val indexNames = mutableListOf<String>()
+            while (c.moveToNext()) indexNames += c.getString(0)
+            assertThat(indexNames).contains("index_pain_logs_recordedAtEpochMillis")
+            assertThat(indexNames).contains("index_pain_logs_sessionId")
         }
     }
 }

@@ -43,6 +43,9 @@ object PrefKeys {
     val HEALTH_WRITE_ENABLED = booleanPreferencesKey("health_write_enabled")
     val HEALTH_READ_ENABLED = booleanPreferencesKey("health_read_enabled")
     val CLOUD_SYNC_ENABLED = booleanPreferencesKey("cloud_sync_enabled")
+    val RED_FLAG_SCREENING_COMPLETED_AT = longPreferencesKey("red_flag_screening_completed_at")
+    val MILESTONES_SHOWN_CSV = stringPreferencesKey("milestones_shown_csv")
+    val STREAK_NUDGE_ENABLED = booleanPreferencesKey("streak_nudge_enabled")
 }
 
 object GoalDefaults {
@@ -83,6 +86,15 @@ class Prefs(private val context: Context) {
     val healthWriteEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.HEALTH_WRITE_ENABLED] ?: false }
     val healthReadEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.HEALTH_READ_ENABLED] ?: false }
     val cloudSyncEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.CLOUD_SYNC_ENABLED] ?: false }
+    val redFlagScreeningCompletedAt: Flow<Long> = context.dataStore.data.map { it[PrefKeys.RED_FLAG_SCREENING_COMPLETED_AT] ?: 0L }
+    val milestonesShown: Flow<Set<Int>> = context.dataStore.data.map { prefs ->
+        prefs[PrefKeys.MILESTONES_SHOWN_CSV]
+            ?.split(',')
+            ?.mapNotNull { it.trim().toIntOrNull() }
+            ?.toSet()
+            ?: emptySet()
+    }
+    val streakNudgeEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.STREAK_NUDGE_ENABLED] ?: true }
 
     internal suspend fun setReminder(enabled: Boolean, hour: Int, minute: Int) {
         context.dataStore.edit {
@@ -170,6 +182,27 @@ class Prefs(private val context: Context) {
 
     suspend fun setCloudSyncEnabled(enabled: Boolean) {
         context.dataStore.edit { it[PrefKeys.CLOUD_SYNC_ENABLED] = enabled }
+    }
+
+    suspend fun setRedFlagScreeningCompletedAt(epochMillis: Long) {
+        context.dataStore.edit { it[PrefKeys.RED_FLAG_SCREENING_COMPLETED_AT] = epochMillis }
+    }
+
+    suspend fun setStreakNudgeEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[PrefKeys.STREAK_NUDGE_ENABLED] = enabled }
+    }
+
+    suspend fun markMilestoneShown(threshold: Int) {
+        context.dataStore.edit { prefs ->
+            val existing = prefs[PrefKeys.MILESTONES_SHOWN_CSV]
+                ?.split(',')
+                ?.mapNotNull { it.trim().toIntOrNull() }
+                ?.toSet()
+                ?: emptySet()
+            prefs[PrefKeys.MILESTONES_SHOWN_CSV] = (existing + threshold)
+                .sorted()
+                .joinToString(",")
+        }
     }
 
     /** Test helper — clears all keys so the next read returns defaults. */

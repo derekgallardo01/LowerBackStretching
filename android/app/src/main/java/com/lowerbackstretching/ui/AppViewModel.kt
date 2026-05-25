@@ -6,6 +6,7 @@ import com.lowerbackstretching.App
 import com.lowerbackstretching.data.ContentRepository
 import com.lowerbackstretching.data.CustomRoutineRepository
 import com.lowerbackstretching.data.FlexibilityRepository
+import com.lowerbackstretching.data.PainLogRepository
 import com.lowerbackstretching.data.Prefs
 import com.lowerbackstretching.data.ProgramProgressRepository
 import com.lowerbackstretching.data.SessionRepository
@@ -24,6 +25,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     val customRoutines: CustomRoutineRepository get() = appCtx.customRoutineRepository
     val programProgress: ProgramProgressRepository get() = appCtx.programProgressRepository
     val flexibility: FlexibilityRepository get() = appCtx.flexibilityRepository
+    val painLog: PainLogRepository get() = appCtx.painLogRepository
     val health: HealthController get() = appCtx.health
     val sync: SyncController get() = appCtx.sync
     val prefs: Prefs get() = appCtx.prefs

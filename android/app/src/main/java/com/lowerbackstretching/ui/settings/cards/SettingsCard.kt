@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 
 /**
  * The visual shell every Settings card uses: a rounded Card with a
- * 16dp inner Column. Existed inlined in every cards/*.kt file before
+ * 16dp inner Column. Was inlined in every settings card file before
  * this — extracting kills ~5 lines of boilerplate per card and locks
  * the shape/padding in one place.
  *

@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.notifications.applyReminder
+import com.lowerbackstretching.notifications.applyStreakNudge
 import com.lowerbackstretching.notifications.rememberNotificationPermissionAsk
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.util.formatTime
@@ -30,10 +31,16 @@ fun ReminderCard(vm: AppViewModel = viewModel()) {
     val enabled by vm.prefs.reminderEnabled.collectAsState(initial = false)
     val hour by vm.prefs.reminderHour.collectAsState(initial = 8)
     val minute by vm.prefs.reminderMinute.collectAsState(initial = 0)
+    val streakNudge by vm.prefs.streakNudgeEnabled.collectAsState(initial = true)
 
     fun apply(enabled: Boolean, hour: Int, minute: Int) {
         if (enabled) askNotificationPermission()
         scope.launch { vm.prefs.applyReminder(ctx, enabled, hour, minute) }
+    }
+
+    fun applyStreakNudge(on: Boolean) {
+        if (on) askNotificationPermission()
+        scope.launch { vm.prefs.applyStreakNudge(ctx, on) }
     }
 
     SettingsCard(verticalSpacing = 0.dp) {
@@ -55,6 +62,17 @@ fun ReminderCard(vm: AppViewModel = viewModel()) {
                     hour, minute, true).show()
             },
         )
+        SettingsToggleRow(
+            checked = streakNudge,
+            onChange = ::applyStreakNudge,
+        ) {
+            Text("Streak safety net", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "Evening nudge if you'll lose a streak by skipping today.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            )
+        }
     }
 }
 

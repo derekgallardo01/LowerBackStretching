@@ -27,9 +27,11 @@ import com.lowerbackstretching.ui.home.HomeAction
 import com.lowerbackstretching.ui.home.HomeScreen
 import com.lowerbackstretching.ui.learn.GlossaryScreen
 import com.lowerbackstretching.ui.onboarding.OnboardingScreen
+import com.lowerbackstretching.ui.pain.PainHistoryScreen
 import com.lowerbackstretching.ui.player.CustomRoutinePlayerScreen
 import com.lowerbackstretching.ui.player.PlayerScreen
 import com.lowerbackstretching.ui.player.SingleStretchPlayerScreen
+import com.lowerbackstretching.ui.safety.RedFlagAdvisoryScreen
 import com.lowerbackstretching.ui.programs.ProgramDetailScreen
 import com.lowerbackstretching.ui.programs.ProgramsScreen
 import com.lowerbackstretching.core.SharedRoutine
@@ -102,6 +104,7 @@ private fun AppRoot(
                         HomeAction.OpenAchievements -> nav.navigate(Dest.achievements)
                         HomeAction.OpenGoals -> nav.navigate(Dest.goals)
                         HomeAction.OpenFlexibility -> nav.navigate(Dest.flexibility)
+                        HomeAction.OpenPainHistory -> nav.navigate(Dest.painHistory)
                         HomeAction.OpenGlossary -> nav.navigate(Dest.glossary)
                         HomeAction.OpenBodyDiagram -> nav.navigate(Dest.bodyDiagram)
                         HomeAction.ScheduleBreak -> ctx.startActivity(scheduleStretchBreakIntent())
@@ -122,6 +125,15 @@ private fun AppRoot(
             }
             composable(Dest.flexibility) {
                 FlexibilityScreen(onBack = { nav.popBackStack() })
+            }
+            composable(Dest.painHistory) {
+                PainHistoryScreen(onBack = { nav.popBackStack() })
+            }
+            composable(Dest.safetyAdvisory) {
+                RedFlagAdvisoryScreen(
+                    onSeenDoctor = { nav.popBackStack() },
+                    onContinueAnyway = { nav.popBackStack() },
+                )
             }
             composable(Dest.glossary) {
                 GlossaryScreen(onBack = { nav.popBackStack() })
@@ -194,7 +206,9 @@ private fun AppRoot(
                 )
             }
             composable(Tab.Calendar.path) { CalendarScreen() }
-            composable(Tab.Settings.path) { SettingsScreen() }
+            composable(Tab.Settings.path) {
+                SettingsScreen(onOpenSafetyAdvisory = { nav.navigate(Dest.safetyAdvisory) })
+            }
         }
     }
 

@@ -3,6 +3,8 @@ package com.lowerbackstretching.ui.player
 import android.content.pm.ActivityInfo
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,13 +19,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.filled.Spa
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -38,6 +43,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -47,7 +55,10 @@ import com.lowerbackstretching.core.bodyZonesForTags
 import com.lowerbackstretching.core.formatDuration
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.anatomy.BodySilhouette
+import com.lowerbackstretching.ui.components.HoldButton
+import com.lowerbackstretching.ui.components.MilestoneModal
 import com.lowerbackstretching.ui.components.YouTubePlayerView
+import com.lowerbackstretching.ui.pain.PainCheckInDialog
 
 /**
  * The shared player UI used by all three [PlayerScreen] entry points.
@@ -66,6 +77,9 @@ internal fun PlayerBody(
     appVm: AppViewModel = viewModel(),
 ) {
     val state by vm.state.collectAsState()
+    val painPrompt by vm.painPrompt.collectAsState()
+    val finishedSession by vm.finishedSession.collectAsState()
+    val milestone by vm.milestone.collectAsState()
     val unit by appVm.prefs.durationUnit.collectAsState(initial = DurationUnit.SECONDS)
     val pipHost = LocalPictureInPictureHost.current
     val inPip by pipHost.inPip.collectAsState()
@@ -84,14 +98,37 @@ internal fun PlayerBody(
         if (snapshot != null && current != null && !snapshot.finished) {
             PipPlayerLayout(
                 videoId = current.youtubeId,
+                startSeconds = current.videoStartSeconds,
                 remainingSeconds = snapshot.remainingSeconds,
                 progress = snapshot.routineProgress,
                 durationUnit = unit,
             )
         } else {
-            FinishedView(modifier = Modifier.fillMaxSize(), onDone = onFinished)
+            FinishedView(
+                modifier = Modifier.fillMaxSize(),
+                onDone = onFinished,
+                finishedSession = finishedSession,
+            )
         }
         return
+    }
+
+    when (val prompt = painPrompt) {
+        PainPromptState.PreSession -> PainCheckInDialog(
+            title = "How's your back right now?",
+            onSubmit = { level, tag -> vm.onPrePromptSubmit(level, tag) },
+            onSkip = { vm.onPrePromptSkip() },
+        )
+        is PainPromptState.PostSession -> PainCheckInDialog(
+            title = "How does it feel now?",
+            onSubmit = { level, tag -> vm.onPostPromptSubmit(prompt.sessionId, level, tag) },
+            onSkip = { vm.onPostPromptSkip() },
+        )
+        PainPromptState.Hidden -> Unit
+    }
+
+    milestone?.let { days ->
+        MilestoneModal(days = days, onDismiss = { vm.dismissMilestone() })
     }
 
     Scaffold(
@@ -110,7 +147,11 @@ internal fun PlayerBody(
         val current = snapshot.current ?: return@Scaffold
 
         if (snapshot.finished) {
-            FinishedView(modifier = Modifier.padding(inner).fillMaxSize(), onDone = onFinished)
+            FinishedView(
+                modifier = Modifier.padding(inner).fillMaxSize(),
+                onDone = onFinished,
+                finishedSession = finishedSession,
+            )
             return@Scaffold
         }
 
@@ -118,7 +159,11 @@ internal fun PlayerBody(
             modifier = Modifier.padding(inner).fillMaxSize().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            YouTubePlayerView(videoId = current.youtubeId, modifier = Modifier.fillMaxWidth())
+            YouTubePlayerView(
+                videoId = current.youtubeId,
+                startSeconds = current.videoStartSeconds,
+                modifier = Modifier.fillMaxWidth(),
+            )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -142,15 +187,35 @@ internal fun PlayerBody(
 
             current.whatYouShouldFeel?.let { WhatYouShouldFeelOverlay(it) }
 
-            LinearProgressIndicator(
-                progress = { snapshot.progress.coerceIn(0f, 1f) },
-                modifier = Modifier.fillMaxWidth().height(8.dp),
-            )
-            Text(
-                "${formatDuration(snapshot.remainingSeconds, unit)} · ${snapshot.index + 1} of ${snapshot.stretches.size}",
-                style = MaterialTheme.typography.labelLarge,
-                textAlign = TextAlign.Center,
+            Column(
                 modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    text = formatDuration(snapshot.remainingSeconds, unit),
+                    style = MaterialTheme.typography.displayMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.semantics {
+                        contentDescription = "${snapshot.remainingSeconds} seconds remaining"
+                    },
+                )
+                Text(
+                    text = "Stretch ${snapshot.index + 1} of ${snapshot.stretches.size}",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                )
+            }
+
+            val animatedStretchProgress by animateFloatAsState(
+                targetValue = snapshot.progress.coerceIn(0f, 1f),
+                animationSpec = tween(durationMillis = 950),
+                label = "stretchProgress",
+            )
+            LinearProgressIndicator(
+                progress = { animatedStretchProgress },
+                modifier = Modifier.fillMaxWidth().height(8.dp),
             )
             ThinProgressBar(progress = snapshot.routineProgress)
 
@@ -158,18 +223,39 @@ internal fun PlayerBody(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = vm::previous) {
-                    Icon(Icons.Filled.SkipPrevious, contentDescription = "Previous", modifier = Modifier.size(36.dp))
+                HoldButton(
+                    onTriggered = vm::previous,
+                    contentDescription = "Hold to go back",
+                    icon = Icons.Filled.SkipPrevious,
+                )
+                Spacer(Modifier.width(24.dp))
+                FilledIconButton(
+                    onClick = vm::togglePlay,
+                    modifier = Modifier
+                        .size(80.dp)
+                        .semantics {
+                            contentDescription = if (snapshot.running) "Pause" else "Resume"
+                        },
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                ) {
+                    Icon(
+                        imageVector = if (snapshot.running) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                        contentDescription = null,
+                        modifier = Modifier.size(40.dp),
+                    )
                 }
-                Button(onClick = vm::togglePlay) {
-                    Text(if (snapshot.running) "Pause" else "Resume")
-                }
-                IconButton(onClick = vm::next) {
-                    Icon(Icons.Filled.SkipNext, contentDescription = "Next", modifier = Modifier.size(36.dp))
-                }
+                Spacer(Modifier.width(24.dp))
+                HoldButton(
+                    onTriggered = vm::next,
+                    contentDescription = "Hold to skip ahead",
+                    icon = Icons.Filled.SkipNext,
+                )
             }
         }
     }

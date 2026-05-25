@@ -6,7 +6,8 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "On hands and knees, alternate arching your spine up toward the ceiling and dropping your belly while looking up. Move with your breath.",
-    "youtubeId": "PLACEHOLDER_CAT_COW",
+    "youtubeId": "y39PrKY_4JM",
+    "videoStartSeconds": 90,
     "whyThisStretch": "Mobilizes every vertebra of the spine and warms up the muscles around your lower back without loading them.",
     "whatYouShouldFeel": "A gentle wave-like motion through your whole back. No sharp pinches at any point.",
     "educationalCards": [
@@ -34,7 +35,8 @@
     "durationSeconds": 60,
     "difficulty": "easy",
     "description": "Kneel, sit back on your heels, and fold forward with arms extended. Rest your forehead on the mat and breathe.",
-    "youtubeId": "PLACEHOLDER_CHILD_POSE",
+    "youtubeId": "eqVMAPM00DM",
+    "videoStartSeconds": 40,
     "whyThisStretch": "A restorative pose that decompresses the lower back and opens the hips while you do almost nothing.",
     "whatYouShouldFeel": "A spreading sensation across your low back and the tops of your shoulders. No knee pain.",
     "educationalCards": [
@@ -62,7 +64,8 @@
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Lying on your back, pull one knee gently toward your chest. Hold, then switch sides.",
-    "youtubeId": "PLACEHOLDER_KNEE_TO_CHEST",
+    "youtubeId": "YISohLT90lU",
+    "videoStartSeconds": 135,
     "whyThisStretch": "Lengthens the muscles of the lower back and glutes and gently mobilizes the sacroiliac joint.",
     "whatYouShouldFeel": "A pull across your low back on the side of the bent knee, plus a stretch in the same-side glute.",
     "educationalCards": [
@@ -85,7 +88,8 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lying on your back, drop both knees to one side while keeping shoulders flat. Hold, then switch.",
-    "youtubeId": "PLACEHOLDER_SUPINE_TWIST",
+    "youtubeId": "mKC3IeldPOc",
+    "videoStartSeconds": 180,
     "whyThisStretch": "Twists the spine while gravity does most of the work, releasing tension from the lower back and outer hips.",
     "whatYouShouldFeel": "A diagonal stretch from the dropped-knee side, across the low back, into the opposite shoulder.",
     "educationalCards": [
@@ -113,7 +117,8 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lying on your back with knees bent, flatten your lower back into the floor by tilting your pelvis. Release and repeat.",
-    "youtubeId": "PLACEHOLDER_PELVIC_TILT",
+    "youtubeId": "PJJO9PmXm90",
+    "videoStartSeconds": 330,
     "whyThisStretch": "Teaches your deep core to control the pelvis — the prerequisite for almost every safe-back exercise.",
     "whatYouShouldFeel": "A gentle pressing of your low back into the floor, driven from the belly, not the glutes.",
     "educationalCards": [
@@ -141,7 +146,7 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lie on your stomach, prop yourself on your forearms with elbows under shoulders. Lengthen the spine.",
-    "youtubeId": "PLACEHOLDER_SPHINX"
+    "youtubeId": ""
   },
   {
     "id": "seated-forward-fold",
@@ -150,7 +155,7 @@
     "durationSeconds": 60,
     "difficulty": "medium",
     "description": "Sit with legs extended, hinge forward from the hips and reach toward your feet. Keep the spine long.",
-    "youtubeId": "PLACEHOLDER_SEATED_FORWARD_FOLD"
+    "youtubeId": ""
   },
   {
     "id": "standing-forward-fold",
@@ -159,7 +164,8 @@
     "durationSeconds": 45,
     "difficulty": "medium",
     "description": "Stand and hinge forward from the hips, letting the upper body hang. Soft knees if needed.",
-    "youtubeId": "PLACEHOLDER_STANDING_FORWARD_FOLD"
+    "youtubeId": "g7Uhp5tphAs",
+    "videoStartSeconds": 195
   },
   {
     "id": "figure-four",
@@ -168,7 +174,7 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lying on your back, cross one ankle over the opposite knee and pull the back of the bottom thigh toward you.",
-    "youtubeId": "PLACEHOLDER_FIGURE_FOUR"
+    "youtubeId": ""
   },
   {
     "id": "pigeon",
@@ -177,7 +183,8 @@
     "durationSeconds": 60,
     "difficulty": "medium",
     "description": "From all fours, bring one shin forward parallel to the front of your mat. Square your hips and fold forward.",
-    "youtubeId": "PLACEHOLDER_PIGEON"
+    "youtubeId": "0_zPqA65Nok",
+    "videoStartSeconds": 40
   },
   {
     "id": "low-lunge",
@@ -186,7 +193,8 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "From a kneeling position, step one foot forward into a deep lunge. Sink the hips and lift the chest.",
-    "youtubeId": "PLACEHOLDER_LOW_LUNGE"
+    "youtubeId": "OfJl_jhJcWw",
+    "videoStartSeconds": 135
   },
   {
     "id": "butterfly",
@@ -195,7 +203,8 @@
     "durationSeconds": 60,
     "difficulty": "easy",
     "description": "Sit with the soles of your feet together and knees out wide. Hold your feet and gently fold forward.",
-    "youtubeId": "PLACEHOLDER_BUTTERFLY"
+    "youtubeId": "B6tb4TncKhY",
+    "videoStartSeconds": 75
   },
   {
     "id": "happy-baby",
@@ -204,7 +213,7 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lying on your back, grab the outsides of your feet with knees wide. Gently rock side to side.",
-    "youtubeId": "PLACEHOLDER_HAPPY_BABY"
+    "youtubeId": ""
   },
   {
     "id": "downward-dog",
@@ -213,7 +222,8 @@
     "durationSeconds": 45,
     "difficulty": "medium",
     "description": "From all fours, tuck the toes and lift the hips up and back into an inverted V.",
-    "youtubeId": "PLACEHOLDER_DOWN_DOG"
+    "youtubeId": "j97SSGsnCAQ",
+    "videoStartSeconds": 120
   },
   {
     "id": "cobra",
@@ -222,7 +232,8 @@
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Lie on your stomach, hands under shoulders, and gently press up to lift the chest off the floor.",
-    "youtubeId": "PLACEHOLDER_COBRA"
+    "youtubeId": "n6jrC6WeF84",
+    "videoStartSeconds": 195
   },
   {
     "id": "wall-hamstring",
@@ -231,7 +242,7 @@
     "durationSeconds": 60,
     "difficulty": "easy",
     "description": "Lie on your back near a doorway, rest one leg up the wall. Switch legs after the hold.",
-    "youtubeId": "PLACEHOLDER_WALL_HAMSTRING"
+    "youtubeId": ""
   },
   {
     "id": "quad-stretch",
@@ -240,7 +251,7 @@
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Stand, grab one ankle, and pull the heel toward your glute. Keep knees together.",
-    "youtubeId": "PLACEHOLDER_QUAD_STRETCH"
+    "youtubeId": ""
   },
   {
     "id": "calf-stretch",
@@ -249,7 +260,8 @@
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Place hands on a wall, step one foot back with the heel pressed down. Keep the back leg straight.",
-    "youtubeId": "PLACEHOLDER_CALF_STRETCH"
+    "youtubeId": "gWlKFznXQns",
+    "videoStartSeconds": 240
   },
   {
     "id": "thread-the-needle",
@@ -258,7 +270,7 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "From all fours, slide one arm under the other and rest the shoulder and side of the head on the mat.",
-    "youtubeId": "PLACEHOLDER_THREAD_NEEDLE"
+    "youtubeId": ""
   },
   {
     "id": "glute-bridge",
@@ -267,7 +279,8 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lie on your back with knees bent. Press through your heels to lift your hips, squeeze the glutes, lower.",
-    "youtubeId": "PLACEHOLDER_GLUTE_BRIDGE"
+    "youtubeId": "tl6xvm4-Qk0",
+    "videoStartSeconds": 240
   },
   {
     "id": "hip-flexor-lunge",
@@ -276,7 +289,7 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Kneel on one knee with the other foot forward. Tuck your pelvis and lean gently into the front leg to feel a stretch in the back hip.",
-    "youtubeId": "PLACEHOLDER_HIP_FLEXOR_LUNGE"
+    "youtubeId": ""
   },
   {
     "id": "reclined-hand-to-toe",
@@ -285,7 +298,7 @@
     "durationSeconds": 45,
     "difficulty": "medium",
     "description": "Lying on your back, loop a strap around the ball of one foot and gently straighten the leg toward the ceiling.",
-    "youtubeId": "PLACEHOLDER_RECLINED_HAND_TO_TOE"
+    "youtubeId": ""
   },
   {
     "id": "standing-side-bend",
@@ -294,7 +307,7 @@
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Stand tall, reach one arm overhead, and lean gently to the opposite side. Keep both hips facing forward.",
-    "youtubeId": "PLACEHOLDER_STANDING_SIDE_BEND"
+    "youtubeId": ""
   },
   {
     "id": "crocodile",
@@ -303,7 +316,7 @@
     "durationSeconds": 60,
     "difficulty": "easy",
     "description": "Lie on your stomach, stack your forearms, and rest your forehead on top. Breathe deeply into your low back.",
-    "youtubeId": "PLACEHOLDER_CROCODILE"
+    "youtubeId": ""
   },
   {
     "id": "it-band-cross",
@@ -312,7 +325,8 @@
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Cross one leg behind the other, reach the same-side arm overhead, and lean to the opposite side to open the outer hip.",
-    "youtubeId": "PLACEHOLDER_IT_BAND_CROSS"
+    "youtubeId": "u8L63tiPNeY",
+    "videoStartSeconds": 255
   },
   {
     "id": "seated-twist",
@@ -321,6 +335,6 @@
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Sit with one leg crossed over the other. Twist toward the bent knee, lengthening through the spine on each inhale.",
-    "youtubeId": "PLACEHOLDER_SEATED_TWIST"
+    "youtubeId": ""
   }
 ]

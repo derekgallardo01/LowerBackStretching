@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
@@ -30,10 +32,12 @@ import com.lowerbackstretching.core.xpForSession
 import com.lowerbackstretching.core.xpProgress
 import com.lowerbackstretching.core.shouldShowCooldown
 import com.lowerbackstretching.ui.AppViewModel
+import com.lowerbackstretching.ui.components.AnimatedStat
 import com.lowerbackstretching.ui.components.InfoRow
 import com.lowerbackstretching.ui.components.ScreenHeader
 import com.lowerbackstretching.ui.components.SectionHeader
 import com.lowerbackstretching.ui.components.Stat
+import com.lowerbackstretching.ui.components.pressScale
 import java.time.LocalDate
 
 /**
@@ -45,6 +49,7 @@ sealed interface HomeAction {
     data object OpenAchievements : HomeAction
     data object OpenGoals : HomeAction
     data object OpenFlexibility : HomeAction
+    data object OpenPainHistory : HomeAction
     data object OpenGlossary : HomeAction
     data object OpenBodyDiagram : HomeAction
     data object ScheduleBreak : HomeAction
@@ -135,11 +140,14 @@ private val quickActionRows: List<List<QuickActionSpec>> = listOf(
         QuickActionSpec("Achievements", "Badges & milestones", HomeAction.OpenAchievements),
     ),
     listOf(
+        QuickActionSpec("Pain log", "Track how your back feels", HomeAction.OpenPainHistory),
         QuickActionSpec("Flexibility self-test", "Track your reach over time", HomeAction.OpenFlexibility),
-        QuickActionSpec("Glossary", "Anatomy & stretching terms", HomeAction.OpenGlossary),
     ),
     listOf(
+        QuickActionSpec("Glossary", "Anatomy & stretching terms", HomeAction.OpenGlossary),
         QuickActionSpec("Tap where it hurts", "Find a stretch by body area", HomeAction.OpenBodyDiagram),
+    ),
+    listOf(
         QuickActionSpec("Schedule a break", "Add to your calendar", HomeAction.ScheduleBreak),
     ),
 )
@@ -164,12 +172,17 @@ private fun StatsCard(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Stat(value = "$streak", label = "Day streak")
-                Stat(value = "$total", label = "Sessions")
+                AnimatedStat(value = streak, label = "Day streak")
+                AnimatedStat(value = total, label = "Sessions")
                 Stat(value = "L$level", label = "Level")
             }
+            val animatedXp by animateFloatAsState(
+                targetValue = xpProgress.coerceIn(0f, 1f),
+                animationSpec = tween(durationMillis = 600),
+                label = "xpProgress",
+            )
             LinearProgressIndicator(
-                progress = { xpProgress.coerceIn(0f, 1f) },
+                progress = { animatedXp },
                 modifier = Modifier.fillMaxWidth(),
             )
             Text(
@@ -183,7 +196,7 @@ private fun StatsCard(
 @Composable
 private fun CooldownCard(steps: Long, onAction: () -> Unit) {
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().pressScale(),
         color = MaterialTheme.colorScheme.tertiaryContainer,
         shape = RoundedCornerShape(16.dp),
         onClick = onAction,
@@ -206,7 +219,7 @@ private fun QuickCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(modifier = modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), onClick = onClick) {
+    Card(modifier = modifier.fillMaxWidth().pressScale(), shape = RoundedCornerShape(16.dp), onClick = onClick) {
         Column(Modifier.padding(16.dp)) {
             Text(title, style = MaterialTheme.typography.titleMedium)
             Text(
