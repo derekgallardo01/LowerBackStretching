@@ -7,13 +7,13 @@ plugins {
 
 android {
     namespace = "com.lowerbackstretching.wear"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.lowerbackstretching"
         // Wear OS 3+ (Android 11 / API 30) is the practical floor.
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "0.1.0"
     }

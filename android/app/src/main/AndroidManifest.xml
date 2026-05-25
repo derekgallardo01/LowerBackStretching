@@ -4,10 +4,13 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Reminders use AlarmManager.setRepeating(), which is treated as
+         INEXACT since API 19. No exact-alarm permissions needed; Play does
+         not require an exact-alarm declaration for this app. -->
+
 
     <!-- Health Connect: opt-in writes for stretching sessions, opt-in reads
          for daily step count. Both gated by user preferences in Settings. -->
