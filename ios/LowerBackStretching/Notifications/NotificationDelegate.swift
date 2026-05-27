@@ -19,9 +19,12 @@ final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
-        if notification.request.identifier == ReminderManager.identifier
-            && alreadyStretchedToday()
-        {
+        let id = notification.request.identifier
+        if id == ReminderManager.identifier && alreadyStretchedToday() {
+            completionHandler([])
+            return
+        }
+        if id == StreakNudgeManager.identifier && !shouldShowStreakNudge() {
             completionHandler([])
             return
         }
@@ -31,5 +34,38 @@ final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     private func alreadyStretchedToday() -> Bool {
         let last = UserDefaults.standard.integer(forKey: SettingsKeys.lastSessionEpochDay)
         return last == EpochDay.current()
+    }
+
+    /// Foreground gate for the evening streak nudge — runs the same
+    /// `shouldNudgeStreak(...)` predicate used in tests, reading current
+    /// streak from `StreakNudgeForegroundGate.currentStreak()`.
+    private func shouldShowStreakNudge() -> Bool {
+        let defaults = UserDefaults.standard
+        let enabled = defaults.object(forKey: SettingsKeys.streakNudgeEnabled) as? Bool ?? true
+        let last = defaults.integer(forKey: SettingsKeys.lastSessionEpochDay)
+        let streak = StreakNudgeForegroundGate.currentStreak()
+        return shouldNudgeStreak(
+            enabled: enabled,
+            lastSessionEpochDay: last,
+            todayEpochDay: EpochDay.current(),
+            currentStreak: streak
+        )
+    }
+}
+
+/// Bridges the foreground delegate (no access to a SwiftData ModelContext)
+/// to the current streak by reading the snapshot a SwiftUI view stashed
+/// the last time it queried sessions. Views that observe `@Query
+/// SessionRecord` should call `setStreak(_:)` whenever they re-render so
+/// the foreground gate has fresh data.
+enum StreakNudgeForegroundGate {
+    private static let key = "streak_nudge_last_known_streak"
+
+    static func setStreak(_ streak: Int) {
+        UserDefaults.standard.set(streak, forKey: key)
+    }
+
+    static func currentStreak() -> Int {
+        UserDefaults.standard.integer(forKey: key)
     }
 }

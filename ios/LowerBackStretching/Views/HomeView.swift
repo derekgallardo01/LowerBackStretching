@@ -23,7 +23,7 @@ struct HomeView: View {
         )
     }
 
-    enum Quick: Hashable { case achievements, goals, flexibility, glossary, bodyDiagram }
+    enum Quick: Hashable { case achievements, goals, flexibility, glossary, bodyDiagram, painLog }
 
     var body: some View {
         ScrollView {
@@ -69,6 +69,14 @@ struct HomeView: View {
                     }
                     .buttonStyle(.plain)
                 }
+                HStack(spacing: 12) {
+                    NavigationLink(value: Quick.painLog) {
+                        QuickCard(title: "Pain log", bodyText: "Track how your back feels")
+                    }
+                    .buttonStyle(.plain)
+                    // Filler so the card matches the two-column rhythm above.
+                    Spacer().frame(maxWidth: .infinity)
+                }
 
                 SectionHeader("Programs").padding(.top, 4)
 
@@ -95,6 +103,7 @@ struct HomeView: View {
             case .flexibility: FlexibilityView()
             case .glossary: GlossaryView()
             case .bodyDiagram: BodyDiagramView()
+            case .painLog: PainHistoryView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -104,6 +113,12 @@ struct HomeView: View {
             } else {
                 stepsToday = nil
             }
+            // Keep the streak-nudge foreground gate in sync with the
+            // streak this view just computed.
+            StreakNudgeForegroundGate.setStreak(streak)
+        }
+        .onChange(of: streak) { _, new in
+            StreakNudgeForegroundGate.setStreak(new)
         }
         .onChange(of: healthReadEnabled) { _, on in
             if on {

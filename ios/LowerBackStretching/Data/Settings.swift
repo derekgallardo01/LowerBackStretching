@@ -36,6 +36,15 @@ enum SettingsKeys {
     static let healthReadEnabled = "health_read_enabled"
 
     static let cloudSyncEnabled = "cloud_sync_enabled"
+
+    /// Evening "you're about to lose a streak" nudge. Defaults to true
+    /// when the user opts into the daily reminder during onboarding.
+    static let streakNudgeEnabled = "streak_nudge_enabled"
+
+    /// Epoch-ms timestamp when the user passed the onboarding safety
+    /// screen (acknowledged or skipped). Read by Settings to know
+    /// whether to show the "first time" affordance.
+    static let redFlagScreeningCompletedAt = "red_flag_screening_completed_at"
 }
 
 enum GoalDefaults {

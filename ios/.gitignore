@@ -1,8 +1,9 @@
-# Xcode
+# Xcode — the .xcodeproj is regenerated from project.yml by xcodegen, so
+# we treat it as a build artifact instead of source.
+*.xcodeproj/
+*.xcworkspace/
 build/
 DerivedData/
-*.xcodeproj/xcuserdata/
-*.xcworkspace/xcuserdata/
 *.xcuserstate
 *.moved-aside
 

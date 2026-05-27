@@ -71,6 +71,29 @@ played via `AVPlayerViewController`, then attach
 Android side has working PiP on the same activity flow — see
 `android/README.md` "Picture-in-Picture".
 
+## Newly added (Android-parity) files
+
+If you're updating an existing Xcode project, drag these into the
+`LowerBackStretching` group (and `LowerBackStretchingTests` for the
+tests). They have no Info.plist requirements beyond what's already
+documented above.
+
+App-target sources:
+- `Data/Pain.swift` — `PainContext`, `PainMeasurement`, pair + delta
+- `Data/PainLogService.swift` — recordPre/Post + hasPreLoggedToday
+- `Data/RedFlag.swift` — onboarding safety-check copy
+- `Models/PainLog.swift` — `@Model` row (register in `ModelContainer`)
+- `Notifications/StreakNudgeManager.swift` — daily 20:00 trigger
+- `Notifications/StreakNudgeController.swift` — toggle + (re)schedule
+- `Views/PainCheckInSheet.swift` — pre/post-session pain prompt
+- `Views/PainHistoryView.swift` — pain log + session-delta cards
+- `Views/SafetyAdvisoryView.swift` — red-flag advisory + onboarding page
+
+Test-target sources:
+- `LowerBackStretchingTests/PainTests.swift`
+- `LowerBackStretchingTests/PainLogServiceTests.swift`
+- `LowerBackStretchingTests/StreakNudgeTests.swift`
+
 ## Architecture
 
 - `App/LowerBackStretchingApp.swift` — `@main` entry. Configures the SwiftData
@@ -83,8 +106,10 @@ Android side has working PiP on the same activity flow — see
   on/off and time.
 - `Notifications/ReminderManager.swift` — wraps
   `UNUserNotificationCenter` for daily repeating notifications.
-- `Views/` — SwiftUI screens. `YouTubeView` is a `UIViewRepresentable`
-  wrapping `WKWebView` for the iframe embed (no third-party SDK needed).
+- `Views/` — SwiftUI screens. `StretchAnimationView` renders the looping
+  stick-figure demo using a `Canvas` driven by `TimelineView(.animation)`,
+  with a "Watch demo" link that opens YouTube externally when the stretch
+  has a real `youtubeId`.
 
 ## Tests
 

@@ -1,15 +1,20 @@
 import SwiftUI
 import SwiftData
 
+/// Pulled out of the @Query annotation so the SwiftUI body type-checker
+/// doesn't have to swallow the predicate macro + two-element sort array
+/// in a single inferred expression (Xcode 26 times out).
+private let activeRoutineSort: [SortDescriptor<CustomRoutine>] = [
+    SortDescriptor(\CustomRoutine.displayOrder, order: .forward),
+    SortDescriptor(\CustomRoutine.createdAt, order: .reverse),
+]
+
 struct ProgramsView: View {
     @EnvironmentObject private var content: ContentStore
     @Environment(\.modelContext) private var modelContext
     @Query(
         filter: #Predicate<CustomRoutine> { $0.deletedAt == nil },
-        sort: [
-            SortDescriptor(\CustomRoutine.displayOrder, order: .forward),
-            SortDescriptor(\CustomRoutine.createdAt, order: .reverse),
-        ]
+        sort: activeRoutineSort
     ) private var customRoutines: [CustomRoutine]
 
     @State private var selectedCategory: String = BodyParts.all
@@ -17,6 +22,12 @@ struct ProgramsView: View {
     @State private var pendingDelete: CustomRoutine?
     @State private var showUndo: Bool = false
     @State private var sharingRoutine: CustomRoutine?
+
+    // Explicit no-arg init prevents the auto-synthesized memberwise
+    // initializer from inheriting `private` access from the @Query
+    // property wrapper — without it, callers see
+    // "missing argument for parameter 'customRoutines'".
+    init() {}
 
     private var categories: [String] {
         [BodyParts.all] + Array(Set(content.programs.map(\.category))).sorted()

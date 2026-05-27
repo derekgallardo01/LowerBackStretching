@@ -16,6 +16,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKeys.healthWriteEnabled) private var healthWriteEnabled: Bool = false
     @AppStorage(SettingsKeys.healthReadEnabled) private var healthReadEnabled: Bool = false
     @AppStorage(SettingsKeys.cloudSyncEnabled) private var cloudSyncEnabled: Bool = false
+    @AppStorage(SettingsKeys.streakNudgeEnabled) private var streakNudgeEnabled: Bool = true
 
     @State private var pickerDate: Date = .now
 
@@ -34,6 +35,37 @@ struct SettingsView: View {
                         let m = comps.minute ?? 0
                         ReminderController.apply(enabled: enabled, hour: h, minute: m)
                     }
+
+                Toggle(isOn: $streakNudgeEnabled) {
+                    VStack(alignment: .leading) {
+                        Text("Streak safety net")
+                        Text("Evening nudge if you'll lose a streak by skipping today.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .onChange(of: streakNudgeEnabled) { _, on in
+                    StreakNudgeController.apply(enabled: on)
+                }
+            }
+
+            Section {
+                NavigationLink {
+                    SafetyAdvisoryView()
+                } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: "cross.case.fill")
+                            .foregroundStyle(.tint)
+                            .frame(width: 28)
+                        VStack(alignment: .leading) {
+                            Text("Safety check").font(.body)
+                            Text("Symptoms to watch for before stretching")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .accessibilityIdentifier("settingsSafetyCheck")
             }
 
             Section(header: Text("Appearance")) {

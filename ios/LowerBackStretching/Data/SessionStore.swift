@@ -34,5 +34,6 @@ enum SessionStore {
         try? context.save()
         UserDefaults.standard.set(EpochDay.current(), forKey: SettingsKeys.lastSessionEpochDay)
         ReminderManager.clearDelivered()
+        StreakNudgeManager.clearDelivered()
     }
 }

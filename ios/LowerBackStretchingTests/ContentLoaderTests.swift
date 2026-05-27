@@ -16,7 +16,9 @@ final class ContentLoaderTests: XCTestCase {
             XCTAssertFalse(s.name.isEmpty, "Stretch \(s.id) has empty name")
             XCTAssertGreaterThan(s.durationSeconds, 0, "Stretch \(s.id) has non-positive duration")
             XCTAssertFalse(s.bodyParts.isEmpty, "Stretch \(s.id) has empty bodyParts")
-            XCTAssertFalse(s.youtubeId.isEmpty, "Stretch \(s.id) has empty youtubeId")
+            // `youtubeId` is allowed to be "" — the player calls
+            // `hasWatchableVideo(_:)` and hides the demo link for those
+            // stretches. Empty just means "no curated video yet".
         }
     }
 

@@ -2,11 +2,15 @@
   {
     "id": "cat-cow",
     "name": "Cat-Cow",
-    "bodyParts": ["lower-back", "spine"],
+    "bodyParts": [
+      "lower-back",
+      "spine"
+    ],
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "On hands and knees, alternate arching your spine up toward the ceiling and dropping your belly while looking up. Move with your breath.",
-    "youtubeId": "PLACEHOLDER_CAT_COW",
+    "youtubeId": "y39PrKY_4JM",
+    "videoStartSeconds": 90,
     "whyThisStretch": "Mobilizes every vertebra of the spine and warms up the muscles around your lower back without loading them.",
     "whatYouShouldFeel": "A gentle wave-like motion through your whole back. No sharp pinches at any point.",
     "educationalCards": [
@@ -25,16 +29,108 @@
       "Letting your shoulders hike up to your ears — keep them broad and away from the neck.",
       "Cranking your head back at the top — look forward and down, not straight up.",
       "Going too fast. The slower you move, the more vertebrae participate."
-    ]
+    ],
+    "animation": {
+      "loopSeconds": 4.5,
+      "poses": [
+        {
+          "name": "cow",
+          "joints": {
+            "hip": [
+              0.3,
+              0.5
+            ],
+            "spineMid": [
+              0.4126,
+              0.565
+            ],
+            "neck": [
+              0.5252,
+              0.5
+            ],
+            "head": [
+              0.5945,
+              0.46
+            ],
+            "shoulder": [
+              0.5252,
+              0.55
+            ],
+            "elbow": [
+              0.643,
+              0.6049
+            ],
+            "hand": [
+              0.5252,
+              0.6598
+            ],
+            "knee": [
+              0.3,
+              0.66
+            ],
+            "foot": [
+              0.14,
+              0.66
+            ]
+          }
+        },
+        {
+          "name": "cat",
+          "joints": {
+            "hip": [
+              0.3,
+              0.5
+            ],
+            "spineMid": [
+              0.4126,
+              0.435
+            ],
+            "neck": [
+              0.5252,
+              0.5
+            ],
+            "head": [
+              0.5652,
+              0.5693
+            ],
+            "shoulder": [
+              0.5252,
+              0.55
+            ],
+            "elbow": [
+              0.643,
+              0.6049
+            ],
+            "hand": [
+              0.5252,
+              0.6598
+            ],
+            "knee": [
+              0.3,
+              0.66
+            ],
+            "foot": [
+              0.14,
+              0.66
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "child-pose",
     "name": "Child's Pose",
-    "bodyParts": ["lower-back", "hips", "spine"],
+    "bodyParts": [
+      "lower-back",
+      "hips",
+      "spine"
+    ],
     "durationSeconds": 60,
     "difficulty": "easy",
     "description": "Kneel, sit back on your heels, and fold forward with arms extended. Rest your forehead on the mat and breathe.",
-    "youtubeId": "PLACEHOLDER_CHILD_POSE",
+    "youtubeId": "eqVMAPM00DM",
+    "videoStartSeconds": 40,
     "whyThisStretch": "A restorative pose that decompresses the lower back and opens the hips while you do almost nothing.",
     "whatYouShouldFeel": "A spreading sensation across your low back and the tops of your shoulders. No knee pain.",
     "educationalCards": [
@@ -53,16 +149,107 @@
       "Forcing your forehead to the mat — rest it on a stacked fist or a pillow if it doesn't reach.",
       "Holding tension in your shoulders. Let them drop and melt toward the floor.",
       "Ignoring knee pain. Slide a folded blanket between your hamstrings and calves if your knees complain."
-    ]
+    ],
+    "animation": {
+      "loopSeconds": 5.5,
+      "poses": [
+        {
+          "name": "inhale",
+          "joints": {
+            "hip": [
+              0.2,
+              0.78
+            ],
+            "spineMid": [
+              0.3222,
+              0.8245
+            ],
+            "neck": [
+              0.4348,
+              0.8895
+            ],
+            "head": [
+              0.4961,
+              0.9409
+            ],
+            "shoulder": [
+              0.4348,
+              0.9395
+            ],
+            "elbow": [
+              0.5648,
+              0.9395
+            ],
+            "hand": [
+              0.6948,
+              0.9395
+            ],
+            "knee": [
+              0.2,
+              0.94
+            ],
+            "foot": [
+              0.04,
+              0.94
+            ]
+          }
+        },
+        {
+          "name": "exhale",
+          "joints": {
+            "hip": [
+              0.2,
+              0.78
+            ],
+            "spineMid": [
+              0.3205,
+              0.8287
+            ],
+            "neck": [
+              0.4307,
+              0.8976
+            ],
+            "head": [
+              0.4902,
+              0.9511
+            ],
+            "shoulder": [
+              0.4307,
+              0.9476
+            ],
+            "elbow": [
+              0.5607,
+              0.9476
+            ],
+            "hand": [
+              0.6907,
+              0.9476
+            ],
+            "knee": [
+              0.2,
+              0.94
+            ],
+            "foot": [
+              0.04,
+              0.94
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "knee-to-chest",
     "name": "Knee to Chest",
-    "bodyParts": ["lower-back", "glutes"],
+    "bodyParts": [
+      "lower-back",
+      "glutes"
+    ],
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Lying on your back, pull one knee gently toward your chest. Hold, then switch sides.",
-    "youtubeId": "PLACEHOLDER_KNEE_TO_CHEST",
+    "youtubeId": "YISohLT90lU",
+    "videoStartSeconds": 135,
     "whyThisStretch": "Lengthens the muscles of the lower back and glutes and gently mobilizes the sacroiliac joint.",
     "whatYouShouldFeel": "A pull across your low back on the side of the bent knee, plus a stretch in the same-side glute.",
     "educationalCards": [
@@ -76,16 +263,108 @@
       "Yanking the knee — use steady, gentle pressure with your hands.",
       "Letting the lifted shoulder peel off the floor. Keep both shoulder blades grounded.",
       "Holding your breath. Inhale to expand, exhale to draw the knee closer."
-    ]
+    ],
+    "animation": {
+      "loopSeconds": 4.5,
+      "poses": [
+        {
+          "name": "extended",
+          "joints": {
+            "hip": [
+              0.55,
+              0.55
+            ],
+            "spineMid": [
+              0.68,
+              0.55
+            ],
+            "neck": [
+              0.81,
+              0.55
+            ],
+            "head": [
+              0.89,
+              0.55
+            ],
+            "shoulder": [
+              0.76,
+              0.55
+            ],
+            "elbow": [
+              0.63,
+              0.55
+            ],
+            "hand": [
+              0.5,
+              0.55
+            ],
+            "knee": [
+              0.39,
+              0.55
+            ],
+            "foot": [
+              0.23,
+              0.55
+            ]
+          }
+        },
+        {
+          "name": "pulled",
+          "joints": {
+            "hip": [
+              0.55,
+              0.55
+            ],
+            "spineMid": [
+              0.68,
+              0.55
+            ],
+            "neck": [
+              0.81,
+              0.55
+            ],
+            "head": [
+              0.89,
+              0.55
+            ],
+            "shoulder": [
+              0.76,
+              0.55
+            ],
+            "elbow": [
+              0.6474,
+              0.485
+            ],
+            "hand": [
+              0.5824,
+              0.3724
+            ],
+            "knee": [
+              0.6047,
+              0.3996
+            ],
+            "foot": [
+              0.55,
+              0.55
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "supine-twist",
     "name": "Supine Spinal Twist",
-    "bodyParts": ["lower-back", "spine", "glutes"],
+    "bodyParts": [
+      "lower-back",
+      "spine",
+      "glutes"
+    ],
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lying on your back, drop both knees to one side while keeping shoulders flat. Hold, then switch.",
-    "youtubeId": "PLACEHOLDER_SUPINE_TWIST",
+    "youtubeId": "mKC3IeldPOc",
+    "videoStartSeconds": 180,
     "whyThisStretch": "Twists the spine while gravity does most of the work, releasing tension from the lower back and outer hips.",
     "whatYouShouldFeel": "A diagonal stretch from the dropped-knee side, across the low back, into the opposite shoulder.",
     "educationalCards": [
@@ -104,16 +383,107 @@
       "Forcing the knees all the way to the floor on day one — let them rest on a pillow if they don't reach.",
       "Cranking your head in the opposite direction. Let it follow the spine, not lead.",
       "Bouncing in and out of the twist. Settle once and breathe."
-    ]
+    ],
+    "animation": {
+      "loopSeconds": 6.0,
+      "poses": [
+        {
+          "name": "knees-up",
+          "joints": {
+            "hip": [
+              0.4,
+              0.55
+            ],
+            "spineMid": [
+              0.53,
+              0.55
+            ],
+            "neck": [
+              0.66,
+              0.55
+            ],
+            "head": [
+              0.74,
+              0.55
+            ],
+            "shoulder": [
+              0.61,
+              0.55
+            ],
+            "elbow": [
+              0.5874,
+              0.678
+            ],
+            "hand": [
+              0.5874,
+              0.808
+            ],
+            "knee": [
+              0.48,
+              0.4114
+            ],
+            "foot": [
+              0.56,
+              0.55
+            ]
+          }
+        },
+        {
+          "name": "dropped",
+          "joints": {
+            "hip": [
+              0.4,
+              0.55
+            ],
+            "spineMid": [
+              0.53,
+              0.55
+            ],
+            "neck": [
+              0.66,
+              0.55
+            ],
+            "head": [
+              0.74,
+              0.55
+            ],
+            "shoulder": [
+              0.61,
+              0.55
+            ],
+            "elbow": [
+              0.5874,
+              0.678
+            ],
+            "hand": [
+              0.5874,
+              0.808
+            ],
+            "knee": [
+              0.2614,
+              0.63
+            ],
+            "foot": [
+              0.3161,
+              0.7804
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "pelvic-tilt",
     "name": "Pelvic Tilt",
-    "bodyParts": ["lower-back", "core"],
+    "bodyParts": [
+      "lower-back",
+      "core"
+    ],
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lying on your back with knees bent, flatten your lower back into the floor by tilting your pelvis. Release and repeat.",
-    "youtubeId": "PLACEHOLDER_PELVIC_TILT",
+    "youtubeId": "PJJO9PmXm90",
+    "videoStartSeconds": 330,
     "whyThisStretch": "Teaches your deep core to control the pelvis — the prerequisite for almost every safe-back exercise.",
     "whatYouShouldFeel": "A gentle pressing of your low back into the floor, driven from the belly, not the glutes.",
     "educationalCards": [
@@ -132,195 +502,2342 @@
       "Squeezing the glutes to drive the motion — that's a hip thrust, not a pelvic tilt.",
       "Holding the breath. Exhale as you tilt the pelvis; inhale to release.",
       "Lifting the hips off the floor. Only the pelvis tilts; the seat stays planted."
-    ]
+    ],
+    "animation": {
+      "loopSeconds": 4.5,
+      "poses": [
+        {
+          "name": "neutral",
+          "joints": {
+            "hip": [
+              0.55,
+              0.58
+            ],
+            "spineMid": [
+              0.68,
+              0.58
+            ],
+            "neck": [
+              0.81,
+              0.58
+            ],
+            "head": [
+              0.89,
+              0.58
+            ],
+            "shoulder": [
+              0.76,
+              0.58
+            ],
+            "elbow": [
+              0.7374,
+              0.708
+            ],
+            "hand": [
+              0.7148,
+              0.836
+            ],
+            "knee": [
+              0.4953,
+              0.4296
+            ],
+            "foot": [
+              0.5231,
+              0.5872
+            ]
+          }
+        },
+        {
+          "name": "tucked",
+          "joints": {
+            "hip": [
+              0.55,
+              0.58
+            ],
+            "spineMid": [
+              0.6795,
+              0.5913
+            ],
+            "neck": [
+              0.8095,
+              0.5913
+            ],
+            "head": [
+              0.8895,
+              0.5913
+            ],
+            "shoulder": [
+              0.7595,
+              0.5913
+            ],
+            "elbow": [
+              0.7369,
+              0.7193
+            ],
+            "hand": [
+              0.7143,
+              0.8473
+            ],
+            "knee": [
+              0.5222,
+              0.4224
+            ],
+            "foot": [
+              0.5222,
+              0.5824
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "sphinx",
     "name": "Sphinx Pose",
-    "bodyParts": ["lower-back", "spine"],
+    "bodyParts": [
+      "lower-back",
+      "spine"
+    ],
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lie on your stomach, prop yourself on your forearms with elbows under shoulders. Lengthen the spine.",
-    "youtubeId": "PLACEHOLDER_SPHINX"
+    "youtubeId": "",
+    "animation": {
+      "loopSeconds": 5.5,
+      "poses": [
+        {
+          "name": "lower",
+          "joints": {
+            "hip": [
+              0.35,
+              0.82
+            ],
+            "spineMid": [
+              0.4756,
+              0.7864
+            ],
+            "neck": [
+              0.5978,
+              0.7419
+            ],
+            "head": [
+              0.6766,
+              0.728
+            ],
+            "shoulder": [
+              0.5478,
+              0.7419
+            ],
+            "elbow": [
+              0.444,
+              0.8201
+            ],
+            "hand": [
+              0.574,
+              0.8201
+            ],
+            "knee": [
+              0.19,
+              0.82
+            ],
+            "foot": [
+              0.03,
+              0.82
+            ]
+          }
+        },
+        {
+          "name": "lifted",
+          "joints": {
+            "hip": [
+              0.35,
+              0.82
+            ],
+            "spineMid": [
+              0.4496,
+              0.7364
+            ],
+            "neck": [
+              0.5332,
+              0.6368
+            ],
+            "head": [
+              0.5945,
+              0.5854
+            ],
+            "shoulder": [
+              0.4832,
+              0.6368
+            ],
+            "elbow": [
+              0.4182,
+              0.7494
+            ],
+            "hand": [
+              0.5308,
+              0.8144
+            ],
+            "knee": [
+              0.19,
+              0.82
+            ],
+            "foot": [
+              0.03,
+              0.82
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "seated-forward-fold",
     "name": "Seated Forward Fold",
-    "bodyParts": ["hamstrings", "lower-back"],
+    "bodyParts": [
+      "hamstrings",
+      "lower-back"
+    ],
     "durationSeconds": 60,
     "difficulty": "medium",
     "description": "Sit with legs extended, hinge forward from the hips and reach toward your feet. Keep the spine long.",
-    "youtubeId": "PLACEHOLDER_SEATED_FORWARD_FOLD"
+    "youtubeId": "",
+    "animation": {
+      "loopSeconds": 6.0,
+      "poses": [
+        {
+          "name": "upright",
+          "joints": {
+            "hip": [
+              0.2,
+              0.6
+            ],
+            "spineMid": [
+              0.2,
+              0.47
+            ],
+            "neck": [
+              0.2,
+              0.34
+            ],
+            "head": [
+              0.2,
+              0.26
+            ],
+            "shoulder": [
+              0.2,
+              0.39
+            ],
+            "elbow": [
+              0.2,
+              0.52
+            ],
+            "hand": [
+              0.2,
+              0.65
+            ],
+            "knee": [
+              0.36,
+              0.6
+            ],
+            "foot": [
+              0.52,
+              0.6
+            ]
+          }
+        },
+        {
+          "name": "fold",
+          "joints": {
+            "hip": [
+              0.2,
+              0.6
+            ],
+            "spineMid": [
+              0.3256,
+              0.5664
+            ],
+            "neck": [
+              0.4536,
+              0.589
+            ],
+            "head": [
+              0.5229,
+              0.629
+            ],
+            "shoulder": [
+              0.4536,
+              0.639
+            ],
+            "elbow": [
+              0.5758,
+              0.6835
+            ],
+            "hand": [
+              0.698,
+              0.728
+            ],
+            "knee": [
+              0.36,
+              0.6
+            ],
+            "foot": [
+              0.52,
+              0.6
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "standing-forward-fold",
     "name": "Standing Forward Fold",
-    "bodyParts": ["hamstrings", "lower-back", "calves"],
+    "bodyParts": [
+      "hamstrings",
+      "lower-back",
+      "calves"
+    ],
     "durationSeconds": 45,
     "difficulty": "medium",
     "description": "Stand and hinge forward from the hips, letting the upper body hang. Soft knees if needed.",
-    "youtubeId": "PLACEHOLDER_STANDING_FORWARD_FOLD"
+    "youtubeId": "g7Uhp5tphAs",
+    "videoStartSeconds": 195,
+    "animation": {
+      "loopSeconds": 6.0,
+      "poses": [
+        {
+          "name": "tall",
+          "joints": {
+            "hip": [
+              0.5,
+              0.55
+            ],
+            "spineMid": [
+              0.5,
+              0.42
+            ],
+            "neck": [
+              0.5,
+              0.29
+            ],
+            "head": [
+              0.5,
+              0.21
+            ],
+            "shoulder": [
+              0.5,
+              0.34
+            ],
+            "elbow": [
+              0.5,
+              0.47
+            ],
+            "hand": [
+              0.5,
+              0.6
+            ],
+            "knee": [
+              0.5,
+              0.71
+            ],
+            "foot": [
+              0.5,
+              0.87
+            ]
+          }
+        },
+        {
+          "name": "fold",
+          "joints": {
+            "hip": [
+              0.5,
+              0.55
+            ],
+            "spineMid": [
+              0.628,
+              0.5274
+            ],
+            "neck": [
+              0.7502,
+              0.5719
+            ],
+            "head": [
+              0.7902,
+              0.6412
+            ],
+            "shoulder": [
+              0.7502,
+              0.6219
+            ],
+            "elbow": [
+              0.7502,
+              0.7519
+            ],
+            "hand": [
+              0.7502,
+              0.8819
+            ],
+            "knee": [
+              0.5,
+              0.71
+            ],
+            "foot": [
+              0.5,
+              0.87
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "figure-four",
     "name": "Figure-Four Stretch",
-    "bodyParts": ["glutes", "hips"],
+    "bodyParts": [
+      "glutes",
+      "hips"
+    ],
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lying on your back, cross one ankle over the opposite knee and pull the back of the bottom thigh toward you.",
-    "youtubeId": "PLACEHOLDER_FIGURE_FOUR"
+    "youtubeId": "",
+    "animation": {
+      "loopSeconds": 5.0,
+      "poses": [
+        {
+          "name": "extended",
+          "joints": {
+            "hip": [
+              0.45,
+              0.6
+            ],
+            "spineMid": [
+              0.58,
+              0.6
+            ],
+            "neck": [
+              0.71,
+              0.6
+            ],
+            "head": [
+              0.79,
+              0.6
+            ],
+            "shoulder": [
+              0.66,
+              0.6
+            ],
+            "elbow": [
+              0.6374,
+              0.728
+            ],
+            "hand": [
+              0.6148,
+              0.856
+            ],
+            "knee": [
+              0.29,
+              0.6
+            ],
+            "foot": [
+              0.13,
+              0.6
+            ]
+          }
+        },
+        {
+          "name": "crossed",
+          "joints": {
+            "hip": [
+              0.45,
+              0.6
+            ],
+            "spineMid": [
+              0.58,
+              0.6
+            ],
+            "neck": [
+              0.71,
+              0.6
+            ],
+            "head": [
+              0.79,
+              0.6
+            ],
+            "shoulder": [
+              0.66,
+              0.6
+            ],
+            "elbow": [
+              0.5378,
+              0.5555
+            ],
+            "hand": [
+              0.4156,
+              0.511
+            ],
+            "knee": [
+              0.3953,
+              0.4496
+            ],
+            "foot": [
+              0.5339,
+              0.3696
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "pigeon",
     "name": "Pigeon Pose",
-    "bodyParts": ["hips", "glutes"],
+    "bodyParts": [
+      "hips",
+      "glutes"
+    ],
     "durationSeconds": 60,
     "difficulty": "medium",
     "description": "From all fours, bring one shin forward parallel to the front of your mat. Square your hips and fold forward.",
-    "youtubeId": "PLACEHOLDER_PIGEON"
+    "youtubeId": "0_zPqA65Nok",
+    "videoStartSeconds": 40,
+    "animation": {
+      "loopSeconds": 6.0,
+      "poses": [
+        {
+          "name": "upright",
+          "joints": {
+            "hip": [
+              0.4,
+              0.62
+            ],
+            "spineMid": [
+              0.4,
+              0.49
+            ],
+            "neck": [
+              0.4,
+              0.36
+            ],
+            "head": [
+              0.4,
+              0.28
+            ],
+            "shoulder": [
+              0.4,
+              0.41
+            ],
+            "elbow": [
+              0.4226,
+              0.538
+            ],
+            "hand": [
+              0.4452,
+              0.666
+            ],
+            "knee": [
+              0.5386,
+              0.7
+            ],
+            "foot": [
+              0.6772,
+              0.62
+            ]
+          }
+        },
+        {
+          "name": "fold",
+          "joints": {
+            "hip": [
+              0.4,
+              0.62
+            ],
+            "spineMid": [
+              0.528,
+              0.5974
+            ],
+            "neck": [
+              0.6502,
+              0.6419
+            ],
+            "head": [
+              0.7115,
+              0.6933
+            ],
+            "shoulder": [
+              0.6502,
+              0.5919
+            ],
+            "elbow": [
+              0.7152,
+              0.7045
+            ],
+            "hand": [
+              0.7802,
+              0.8171
+            ],
+            "knee": [
+              0.5386,
+              0.7
+            ],
+            "foot": [
+              0.6772,
+              0.62
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "low-lunge",
     "name": "Low Lunge",
-    "bodyParts": ["hips", "quads"],
+    "bodyParts": [
+      "hips",
+      "quads"
+    ],
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "From a kneeling position, step one foot forward into a deep lunge. Sink the hips and lift the chest.",
-    "youtubeId": "PLACEHOLDER_LOW_LUNGE"
+    "youtubeId": "OfJl_jhJcWw",
+    "videoStartSeconds": 135,
+    "animation": {
+      "loopSeconds": 5.0,
+      "poses": [
+        {
+          "name": "shallow",
+          "joints": {
+            "hip": [
+              0.5,
+              0.62
+            ],
+            "spineMid": [
+              0.5,
+              0.49
+            ],
+            "neck": [
+              0.5,
+              0.36
+            ],
+            "head": [
+              0.5,
+              0.28
+            ],
+            "shoulder": [
+              0.5,
+              0.41
+            ],
+            "elbow": [
+              0.5,
+              0.54
+            ],
+            "hand": [
+              0.5,
+              0.67
+            ],
+            "knee": [
+              0.5,
+              0.78
+            ],
+            "foot": [
+              0.34,
+              0.78
+            ]
+          }
+        },
+        {
+          "name": "deep",
+          "joints": {
+            "hip": [
+              0.5,
+              0.62
+            ],
+            "spineMid": [
+              0.5336,
+              0.4944
+            ],
+            "neck": [
+              0.5336,
+              0.3644
+            ],
+            "head": [
+              0.5336,
+              0.2844
+            ],
+            "shoulder": [
+              0.5336,
+              0.4144
+            ],
+            "elbow": [
+              0.5986,
+              0.527
+            ],
+            "hand": [
+              0.6636,
+              0.6396
+            ],
+            "knee": [
+              0.4722,
+              0.7776
+            ],
+            "foot": [
+              0.3122,
+              0.7776
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "butterfly",
     "name": "Butterfly Stretch",
-    "bodyParts": ["groin", "hips"],
+    "bodyParts": [
+      "groin",
+      "hips"
+    ],
     "durationSeconds": 60,
     "difficulty": "easy",
     "description": "Sit with the soles of your feet together and knees out wide. Hold your feet and gently fold forward.",
-    "youtubeId": "PLACEHOLDER_BUTTERFLY"
+    "youtubeId": "B6tb4TncKhY",
+    "videoStartSeconds": 75,
+    "animation": {
+      "loopSeconds": 4.0,
+      "poses": [
+        {
+          "name": "knees-up",
+          "joints": {
+            "hip": [
+              0.5,
+              0.65
+            ],
+            "spineMid": [
+              0.5,
+              0.52
+            ],
+            "neck": [
+              0.5,
+              0.39
+            ],
+            "head": [
+              0.5,
+              0.31
+            ],
+            "shoulder": [
+              0.5433,
+              0.415
+            ],
+            "elbow": [
+              0.5207,
+              0.543
+            ],
+            "hand": [
+              0.4762,
+              0.6652
+            ],
+            "knee": [
+              0.6311,
+              0.7418
+            ],
+            "foot": [
+              0.4925,
+              0.8218
+            ],
+            "shoulderL": [
+              0.4567,
+              0.415
+            ],
+            "elbowL": [
+              0.4793,
+              0.543
+            ],
+            "handL": [
+              0.5238,
+              0.6652
+            ],
+            "kneeL": [
+              0.3689,
+              0.7418
+            ],
+            "footL": [
+              0.5075,
+              0.8218
+            ]
+          }
+        },
+        {
+          "name": "knees-down",
+          "joints": {
+            "hip": [
+              0.5,
+              0.65
+            ],
+            "spineMid": [
+              0.5,
+              0.52
+            ],
+            "neck": [
+              0.5,
+              0.39
+            ],
+            "head": [
+              0.5,
+              0.31
+            ],
+            "shoulder": [
+              0.5433,
+              0.415
+            ],
+            "elbow": [
+              0.4988,
+              0.5372
+            ],
+            "hand": [
+              0.4338,
+              0.6498
+            ],
+            "knee": [
+              0.5918,
+              0.7811
+            ],
+            "foot": [
+              0.4456,
+              0.8462
+            ],
+            "shoulderL": [
+              0.4567,
+              0.415
+            ],
+            "elbowL": [
+              0.5012,
+              0.5372
+            ],
+            "handL": [
+              0.5662,
+              0.6498
+            ],
+            "kneeL": [
+              0.4082,
+              0.7811
+            ],
+            "footL": [
+              0.5544,
+              0.8462
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "happy-baby",
     "name": "Happy Baby",
-    "bodyParts": ["lower-back", "hips", "groin"],
+    "bodyParts": [
+      "lower-back",
+      "hips",
+      "groin"
+    ],
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lying on your back, grab the outsides of your feet with knees wide. Gently rock side to side.",
-    "youtubeId": "PLACEHOLDER_HAPPY_BABY"
+    "youtubeId": "",
+    "animation": {
+      "loopSeconds": 4.5,
+      "poses": [
+        {
+          "name": "rest",
+          "joints": {
+            "hip": [
+              0.45,
+              0.55
+            ],
+            "spineMid": [
+              0.58,
+              0.55
+            ],
+            "neck": [
+              0.71,
+              0.55
+            ],
+            "head": [
+              0.79,
+              0.55
+            ],
+            "shoulder": [
+              0.66,
+              0.55
+            ],
+            "elbow": [
+              0.66,
+              0.42
+            ],
+            "hand": [
+              0.595,
+              0.3074
+            ],
+            "knee": [
+              0.4778,
+              0.3924
+            ],
+            "foot": [
+              0.5909,
+              0.2793
+            ]
+          }
+        },
+        {
+          "name": "rock",
+          "joints": {
+            "hip": [
+              0.45,
+              0.55
+            ],
+            "spineMid": [
+              0.58,
+              0.55
+            ],
+            "neck": [
+              0.71,
+              0.55
+            ],
+            "head": [
+              0.79,
+              0.55
+            ],
+            "shoulder": [
+              0.66,
+              0.55
+            ],
+            "elbow": [
+              0.6487,
+              0.4205
+            ],
+            "hand": [
+              0.5741,
+              0.314
+            ],
+            "knee": [
+              0.4639,
+              0.3906
+            ],
+            "foot": [
+              0.5865,
+              0.2878
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "downward-dog",
     "name": "Downward-Facing Dog",
-    "bodyParts": ["hamstrings", "calves", "spine"],
+    "bodyParts": [
+      "hamstrings",
+      "calves",
+      "spine"
+    ],
     "durationSeconds": 45,
     "difficulty": "medium",
     "description": "From all fours, tuck the toes and lift the hips up and back into an inverted V.",
-    "youtubeId": "PLACEHOLDER_DOWN_DOG"
+    "youtubeId": "j97SSGsnCAQ",
+    "videoStartSeconds": 120,
+    "animation": {
+      "loopSeconds": 5.0,
+      "poses": [
+        {
+          "name": "settled",
+          "joints": {
+            "hip": [
+              0.3,
+              0.2
+            ],
+            "spineMid": [
+              0.4126,
+              0.265
+            ],
+            "neck": [
+              0.5252,
+              0.33
+            ],
+            "head": [
+              0.5766,
+              0.3913
+            ],
+            "shoulder": [
+              0.5685,
+              0.355
+            ],
+            "elbow": [
+              0.6521,
+              0.4546
+            ],
+            "hand": [
+              0.7171,
+              0.5672
+            ],
+            "knee": [
+              0.1972,
+              0.3226
+            ],
+            "foot": [
+              0.1694,
+              0.4802
+            ]
+          }
+        },
+        {
+          "name": "pedal",
+          "joints": {
+            "hip": [
+              0.3,
+              0.2
+            ],
+            "spineMid": [
+              0.4126,
+              0.265
+            ],
+            "neck": [
+              0.5252,
+              0.33
+            ],
+            "head": [
+              0.5766,
+              0.3913
+            ],
+            "shoulder": [
+              0.5685,
+              0.355
+            ],
+            "elbow": [
+              0.6521,
+              0.4546
+            ],
+            "hand": [
+              0.7171,
+              0.5672
+            ],
+            "knee": [
+              0.1972,
+              0.3226
+            ],
+            "foot": [
+              0.1833,
+              0.482
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "cobra",
     "name": "Cobra Pose",
-    "bodyParts": ["lower-back", "spine"],
+    "bodyParts": [
+      "lower-back",
+      "spine"
+    ],
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Lie on your stomach, hands under shoulders, and gently press up to lift the chest off the floor.",
-    "youtubeId": "PLACEHOLDER_COBRA"
+    "youtubeId": "n6jrC6WeF84",
+    "videoStartSeconds": 195,
+    "animation": {
+      "loopSeconds": 5.5,
+      "poses": [
+        {
+          "name": "low",
+          "joints": {
+            "hip": [
+              0.35,
+              0.82
+            ],
+            "spineMid": [
+              0.4722,
+              0.7755
+            ],
+            "neck": [
+              0.5848,
+              0.7105
+            ],
+            "head": [
+              0.66,
+              0.6831
+            ],
+            "shoulder": [
+              0.5348,
+              0.7105
+            ],
+            "elbow": [
+              0.4659,
+              0.8207
+            ],
+            "hand": [
+              0.5959,
+              0.8207
+            ],
+            "knee": [
+              0.19,
+              0.82
+            ],
+            "foot": [
+              0.03,
+              0.82
+            ]
+          }
+        },
+        {
+          "name": "high",
+          "joints": {
+            "hip": [
+              0.35,
+              0.82
+            ],
+            "spineMid": [
+              0.415,
+              0.7074
+            ],
+            "neck": [
+              0.4699,
+              0.5896
+            ],
+            "head": [
+              0.5099,
+              0.5203
+            ],
+            "shoulder": [
+              0.4199,
+              0.5896
+            ],
+            "elbow": [
+              0.4199,
+              0.7196
+            ],
+            "hand": [
+              0.4199,
+              0.8496
+            ],
+            "knee": [
+              0.19,
+              0.82
+            ],
+            "foot": [
+              0.03,
+              0.82
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "wall-hamstring",
     "name": "Wall Hamstring Stretch",
-    "bodyParts": ["hamstrings"],
+    "bodyParts": [
+      "hamstrings"
+    ],
     "durationSeconds": 60,
     "difficulty": "easy",
     "description": "Lie on your back near a doorway, rest one leg up the wall. Switch legs after the hold.",
-    "youtubeId": "PLACEHOLDER_WALL_HAMSTRING"
+    "youtubeId": "",
+    "animation": {
+      "loopSeconds": 5.0,
+      "poses": [
+        {
+          "name": "bent",
+          "joints": {
+            "hip": [
+              0.4,
+              0.78
+            ],
+            "spineMid": [
+              0.53,
+              0.78
+            ],
+            "neck": [
+              0.66,
+              0.78
+            ],
+            "head": [
+              0.74,
+              0.78
+            ],
+            "shoulder": [
+              0.61,
+              0.78
+            ],
+            "elbow": [
+              0.482,
+              0.8026
+            ],
+            "hand": [
+              0.354,
+              0.8252
+            ],
+            "knee": [
+              0.4547,
+              0.6296
+            ],
+            "foot": [
+              0.4269,
+              0.472
+            ]
+          }
+        },
+        {
+          "name": "straight",
+          "joints": {
+            "hip": [
+              0.4,
+              0.78
+            ],
+            "spineMid": [
+              0.53,
+              0.78
+            ],
+            "neck": [
+              0.66,
+              0.78
+            ],
+            "head": [
+              0.74,
+              0.78
+            ],
+            "shoulder": [
+              0.61,
+              0.78
+            ],
+            "elbow": [
+              0.482,
+              0.8026
+            ],
+            "hand": [
+              0.354,
+              0.8252
+            ],
+            "knee": [
+              0.4,
+              0.62
+            ],
+            "foot": [
+              0.4,
+              0.46
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "quad-stretch",
     "name": "Standing Quad Stretch",
-    "bodyParts": ["quads"],
+    "bodyParts": [
+      "quads"
+    ],
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Stand, grab one ankle, and pull the heel toward your glute. Keep knees together.",
-    "youtubeId": "PLACEHOLDER_QUAD_STRETCH"
+    "youtubeId": "",
+    "animation": {
+      "loopSeconds": 5.5,
+      "poses": [
+        {
+          "name": "stand",
+          "joints": {
+            "hip": [
+              0.45,
+              0.58
+            ],
+            "spineMid": [
+              0.45,
+              0.45
+            ],
+            "neck": [
+              0.45,
+              0.32
+            ],
+            "head": [
+              0.45,
+              0.24
+            ],
+            "shoulder": [
+              0.45,
+              0.37
+            ],
+            "elbow": [
+              0.45,
+              0.5
+            ],
+            "hand": [
+              0.45,
+              0.63
+            ],
+            "knee": [
+              0.45,
+              0.74
+            ],
+            "foot": [
+              0.45,
+              0.9
+            ]
+          }
+        },
+        {
+          "name": "hold-foot",
+          "joints": {
+            "hip": [
+              0.45,
+              0.58
+            ],
+            "spineMid": [
+              0.45,
+              0.45
+            ],
+            "neck": [
+              0.45,
+              0.32
+            ],
+            "head": [
+              0.45,
+              0.24
+            ],
+            "shoulder": [
+              0.45,
+              0.37
+            ],
+            "elbow": [
+              0.385,
+              0.4826
+            ],
+            "hand": [
+              0.3014,
+              0.5822
+            ],
+            "knee": [
+              0.4222,
+              0.7376
+            ],
+            "foot": [
+              0.3422,
+              0.599
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "calf-stretch",
     "name": "Wall Calf Stretch",
-    "bodyParts": ["calves"],
+    "bodyParts": [
+      "calves"
+    ],
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Place hands on a wall, step one foot back with the heel pressed down. Keep the back leg straight.",
-    "youtubeId": "PLACEHOLDER_CALF_STRETCH"
+    "youtubeId": "gWlKFznXQns",
+    "videoStartSeconds": 240,
+    "animation": {
+      "loopSeconds": 5.0,
+      "poses": [
+        {
+          "name": "ready",
+          "joints": {
+            "hip": [
+              0.4,
+              0.62
+            ],
+            "spineMid": [
+              0.4113,
+              0.4905
+            ],
+            "neck": [
+              0.4226,
+              0.361
+            ],
+            "head": [
+              0.4226,
+              0.281
+            ],
+            "shoulder": [
+              0.4226,
+              0.411
+            ],
+            "elbow": [
+              0.5448,
+              0.4555
+            ],
+            "hand": [
+              0.667,
+              0.5
+            ],
+            "knee": [
+              0.4,
+              0.78
+            ],
+            "foot": [
+              0.4,
+              0.94
+            ]
+          }
+        },
+        {
+          "name": "lunge",
+          "joints": {
+            "hip": [
+              0.4,
+              0.62
+            ],
+            "spineMid": [
+              0.4336,
+              0.4944
+            ],
+            "neck": [
+              0.4672,
+              0.3688
+            ],
+            "head": [
+              0.4672,
+              0.2888
+            ],
+            "shoulder": [
+              0.4672,
+              0.4188
+            ],
+            "elbow": [
+              0.5952,
+              0.4414
+            ],
+            "hand": [
+              0.7232,
+              0.464
+            ],
+            "knee": [
+              0.4,
+              0.78
+            ],
+            "foot": [
+              0.4,
+              0.94
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "thread-the-needle",
     "name": "Thread the Needle",
-    "bodyParts": ["upper-back", "spine"],
+    "bodyParts": [
+      "upper-back",
+      "spine"
+    ],
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "From all fours, slide one arm under the other and rest the shoulder and side of the head on the mat.",
-    "youtubeId": "PLACEHOLDER_THREAD_NEEDLE"
+    "youtubeId": "",
+    "animation": {
+      "loopSeconds": 5.5,
+      "poses": [
+        {
+          "name": "baseline",
+          "joints": {
+            "hip": [
+              0.25,
+              0.5
+            ],
+            "spineMid": [
+              0.38,
+              0.5
+            ],
+            "neck": [
+              0.51,
+              0.5
+            ],
+            "head": [
+              0.59,
+              0.5
+            ],
+            "shoulder": [
+              0.51,
+              0.55
+            ],
+            "elbow": [
+              0.6278,
+              0.6049
+            ],
+            "hand": [
+              0.51,
+              0.6598
+            ],
+            "knee": [
+              0.25,
+              0.66
+            ],
+            "foot": [
+              0.09,
+              0.66
+            ]
+          }
+        },
+        {
+          "name": "threaded",
+          "joints": {
+            "hip": [
+              0.25,
+              0.5
+            ],
+            "spineMid": [
+              0.378,
+              0.5226
+            ],
+            "neck": [
+              0.4906,
+              0.5876
+            ],
+            "head": [
+              0.5045,
+              0.6664
+            ],
+            "shoulder": [
+              0.4473,
+              0.6126
+            ],
+            "elbow": [
+              0.3193,
+              0.6352
+            ],
+            "hand": [
+              0.1913,
+              0.6578
+            ],
+            "knee": [
+              0.25,
+              0.66
+            ],
+            "foot": [
+              0.09,
+              0.66
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "glute-bridge",
     "name": "Glute Bridge",
-    "bodyParts": ["glutes", "lower-back"],
+    "bodyParts": [
+      "glutes",
+      "lower-back"
+    ],
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Lie on your back with knees bent. Press through your heels to lift your hips, squeeze the glutes, lower.",
-    "youtubeId": "PLACEHOLDER_GLUTE_BRIDGE"
+    "youtubeId": "tl6xvm4-Qk0",
+    "videoStartSeconds": 240,
+    "animation": {
+      "loopSeconds": 4.0,
+      "poses": [
+        {
+          "name": "down",
+          "joints": {
+            "hip": [
+              0.55,
+              0.62
+            ],
+            "spineMid": [
+              0.68,
+              0.62
+            ],
+            "neck": [
+              0.81,
+              0.62
+            ],
+            "head": [
+              0.89,
+              0.62
+            ],
+            "shoulder": [
+              0.76,
+              0.62
+            ],
+            "elbow": [
+              0.632,
+              0.6426
+            ],
+            "hand": [
+              0.504,
+              0.6652
+            ],
+            "knee": [
+              0.4953,
+              0.4696
+            ],
+            "foot": [
+              0.4406,
+              0.62
+            ]
+          }
+        },
+        {
+          "name": "up",
+          "joints": {
+            "hip": [
+              0.55,
+              0.62
+            ],
+            "spineMid": [
+              0.6419,
+              0.7119
+            ],
+            "neck": [
+              0.7338,
+              0.8038
+            ],
+            "head": [
+              0.7904,
+              0.8604
+            ],
+            "shoulder": [
+              0.6838,
+              0.8038
+            ],
+            "elbow": [
+              0.5558,
+              0.8264
+            ],
+            "hand": [
+              0.4278,
+              0.849
+            ],
+            "knee": [
+              0.4472,
+              0.7426
+            ],
+            "foot": [
+              0.475,
+              0.9002
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "hip-flexor-lunge",
     "name": "Hip Flexor Lunge",
-    "bodyParts": ["hips", "quads"],
+    "bodyParts": [
+      "hips",
+      "quads"
+    ],
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Kneel on one knee with the other foot forward. Tuck your pelvis and lean gently into the front leg to feel a stretch in the back hip.",
-    "youtubeId": "PLACEHOLDER_HIP_FLEXOR_LUNGE"
+    "youtubeId": "",
+    "animation": {
+      "loopSeconds": 5.0,
+      "poses": [
+        {
+          "name": "back",
+          "joints": {
+            "hip": [
+              0.45,
+              0.62
+            ],
+            "spineMid": [
+              0.45,
+              0.49
+            ],
+            "neck": [
+              0.45,
+              0.36
+            ],
+            "head": [
+              0.45,
+              0.28
+            ],
+            "shoulder": [
+              0.45,
+              0.41
+            ],
+            "elbow": [
+              0.45,
+              0.54
+            ],
+            "hand": [
+              0.45,
+              0.67
+            ],
+            "knee": [
+              0.45,
+              0.78
+            ],
+            "foot": [
+              0.29,
+              0.78
+            ]
+          }
+        },
+        {
+          "name": "forward",
+          "joints": {
+            "hip": [
+              0.45,
+              0.62
+            ],
+            "spineMid": [
+              0.4274,
+              0.492
+            ],
+            "neck": [
+              0.4274,
+              0.362
+            ],
+            "head": [
+              0.4274,
+              0.282
+            ],
+            "shoulder": [
+              0.4274,
+              0.412
+            ],
+            "elbow": [
+              0.4274,
+              0.542
+            ],
+            "hand": [
+              0.4274,
+              0.672
+            ],
+            "knee": [
+              0.3953,
+              0.7704
+            ],
+            "foot": [
+              0.2353,
+              0.7704
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "reclined-hand-to-toe",
     "name": "Reclined Hand-to-Big-Toe",
-    "bodyParts": ["hamstrings", "calves"],
+    "bodyParts": [
+      "hamstrings",
+      "calves"
+    ],
     "durationSeconds": 45,
     "difficulty": "medium",
     "description": "Lying on your back, loop a strap around the ball of one foot and gently straighten the leg toward the ceiling.",
-    "youtubeId": "PLACEHOLDER_RECLINED_HAND_TO_TOE"
+    "youtubeId": "",
+    "animation": {
+      "loopSeconds": 5.0,
+      "poses": [
+        {
+          "name": "low",
+          "joints": {
+            "hip": [
+              0.4,
+              0.78
+            ],
+            "spineMid": [
+              0.53,
+              0.78
+            ],
+            "neck": [
+              0.66,
+              0.78
+            ],
+            "head": [
+              0.74,
+              0.78
+            ],
+            "shoulder": [
+              0.61,
+              0.78
+            ],
+            "elbow": [
+              0.61,
+              0.65
+            ],
+            "hand": [
+              0.6213,
+              0.5205
+            ],
+            "knee": [
+              0.4414,
+              0.6255
+            ],
+            "foot": [
+              0.4553,
+              0.4661
+            ]
+          }
+        },
+        {
+          "name": "high",
+          "joints": {
+            "hip": [
+              0.4,
+              0.78
+            ],
+            "spineMid": [
+              0.53,
+              0.78
+            ],
+            "neck": [
+              0.66,
+              0.78
+            ],
+            "head": [
+              0.74,
+              0.78
+            ],
+            "shoulder": [
+              0.61,
+              0.78
+            ],
+            "elbow": [
+              0.61,
+              0.65
+            ],
+            "hand": [
+              0.61,
+              0.52
+            ],
+            "knee": [
+              0.4,
+              0.62
+            ],
+            "foot": [
+              0.4,
+              0.46
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "standing-side-bend",
     "name": "Standing Side Bend",
-    "bodyParts": ["spine", "lower-back"],
+    "bodyParts": [
+      "spine",
+      "lower-back"
+    ],
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Stand tall, reach one arm overhead, and lean gently to the opposite side. Keep both hips facing forward.",
-    "youtubeId": "PLACEHOLDER_STANDING_SIDE_BEND"
+    "youtubeId": "",
+    "animation": {
+      "loopSeconds": 5.5,
+      "poses": [
+        {
+          "name": "center",
+          "joints": {
+            "hip": [
+              0.5,
+              0.62
+            ],
+            "spineMid": [
+              0.5,
+              0.49
+            ],
+            "neck": [
+              0.5,
+              0.36
+            ],
+            "head": [
+              0.5,
+              0.28
+            ],
+            "shoulder": [
+              0.5433,
+              0.385
+            ],
+            "elbow": [
+              0.5433,
+              0.255
+            ],
+            "hand": [
+              0.5433,
+              0.125
+            ],
+            "knee": [
+              0.5278,
+              0.7776
+            ],
+            "foot": [
+              0.5278,
+              0.9376
+            ],
+            "shoulderL": [
+              0.4567,
+              0.385
+            ],
+            "elbowL": [
+              0.4567,
+              0.255
+            ],
+            "handL": [
+              0.4567,
+              0.125
+            ],
+            "kneeL": [
+              0.4722,
+              0.7776
+            ],
+            "footL": [
+              0.4722,
+              0.9376
+            ]
+          }
+        },
+        {
+          "name": "right",
+          "joints": {
+            "hip": [
+              0.5,
+              0.62
+            ],
+            "spineMid": [
+              0.5445,
+              0.4978
+            ],
+            "neck": [
+              0.6095,
+              0.3852
+            ],
+            "head": [
+              0.6609,
+              0.3239
+            ],
+            "shoulder": [
+              0.6478,
+              0.4173
+            ],
+            "elbow": [
+              0.6923,
+              0.2951
+            ],
+            "hand": [
+              0.7368,
+              0.1729
+            ],
+            "knee": [
+              0.5278,
+              0.7776
+            ],
+            "foot": [
+              0.5278,
+              0.9376
+            ],
+            "shoulderL": [
+              0.5625,
+              0.4023
+            ],
+            "elbowL": [
+              0.5851,
+              0.2743
+            ],
+            "handL": [
+              0.6187,
+              0.1487
+            ],
+            "kneeL": [
+              0.4722,
+              0.7776
+            ],
+            "footL": [
+              0.4722,
+              0.9376
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "crocodile",
     "name": "Crocodile Pose",
-    "bodyParts": ["lower-back", "spine"],
+    "bodyParts": [
+      "lower-back",
+      "spine"
+    ],
     "durationSeconds": 60,
     "difficulty": "easy",
     "description": "Lie on your stomach, stack your forearms, and rest your forehead on top. Breathe deeply into your low back.",
-    "youtubeId": "PLACEHOLDER_CROCODILE"
+    "youtubeId": "",
+    "animation": {
+      "loopSeconds": 6.0,
+      "poses": [
+        {
+          "name": "inhale",
+          "joints": {
+            "hip": [
+              0.32,
+              0.8
+            ],
+            "spineMid": [
+              0.4498,
+              0.7932
+            ],
+            "neck": [
+              0.5785,
+              0.7751
+            ],
+            "head": [
+              0.6537,
+              0.7477
+            ],
+            "shoulder": [
+              0.5285,
+              0.7751
+            ],
+            "elbow": [
+              0.4009,
+              0.7999
+            ],
+            "hand": [
+              0.5309,
+              0.7999
+            ],
+            "knee": [
+              0.16,
+              0.8
+            ],
+            "foot": [
+              0.0,
+              0.8
+            ]
+          }
+        },
+        {
+          "name": "exhale",
+          "joints": {
+            "hip": [
+              0.32,
+              0.8
+            ],
+            "spineMid": [
+              0.45,
+              0.8
+            ],
+            "neck": [
+              0.5795,
+              0.7887
+            ],
+            "head": [
+              0.6568,
+              0.768
+            ],
+            "shoulder": [
+              0.5295,
+              0.7887
+            ],
+            "elbow": [
+              0.4019,
+              0.8135
+            ],
+            "hand": [
+              0.5319,
+              0.8135
+            ],
+            "knee": [
+              0.16,
+              0.8
+            ],
+            "foot": [
+              0.0,
+              0.8
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "it-band-cross",
     "name": "Standing IT Band Stretch",
-    "bodyParts": ["hips", "glutes"],
+    "bodyParts": [
+      "hips",
+      "glutes"
+    ],
     "durationSeconds": 30,
     "difficulty": "easy",
     "description": "Cross one leg behind the other, reach the same-side arm overhead, and lean to the opposite side to open the outer hip.",
-    "youtubeId": "PLACEHOLDER_IT_BAND_CROSS"
+    "youtubeId": "u8L63tiPNeY",
+    "videoStartSeconds": 255,
+    "animation": {
+      "loopSeconds": 5.5,
+      "poses": [
+        {
+          "name": "neutral",
+          "joints": {
+            "hip": [
+              0.5,
+              0.62
+            ],
+            "spineMid": [
+              0.5,
+              0.49
+            ],
+            "neck": [
+              0.5,
+              0.36
+            ],
+            "head": [
+              0.5,
+              0.28
+            ],
+            "shoulder": [
+              0.5433,
+              0.385
+            ],
+            "elbow": [
+              0.5433,
+              0.255
+            ],
+            "hand": [
+              0.5433,
+              0.125
+            ],
+            "knee": [
+              0.5278,
+              0.7776
+            ],
+            "foot": [
+              0.5278,
+              0.9376
+            ],
+            "shoulderL": [
+              0.4567,
+              0.385
+            ],
+            "elbowL": [
+              0.4567,
+              0.515
+            ],
+            "handL": [
+              0.4567,
+              0.645
+            ],
+            "kneeL": [
+              0.4722,
+              0.7776
+            ],
+            "footL": [
+              0.4722,
+              0.9376
+            ]
+          }
+        },
+        {
+          "name": "leaned",
+          "joints": {
+            "hip": [
+              0.5,
+              0.62
+            ],
+            "spineMid": [
+              0.5549,
+              0.5022
+            ],
+            "neck": [
+              0.6295,
+              0.3957
+            ],
+            "head": [
+              0.6861,
+              0.3391
+            ],
+            "shoulder": [
+              0.6678,
+              0.4278
+            ],
+            "elbow": [
+              0.7123,
+              0.3056
+            ],
+            "hand": [
+              0.7672,
+              0.1878
+            ],
+            "knee": [
+              0.5139,
+              0.7794
+            ],
+            "foot": [
+              0.5139,
+              0.9394
+            ],
+            "shoulderL": [
+              0.5825,
+              0.4128
+            ],
+            "elbowL": [
+              0.5599,
+              0.5408
+            ],
+            "handL": [
+              0.5373,
+              0.6688
+            ],
+            "kneeL": [
+              0.58,
+              0.7586
+            ],
+            "footL": [
+              0.58,
+              0.9186
+            ]
+          }
+        }
+      ]
+    }
   },
   {
     "id": "seated-twist",
     "name": "Seated Spinal Twist",
-    "bodyParts": ["spine", "lower-back", "glutes"],
+    "bodyParts": [
+      "spine",
+      "lower-back",
+      "glutes"
+    ],
     "durationSeconds": 45,
     "difficulty": "easy",
     "description": "Sit with one leg crossed over the other. Twist toward the bent knee, lengthening through the spine on each inhale.",
-    "youtubeId": "PLACEHOLDER_SEATED_TWIST"
+    "youtubeId": "",
+    "animation": {
+      "loopSeconds": 6.0,
+      "poses": [
+        {
+          "name": "center",
+          "joints": {
+            "hip": [
+              0.5,
+              0.68
+            ],
+            "spineMid": [
+              0.5,
+              0.55
+            ],
+            "neck": [
+              0.5,
+              0.42
+            ],
+            "head": [
+              0.5,
+              0.34
+            ],
+            "shoulder": [
+              0.5433,
+              0.445
+            ],
+            "elbow": [
+              0.5769,
+              0.5706
+            ],
+            "hand": [
+              0.6214,
+              0.6928
+            ],
+            "knee": [
+              0.6386,
+              0.76
+            ],
+            "foot": [
+              0.4882,
+              0.8147
+            ],
+            "shoulderL": [
+              0.4567,
+              0.445
+            ],
+            "elbowL": [
+              0.4231,
+              0.5706
+            ],
+            "handL": [
+              0.3786,
+              0.6928
+            ],
+            "kneeL": [
+              0.3614,
+              0.76
+            ],
+            "footL": [
+              0.5118,
+              0.8147
+            ]
+          }
+        },
+        {
+          "name": "twist",
+          "joints": {
+            "hip": [
+              0.5,
+              0.68
+            ],
+            "spineMid": [
+              0.5,
+              0.55
+            ],
+            "neck": [
+              0.5226,
+              0.422
+            ],
+            "head": [
+              0.574,
+              0.3607
+            ],
+            "shoulder": [
+              0.5226,
+              0.472
+            ],
+            "elbow": [
+              0.423,
+              0.5556
+            ],
+            "hand": [
+              0.3104,
+              0.6206
+            ],
+            "knee": [
+              0.6386,
+              0.76
+            ],
+            "foot": [
+              0.4882,
+              0.8147
+            ],
+            "shoulderL": [
+              0.5226,
+              0.472
+            ],
+            "elbowL": [
+              0.6448,
+              0.5165
+            ],
+            "handL": [
+              0.7574,
+              0.5815
+            ],
+            "kneeL": [
+              0.3614,
+              0.76
+            ],
+            "footL": [
+              0.5118,
+              0.8147
+            ]
+          }
+        }
+      ]
+    }
   }
 ]

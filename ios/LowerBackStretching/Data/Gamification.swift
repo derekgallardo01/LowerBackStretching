@@ -22,10 +22,10 @@ func xp(forSessionSeconds seconds: Int) -> Int {
     Int(Float(max(0, seconds)) * xpPerSecond)
 }
 
-func level(forTotalXp totalXp: Int) -> Int {
-    if totalXp <= 0 { return 1 }
+func level(forTotalXp xp: Int) -> Int {
+    if xp <= 0 { return 1 }
     var level = 1
-    while self.totalXp(forLevel: level + 1) <= totalXp { level += 1 }
+    while totalXp(forLevel: level + 1) <= xp { level += 1 }
     return level
 }
 
@@ -41,11 +41,11 @@ struct XpProgress: Equatable {
     }
 }
 
-func xpProgress(totalXp: Int) -> XpProgress {
-    let safe = max(0, totalXp)
+func xpProgress(totalXp xp: Int) -> XpProgress {
+    let safe = max(0, xp)
     let lvl = level(forTotalXp: safe)
-    let base = self.totalXp(forLevel: lvl)
-    let next = self.totalXp(forLevel: lvl + 1)
+    let base = totalXp(forLevel: lvl)
+    let next = totalXp(forLevel: lvl + 1)
     return XpProgress(
         level: lvl,
         totalXp: safe,

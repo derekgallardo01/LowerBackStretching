@@ -2,6 +2,21 @@ import SwiftUI
 import SwiftData
 import UIKit
 
+/// Which pain prompt the player is currently showing. Bound to a
+/// `.sheet(item:)` so a single binding switches between pre and post
+/// variants. Setting to `nil` dismisses the sheet.
+enum PainPromptState: Identifiable, Equatable {
+    case preSession
+    case postSession(sessionId: String)
+
+    var id: String {
+        switch self {
+        case .preSession: return "pre"
+        case .postSession(let sid): return "post-\(sid)"
+        }
+    }
+}
+
 struct PlayerView: View {
     let programId: String
     let dayNumber: Int
@@ -70,7 +85,12 @@ struct PlayerBody: View {
     @AppStorage(SettingsKeys.ambientVolume) private var ambientVolume: Double = Double(AudioDefaults.ambientVolume)
     @AppStorage(SettingsKeys.chimeTrack) private var chimeTrackRaw: String = ChimeTrack.none.storageValue
     @AppStorage(SettingsKeys.healthWriteEnabled) private var healthWriteEnabled: Bool = false
+    @Query(sort: \PainLog.recordedAt, order: .reverse) private var painLogs: [PainLog]
     private var unit: DurationUnit { DurationUnit.fromStorage(durationUnitRaw) }
+
+    @State private var show3D: Bool = false
+    @State private var painPrompt: PainPromptState? = nil
+    @State private var preSessionDecided: Bool = false
 
     init(stretches: [Stretch], title: String, programId: String, dayNumber: Int) {
         self.title = title
@@ -88,9 +108,32 @@ struct PlayerBody: View {
                 FinishedView { dismiss() }
             } else if let current = engine.snapshot.current {
                 VStack(spacing: 16) {
-                    YouTubeView(videoId: current.youtubeId)
+                    ZStack(alignment: .topTrailing) {
+                        Group {
+                            if show3D {
+                                StretchAnimation3DView(
+                                    animation: current.animation,
+                                    youtubeId: current.youtubeId
+                                )
+                            } else {
+                                StretchAnimationView(
+                                    animation: current.animation,
+                                    youtubeId: current.youtubeId
+                                )
+                            }
+                        }
                         .aspectRatio(16.0 / 9.0, contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                        Button(action: { show3D.toggle() }) {
+                            Text(show3D ? "2D" : "3D")
+                                .font(.caption.weight(.bold))
+                                .frame(width: 32, height: 32)
+                                .background(Color(.systemBackground).opacity(0.85))
+                                .clipShape(Circle())
+                        }
+                        .padding(8)
+                        .accessibilityIdentifier("playerToggle3D")
+                    }
 
                     HStack(alignment: .top, spacing: 16) {
                         VStack(alignment: .leading, spacing: 8) {
@@ -135,6 +178,20 @@ struct PlayerBody: View {
                         .accessibilityIdentifier("playerNext")
                     }
 
+                    Button(action: skip) {
+                        Label(
+                            engine.snapshot.index == engine.snapshot.stretches.count - 1
+                                ? "Finish routine"
+                                : "Mark stretch complete",
+                            systemImage: "checkmark"
+                        )
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.secondary)
+                    .accessibilityIdentifier("playerMarkComplete")
+
                     Spacer()
                 }
                 .padding(16)
@@ -167,6 +224,37 @@ struct PlayerBody: View {
             }
             InProgressStore.clear()
             if hapticsFinish { Haptics.finish() }
+            // Prompt for the post-session pain rating. Synthetic session id
+            // lets the row later be cross-referenced if we add a per-session
+            // history view.
+            painPrompt = .postSession(sessionId: "\(programId)#\(dayNumber)#\(Int(Date.now.timeIntervalSince1970))")
+        }
+        .sheet(item: $painPrompt) { state in
+            switch state {
+            case .preSession:
+                PainCheckInSheet(
+                    title: "How's your back right now?",
+                    onSubmit: { level, tag in
+                        PainLogService.recordPre(painLevel: level, bodyLocationTag: tag, in: modelContext)
+                        resumeAfterPrePrompt()
+                    },
+                    onSkip: { resumeAfterPrePrompt() }
+                )
+                .interactiveDismissDisabled(true)
+            case .postSession(let sessionId):
+                PainCheckInSheet(
+                    title: "How does it feel now?",
+                    onSubmit: { level, tag in
+                        PainLogService.recordPost(
+                            painLevel: level,
+                            bodyLocationTag: tag,
+                            sessionId: sessionId,
+                            in: modelContext
+                        )
+                    },
+                    onSkip: {}
+                )
+            }
         }
         .onChange(of: engine.snapshot.index) { oldValue, newValue in
             guard newValue != oldValue, !engine.snapshot.finished else { return }
@@ -189,6 +277,7 @@ struct PlayerBody: View {
             )
             applyMusic()
             applyAmbient()
+            maybePromptPreSession()
         }
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
@@ -204,6 +293,23 @@ struct PlayerBody: View {
 
     private func skip() {
         engine.next()
+    }
+
+    /// Show the pre-session pain prompt at most once per device-local day.
+    /// Pauses the engine while the sheet is up so the timer doesn't drain
+    /// behind the modal.
+    private func maybePromptPreSession() {
+        guard !preSessionDecided else { return }
+        preSessionDecided = true
+        if PainLogService.hasPreLoggedToday(logs: painLogs) { return }
+        if engine.snapshot.running { engine.togglePlay() }
+        painPrompt = .preSession
+    }
+
+    private func resumeAfterPrePrompt() {
+        if !engine.snapshot.running && !engine.snapshot.finished {
+            engine.togglePlay()
+        }
     }
 
     private func applyMusic() {
