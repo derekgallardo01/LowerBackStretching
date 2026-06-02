@@ -131,21 +131,44 @@ struct SettingsView: View {
                 }
             }
 
-            Section(header: Text("Apple Health")) {
+            Section {
                 if HealthController.shared.isAvailable {
-                    Toggle("Write stretching workouts", isOn: $healthWriteEnabled)
-                        .onChange(of: healthWriteEnabled) { _, on in
-                            if on { HealthController.shared.requestAuthorization { _ in } }
+                    Toggle(isOn: $healthWriteEnabled) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Log stretching sessions to Apple Health")
+                            Text("Each completed session is written as a Flexibility workout.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
-                    Toggle("Read daily steps", isOn: $healthReadEnabled)
-                        .onChange(of: healthReadEnabled) { _, on in
-                            if on { HealthController.shared.requestAuthorization { _ in } }
+                    }
+                    .onChange(of: healthWriteEnabled) { _, on in
+                        if on { HealthController.shared.requestAuthorization { _ in } }
+                    }
+
+                    Toggle(isOn: $healthReadEnabled) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Read daily step count from Apple Health")
+                            Text("Used to suggest a cooldown stretch after long walks. Steps never leave your device.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
+                    }
+                    .onChange(of: healthReadEnabled) { _, on in
+                        if on { HealthController.shared.requestAuthorization { _ in } }
+                    }
                 } else {
                     Text("Apple Health isn't available on this device.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+            } header: {
+                Label("Apple Health", systemImage: "heart.fill")
+                    .foregroundStyle(.pink)
+                    .textCase(nil)
+            } footer: {
+                Text("This app integrates with Apple Health using HealthKit. With your permission it writes completed stretching sessions as Flexibility workouts and reads your daily step count to time cooldown suggestions. All data stays on your device — nothing is sent to a server. You can revoke access any time in Settings → Health → Data Access & Devices.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
             Section(header: Text("Cloud sync")) {
