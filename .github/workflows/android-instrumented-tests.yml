@@ -49,6 +49,31 @@ jobs:
         with:
           gradle-version: '8.7'
 
+      # Snapshot generation for Gradle Managed Devices is the flaky part on
+      # hosted runners: the emulator sometimes "closes unexpectedly (1)" while
+      # booting to create its snapshot, failing the `<device>Setup` task before
+      # any test runs. Run Setup on its own with a clean-and-retry loop so a
+      # transient boot crash retries automatically — while real test failures
+      # (the separate step below) are never retried and never masked.
+      - name: Prepare emulator snapshot (retry flaky boot)
+        run: |
+          for attempt in 1 2 3; do
+            echo "=== Emulator setup attempt $attempt/3 ==="
+            if gradle :app:${{ matrix.device }}Setup --stacktrace; then
+              echo "Emulator snapshot ready on attempt $attempt."
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "Emulator setup failed after 3 attempts."
+              exit 1
+            fi
+            echo "Setup attempt $attempt failed; wiping managed-device AVDs before retry."
+            gradle :app:cleanManagedDevices --stacktrace || true
+            rm -rf "$HOME/.android/avd"/* "$HOME/.config/.android/avd"/* 2>/dev/null || true
+          done
+
+      # Snapshot is now created and up-to-date, so this reuses it and does not
+      # re-boot from cold. A failure here is a genuine test failure.
       - name: Run instrumented tests via Gradle Managed Devices
         run: gradle :app:${{ matrix.device }}DebugAndroidTest --stacktrace
 
