@@ -32,13 +32,18 @@ class SessionRepositoryIntegrationTest {
 
     @Test
     fun recordCompletion_appears_in_count_and_recent() = runBlocking {
-        assertThat(repo.count().first()).isEqualTo(0)
+        // Read via the one-shot suspend queries, not the reactive Flows: a
+        // fresh Flow's initial emission is delivered asynchronously by Room's
+        // InvalidationTracker and can race a just-completed write, which made
+        // this assertion flaky on faster emulators.
+        val dao = db.sessionDao()
+        assertThat(dao.countNow()).isEqualTo(0)
 
         repo.recordCompletion(programId = "p1", day = 1, durationSeconds = 300)
         repo.recordCompletion(programId = "p1", day = 2, durationSeconds = 240)
 
-        assertThat(repo.count().first()).isEqualTo(2)
-        val recent = repo.recent(limit = 10).first()
+        assertThat(dao.countNow()).isEqualTo(2)
+        val recent = dao.recentNow(limit = 10)
         assertThat(recent).hasSize(2)
         assertThat(recent[0].dayNumber).isEqualTo(2) // most recent first
     }
