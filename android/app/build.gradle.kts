@@ -12,14 +12,14 @@ plugins {
 
 android {
     namespace = "com.lowerbackstretching"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.lowerbackstretching"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 3
-        versionName = "1.0.1"
+        targetSdk = 36
+        versionCode = 9
+        versionName = "1.0.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }

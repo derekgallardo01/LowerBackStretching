@@ -47,7 +47,7 @@ jobs:
       - name: Set up Gradle (with cache)
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.7'
+          gradle-version: '9.0.0'
 
       # Snapshot generation for Gradle Managed Devices is the flaky part on
       # hosted runners: the emulator sometimes "closes unexpectedly (1)" while

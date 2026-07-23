@@ -50,7 +50,7 @@ jobs:
       - name: Set up Gradle (with cache)
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.7'
+          gradle-version: '9.0.0'
 
       # The test task implicitly compiles main + test, so any Kotlin
       # compile error surfaces here. The wrapper script tees stdout to
