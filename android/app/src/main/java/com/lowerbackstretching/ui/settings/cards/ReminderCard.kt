@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lowerbackstretching.notifications.applyReminder
 import com.lowerbackstretching.notifications.applyStreakNudge
@@ -43,7 +41,7 @@ fun ReminderCard(vm: AppViewModel = viewModel()) {
         scope.launch { vm.prefs.applyStreakNudge(ctx, on) }
     }
 
-    SettingsCard(verticalSpacing = 0.dp) {
+    SettingsCard {
         SettingsToggleRow(
             checked = enabled,
             onChange = { on -> apply(on, hour, minute) },
@@ -79,7 +77,7 @@ fun ReminderCard(vm: AppViewModel = viewModel()) {
 @Composable
 private fun TimeRow(formatted: String, onClick: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(top = 12.dp).clickable(onClick = onClick),
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text("Reminder time", style = MaterialTheme.typography.titleMedium)

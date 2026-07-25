@@ -10,6 +10,8 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.SliderState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -105,16 +107,29 @@ private fun <T> TrackDropdown(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun VolumeSlider(label: String, value: Float, onValueChange: (Float) -> Unit) {
     Column {
         Text(label, style = MaterialTheme.typography.bodyMedium)
+        // Default M3 1.3 Slider renders a pill thumb with a visible gap to
+        // the inactive track and a stop-indicator dot at the far right —
+        // looks split/broken at a glance. Override `track` to draw the
+        // traditional continuous bar with no gap and no end marker.
         Slider(
             value = value,
             onValueChange = onValueChange,
             valueRange = 0f..1f,
             modifier = Modifier.semantics {
                 stateDescription = "$label ${(value * 100).toInt()} percent"
+            },
+            track = { state: SliderState ->
+                SliderDefaults.Track(
+                    sliderState = state,
+                    thumbTrackGapSize = 0.dp,
+                    trackInsideCornerSize = 0.dp,
+                    drawStopIndicator = null,
+                )
             },
         )
     }

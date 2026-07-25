@@ -11,15 +11,60 @@ Two JSON files drive all stretching content shown in the apps:
 The `youtubeId` field is the 11-character ID from a YouTube URL, e.g. for
 `https://www.youtube.com/watch?v=dQw4w9WgXcQ` the id is `dQw4w9WgXcQ`.
 
-All IDs in this repo start with `PLACEHOLDER_` and **must be replaced** before
-the app is useful. Suggested curation process:
+YouTube is **not** embedded in the player anymore — the mid-2025 embedder
+verification tightening (Error 152) made WebView embeds unreliable. Each
+stretch now ships with a built-in stick-figure `animation` (see below) and
+the YouTube ID powers a small "Watch demo" link that opens the video in
+the YouTube app or browser.
 
-1. Search YouTube for the stretch name (e.g. "child's pose tutorial").
-2. Pick a video from a reputable physiotherapy / yoga channel with a permissive
-   embedding policy (check the channel — most allow embeds by default).
-3. Copy the 11-char video ID into the corresponding stretch entry.
-4. Verify in the app that the embed plays (some channels disable embedding;
-   you'll see "video unavailable" — pick another).
+A leading `PLACEHOLDER_` (or an empty string) signals "no demo video yet"
+and suppresses the link entirely.
+
+## Animation poses
+
+Each stretch can ship a looping stick-figure animation that demonstrates
+the motion. The renderer is a tiny Compose / SwiftUI Canvas that draws line
+segments between named joints.
+
+```json
+"animation": {
+  "loopSeconds": 4.5,
+  "poses": [
+    {
+      "name": "cow",
+      "joints": {
+        "head":     [0.80, 0.33],
+        "neck":     [0.72, 0.40],
+        "shoulder": [0.65, 0.45],
+        "elbow":    [0.65, 0.65],
+        "hand":     [0.65, 0.85],
+        "spineMid": [0.475, 0.58],
+        "hip":      [0.30, 0.45],
+        "knee":     [0.30, 0.85],
+        "foot":     [0.20, 0.85]
+      }
+    },
+    { "name": "cat", "joints": { ... } }
+  ]
+}
+```
+
+- `loopSeconds`: time for one full loop through all poses.
+- `poses`: 2+ keyframes. The renderer eases between consecutive poses and
+  wraps back to the first after the last (so `[A, B]` plays `A → B → A → …`).
+- `name` is optional, for human orientation when reading the JSON.
+- `joints` keys the renderer understands: `head`, `neck`, `shoulder`,
+  `elbow`, `hand`, `spineMid`, `hip`, `knee`, `foot`. All poses in one
+  spec should declare the same joints.
+- `[x, y]` are normalized to the drawing surface: `[0, 0]` is top-left,
+  `[1, 1]` is bottom-right.
+
+Bones connecting consecutive joints (`head→neck`, `neck→spineMid`,
+`spineMid→hip`, `neck→shoulder`, `shoulder→elbow`, `elbow→hand`,
+`hip→knee`, `knee→foot`) are drawn as line segments; the head is a
+small circle at `head`.
+
+Stretches without `animation` show a placeholder + "Watch demo" link.
 
 ## Keeping platforms in sync
 

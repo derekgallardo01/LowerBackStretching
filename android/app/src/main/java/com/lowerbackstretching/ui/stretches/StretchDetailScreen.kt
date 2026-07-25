@@ -36,7 +36,7 @@ import com.lowerbackstretching.core.model.EducationalCard
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.DifficultyDots
 import com.lowerbackstretching.ui.components.SectionHeader
-import com.lowerbackstretching.ui.components.YouTubePlayerView
+import com.lowerbackstretching.ui.components.StretchAnimationView
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,11 +70,10 @@ fun StretchDetailScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            YouTubePlayerView(
-                videoId = stretch.youtubeId,
-                startSeconds = stretch.videoStartSeconds,
+            StretchAnimationView(
+                animation = stretch.animation,
+                youtubeId = stretch.youtubeId,
                 modifier = Modifier.fillMaxWidth(),
-                autoplay = false,
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,

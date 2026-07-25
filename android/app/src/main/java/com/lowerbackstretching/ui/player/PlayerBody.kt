@@ -19,11 +19,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.filled.Spa
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -55,9 +58,11 @@ import com.lowerbackstretching.core.bodyZonesForTags
 import com.lowerbackstretching.core.formatDuration
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.anatomy.BodySilhouette
-import com.lowerbackstretching.ui.components.HoldButton
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.lowerbackstretching.ui.components.MilestoneModal
-import com.lowerbackstretching.ui.components.YouTubePlayerView
+import com.lowerbackstretching.ui.components.StretchAnimation3DView
+import com.lowerbackstretching.ui.components.StretchAnimationView
 import com.lowerbackstretching.ui.pain.PainCheckInDialog
 
 /**
@@ -97,8 +102,8 @@ internal fun PlayerBody(
         val current = snapshot?.current
         if (snapshot != null && current != null && !snapshot.finished) {
             PipPlayerLayout(
-                videoId = current.youtubeId,
-                startSeconds = current.videoStartSeconds,
+                animation = current.animation,
+                youtubeId = current.youtubeId,
                 remainingSeconds = snapshot.remainingSeconds,
                 progress = snapshot.routineProgress,
                 durationUnit = unit,
@@ -159,11 +164,42 @@ internal fun PlayerBody(
             modifier = Modifier.padding(inner).fillMaxSize().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            YouTubePlayerView(
-                videoId = current.youtubeId,
-                startSeconds = current.videoStartSeconds,
-                modifier = Modifier.fillMaxWidth(),
-            )
+            var show3D by remember { mutableStateOf(false) }
+            Box(modifier = Modifier.fillMaxWidth()) {
+                if (show3D) {
+                    StretchAnimation3DView(
+                        animation = current.animation,
+                        youtubeId = current.youtubeId,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                } else {
+                    StretchAnimationView(
+                        animation = current.animation,
+                        youtubeId = current.youtubeId,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                FilledIconButton(
+                    onClick = { show3D = !show3D },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .size(36.dp)
+                        .semantics {
+                            contentDescription = if (show3D) "Switch to 2D view" else "Switch to 3D view"
+                        },
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
+                ) {
+                    Text(
+                        text = if (show3D) "2D" else "3D",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -226,11 +262,18 @@ internal fun PlayerBody(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                HoldButton(
-                    onTriggered = vm::previous,
-                    contentDescription = "Hold to go back",
-                    icon = Icons.Filled.SkipPrevious,
-                )
+                IconButton(
+                    onClick = vm::previous,
+                    modifier = Modifier
+                        .size(56.dp)
+                        .semantics { contentDescription = "Previous stretch" },
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.SkipPrevious,
+                        contentDescription = null,
+                        modifier = Modifier.size(36.dp),
+                    )
+                }
                 Spacer(Modifier.width(24.dp))
                 FilledIconButton(
                     onClick = vm::togglePlay,
@@ -251,10 +294,35 @@ internal fun PlayerBody(
                     )
                 }
                 Spacer(Modifier.width(24.dp))
-                HoldButton(
-                    onTriggered = vm::next,
-                    contentDescription = "Hold to skip ahead",
-                    icon = Icons.Filled.SkipNext,
+                IconButton(
+                    onClick = vm::next,
+                    modifier = Modifier
+                        .size(56.dp)
+                        .semantics { contentDescription = "Next stretch" },
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.SkipNext,
+                        contentDescription = null,
+                        modifier = Modifier.size(36.dp),
+                    )
+                }
+            }
+
+            Button(
+                onClick = vm::next,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics { contentDescription = "Mark stretch complete" },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                ),
+            ) {
+                Icon(Icons.Filled.Check, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    if (snapshot.index == snapshot.stretches.size - 1) "Finish routine"
+                    else "Mark stretch complete",
                 )
             }
         }

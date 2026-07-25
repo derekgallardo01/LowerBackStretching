@@ -1,3 +1,7 @@
+---
+permalink: /PRIVACY
+---
+
 # Privacy Policy — Lower Back Stretching
 
 **Effective date:** May 25, 2026

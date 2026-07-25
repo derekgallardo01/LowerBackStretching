@@ -227,9 +227,14 @@ so `viewModel()` can construct AndroidViewModels with an Application context.
 `CompleteRoutineE2ETest` uses `createAndroidComposeRule<MainActivity>()` instead
 to exercise the real navigation graph; it wipes Room + DataStore in `@Before`.
 
-## YouTube playback
+## Stretch animation
 
-`ui/components/YouTubePlayerView.kt` renders the YouTube iframe API inside a
-WebView. No SDK key is required. If a video says "video unavailable, video
-owner has disabled embedding", pick a different curated video — see
-`content/README.md`.
+`ui/components/StretchAnimationView.kt` renders the looping stick-figure
+demo on a Compose `Canvas`, driven by an `InfiniteTransition`. The pure
+interpolation math lives in `core/StretchAnimation.kt` so it's testable
+in plain JVM tests (see `core/test/.../StretchAnimationTest.kt`) and
+reusable by `:wear` if we ever add an animation surface there.
+
+YouTube embeds were removed in favor of an external "Watch demo" link —
+the mid-2025 embedder-verification tightening (Error 152) made the
+WebView path unreliable. See `content/README.md` for the pose schema.

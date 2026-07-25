@@ -24,7 +24,39 @@ data class Stretch(
     val mistakesToAvoid: List<String>? = null,
     /** Body-feedback text shown as a small overlay during the player. */
     val whatYouShouldFeel: String? = null,
+    /** Optional looping stick-figure animation that demonstrates the stretch.
+     *  When null, the player surface shows a placeholder + "Watch demo on
+     *  YouTube" link instead. */
+    val animation: StretchAnimationSpec? = null,
 ) : Timed
+
+/**
+ * Looping keyframe animation for a stick-figure renderer.
+ *
+ * The renderer interpolates between consecutive poses using eased segments and
+ * wraps back to the first pose after the last — i.e. for poses [A, B] the
+ * loop is A → B → A → B …, and for [A, B, C] it is A → B → C → A …
+ *
+ * Each [Pose.joints] entry maps a joint name to its normalized `[x, y]`
+ * position in the drawing surface, where `0,0` is top-left and `1,1` is
+ * bottom-right. Joint names that the renderer understands: `head`, `neck`,
+ * `shoulder`, `elbow`, `hand`, `spineMid`, `hip`, `knee`, `foot`. All poses
+ * in one spec should declare the same joints.
+ */
+@Serializable
+data class StretchAnimationSpec(
+    /** Total duration of one full loop through all poses, in seconds. */
+    val loopSeconds: Double = 4.0,
+    val poses: List<Pose>,
+)
+
+@Serializable
+data class Pose(
+    /** Optional human-readable label (e.g. "cow", "inhale"). Not rendered;
+     *  exists for content-author orientation when reading the JSON. */
+    val name: String? = null,
+    val joints: Map<String, List<Double>>,
+)
 
 @Serializable
 data class EducationalCard(

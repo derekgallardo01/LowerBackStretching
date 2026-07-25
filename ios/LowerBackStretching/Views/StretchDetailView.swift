@@ -13,9 +13,11 @@ struct StretchDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                YouTubeView(videoId: stretch.youtubeId, autoplay: false)
-                    .aspectRatio(16.0 / 9.0, contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                StretchAnimationView(
+                    animation: stretch.animation,
+                    youtubeId: stretch.youtubeId
+                )
+                .aspectRatio(16.0 / 9.0, contentMode: .fit)
 
                 HStack(spacing: 8) {
                     Text(formatDuration(stretch.durationSeconds, unit: unit))
