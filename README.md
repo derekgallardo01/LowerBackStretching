@@ -50,7 +50,7 @@ keep them in sync (or symlink) when editing content.
   enums, formatting helpers. No Android dependency, no Room, no DataStore.
 - `:app` — the phone Android app. Depends on `:core`. Owns Room
   persistence, DataStore prefs, Compose screens, Health Connect /
-  notifications / WorkManager / cloud-sync plumbing.
+  notifications / cloud-sync plumbing.
 - `:wear` — Wear OS companion. Depends on `:core`. Reuses the same
   PlayerEngine; ships a slim `WatchStretch` model.
 
@@ -93,6 +93,10 @@ platform notes"). 12 of 26 entries have it empty.
 - `.github/workflows/android-instrumented-tests.yml` — emulator tests
   (Pixel 6 + Pixel Tablet) on a nightly schedule and manual dispatch.
   Includes Room migration smoke tests.
+- `.github/workflows/android-release.yml` — push a `v*` tag to build signed
+  AABs for both modules. Re-runs the full verify set first, restores the
+  upload keystore from repository secrets, and fails loudly if the result
+  came out unsigned. It does not upload to Play; submission stays manual.
 
 ## What's done
 
@@ -138,5 +142,8 @@ the removal doesn't later read as an accidental regression.
   the audio system silently no-ops when files are missing
 - Wire a real Firebase project (the `FirebaseSyncBackend` stub already
   exists; only the `google-services.json` and a few config swaps remain)
-- Externalize UI strings to `strings.xml` (currently all Kotlin literals,
-  so no translation is possible)
+- Add `values-<locale>/` translations. UI copy is fully externalized to
+  `strings.xml` now, but the content JSON (stretches, programs, glossary)
+  is still English-only with no locale mechanism.
+- Wear OS Data Layer, tiles, and complications — the watch app is still
+  fully standalone.

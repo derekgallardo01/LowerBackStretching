@@ -111,11 +111,15 @@ is identical.
 Wave 5 added an optional integration with Health Connect (Google's
 cross-app health data store).
 
-- Dependency: `androidx.health.connect:connect-client` (declared in
-  `libs.versions.toml`). Still pinned to `1.1.0-alpha07`. The old reason
-  for the pin — `1.1.0-rc02` requiring compileSdk 36 and AGP 8.9.1+ — no
-  longer applies: the project is on compileSdk 36 and AGP 8.13.0 as of
-  `05f521b`. The upgrade is now unblocked and just hasn't been done.
+- Dependency: `androidx.health.connect:connect-client` at `1.1.0-rc02`.
+  The old pin to `1.1.0-alpha07` existed because rc02 required compileSdk 36
+  and AGP 8.9.1+; that stopped being true in `05f521b`. Upgrading needed one
+  source change: `ExerciseSessionRecord`'s metadata-less constructor is
+  internal from rc02 onward, so the record now passes
+  `Metadata.activelyRecorded(...)` — the app times the routine live on the
+  device, which is neither a manual entry nor a background auto-record.
+  Dependabot is configured to leave major bumps of this artifact alone for
+  the same reason.
 - Permissions: `health.WRITE_EXERCISE` **only** — the app reads nothing.
   Declared in `AndroidManifest.xml` and gated behind a user toggle in
   Settings → Health Connect. `health.READ_STEPS` and the step-driven
@@ -141,7 +145,13 @@ We use `AlarmManager.setRepeating` for the daily reminder. Android no longer
 guarantees exact timing for inexact alarms; if you want stricter timing on
 modern OS versions, swap to `WorkManager`'s periodic work request with a
 scheduled `OneTimeWorkRequest` chain — the API in `ReminderScheduler` is
-isolated so the call sites won't change.
+isolated so the call sites won't change. Note that the WorkManager dependency
+was removed (it had been declared for years without a single `Worker`), so
+that swap means re-adding `androidx.work:work-runtime-ktx` first.
+
+Both receivers dispatch to `Dispatchers.IO` and hold the broadcast open with
+`goAsync()`. `goAsync()` alone is not enough — it extends the receiver's
+lifetime but does not move work off the main thread.
 
 ## Tests
 

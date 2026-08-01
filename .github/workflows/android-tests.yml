@@ -67,11 +67,16 @@ jobs:
       - name: Run :wear unit tests
         run: bash "$GITHUB_WORKSPACE/.github/scripts/gradle-with-diag.sh" /tmp/wear.log :wear:testDebugUnitTest
 
-      # ktlint. Runs against a baseline (see each module's build.gradle.kts), so
-      # this gates newly written or edited code without demanding a repo-wide
-      # reformat first.
+      # ktlint. No baseline — the codebase is formatted, so any deviation here
+      # is newly introduced.
       - name: Check formatting (ktlint)
         run: bash "$GITHUB_WORKSPACE/.github/scripts/gradle-with-diag.sh" /tmp/ktlint.log ktlintCheck
+
+      # Coverage. Only :core is gated (80% instruction, currently ~86%); it
+      # holds the pure logic worth enforcing a bound on. :app reports without
+      # a threshold — see the reasoning in app/build.gradle.kts.
+      - name: Check coverage (:core)
+        run: bash "$GITHUB_WORKSPACE/.github/scripts/gradle-with-diag.sh" /tmp/kover.log :core:koverVerify :core:koverXmlReport
 
       # Android Lint. Configured in app/build.gradle.kts with abortOnError, so
       # any Lint *error* fails the build. Catches the accessibility, permission,

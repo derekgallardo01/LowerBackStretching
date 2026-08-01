@@ -96,41 +96,19 @@ keyAlias=upload
 keyPassword=YOUR_STRONG_PASSWORD
 ```
 
-Add the signing block to `android/app/build.gradle.kts`:
+**The signing block already exists** in both `android/app/build.gradle.kts`
+and `android/wear/build.gradle.kts` — you only need to create the properties
+file. Both read `rootProject.file("../keystore.properties")`, and since Gradle's
+root project is `android/`, that resolves to the **repo root**.
 
-```kotlin
-import java.util.Properties
-import java.io.FileInputStream
+If the file is absent the signing config is skipped *silently* and you get an
+unsigned bundle, which Play rejects at upload. That is how `111568a` happened.
+The release workflow (§10b) checks for a signature block explicitly so this
+fails in CI instead.
 
-android {
-    // ... existing config ...
-
-    signingConfigs {
-        create("release") {
-            val keystoreProperties = Properties()
-            val keystorePropertiesFile = rootProject.file("keystore.properties")
-            if (keystorePropertiesFile.exists()) {
-                keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-                storeFile = file(keystoreProperties["storeFile"] as String)
-                storePassword = keystoreProperties["storePassword"] as String
-                keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["keyPassword"] as String
-            }
-        }
-    }
-
-    buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = false        // turn on once you've audited Proguard
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-}
-```
+Release builds run R8 with resource shrinking (`isMinifyEnabled = true`,
+`isShrinkResources = true`). Keep the generated `mapping.txt` for every
+release you publish — without it, Play Console crash reports are unreadable.
 
 **Important:** add `keystore.properties` and `*.jks` to `.gitignore` if they're not already there — never commit either.
 
@@ -147,13 +125,22 @@ cd android
 
 Output: `android/app/build/outputs/bundle/release/app-release.aab`
 
-Verify it's signed:
+The wear module ships in the same release, so build both:
 
 ```bash
-"$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs --verbose app/build/outputs/bundle/release/app-release.aab
+./gradlew :app:bundleRelease :wear:bundleRelease
 ```
 
-(Or use Android Studio: **Build → Generate Signed Bundle / APK → Android App Bundle**, point at your keystore.)
+Verify each is signed:
+
+```bash
+"$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs --verbose   app/build/outputs/bundle/release/app-release.aab
+unzip -l app/build/outputs/bundle/release/app-release.aab | grep 'META-INF/.*\.RSA'
+```
+
+**Prefer the automated path in §10b** — push a `v*` tag and CI does the build,
+the signature check, and artifact retention (including `mapping.txt`) for you.
+These manual steps are the fallback.
 
 ---
 
@@ -357,6 +344,48 @@ In Play Console under "App content," fill all of these:
 | **Financial features** | No |
 | **Health features** | Yes — Health Connect **write only** (`WRITE_EXERCISE`), optional/opt-in |
 | **Tax category** | Service (Health & Fitness) |
+
+---
+
+## 10b. Building the AAB (automated)
+
+`.github/workflows/android-release.yml` builds signed bundles for both modules
+so the build/sign step isn't done by hand under deadline pressure — commit
+`111568a` shipped an unsigned wear AAB that Play rejected, which is exactly
+what this prevents.
+
+**One-time setup.** Add four repository secrets (Settings → Secrets and
+variables → Actions):
+
+| Secret | Value |
+|---|---|
+| `UPLOAD_KEYSTORE_BASE64` | `base64 -w0 upload-keystore.jks` |
+| `UPLOAD_KEYSTORE_PASSWORD` | `storePassword` from `keystore.properties` |
+| `UPLOAD_KEY_ALIAS` | `keyAlias` |
+| `UPLOAD_KEY_PASSWORD` | `keyPassword` |
+
+**Cutting a release.**
+
+```sh
+# bump versionCode / versionName in android/app/build.gradle.kts first
+git tag v1.0.8
+git push origin v1.0.8
+```
+
+The workflow re-runs the full verify set (tests, ktlint, lint, coverage)
+before building, so a tag can't produce an artifact that wouldn't have passed
+CI. It then builds `:app:bundleRelease` and `:wear:bundleRelease`, **verifies
+each AAB actually carries a signature block**, and uploads both bundles plus
+their R8 `mapping.txt` files as run artifacts (90-day retention). Keep the
+mapping files — without them, Play Console crash reports are unreadable now
+that R8 is enabled.
+
+Signing material is reconstructed on the runner and deleted in an `always()`
+step, so it never survives the job.
+
+The workflow deliberately does **not** upload to Play. Release notes, staged
+rollout percentage, and the Data Safety review in §9 stay a human decision.
+Use `workflow_dispatch` with `skip_signing` for an unsigned dry run.
 
 ---
 

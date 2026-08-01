@@ -6,6 +6,8 @@ import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.ExerciseSessionRecord
+import androidx.health.connect.client.records.metadata.Device
+import androidx.health.connect.client.records.metadata.Metadata
 import com.lowerbackstretching.R
 import java.time.Instant
 
@@ -84,6 +86,14 @@ class HealthController(
                         endZoneOffset = null,
                         exerciseType = ExerciseSessionRecord.EXERCISE_TYPE_STRETCHING,
                         title = context.getString(R.string.health_session_title),
+                        // Required from connect-client 1.1.0-rc02 — the
+                        // metadata-less constructor is internal there. The app
+                        // times the routine live on this device while the user
+                        // performs it, so this is actively recorded rather than
+                        // a manual entry or a background auto-record.
+                        metadata = Metadata.activelyRecorded(
+                            device = Device(type = Device.TYPE_PHONE),
+                        ),
                     ),
                 ),
             )

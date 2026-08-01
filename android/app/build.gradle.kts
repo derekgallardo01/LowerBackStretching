@@ -3,6 +3,7 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
+    alias(libs.plugins.kover)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -149,7 +150,6 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.health.connect.client)
     implementation(libs.zxing.core)
@@ -183,5 +183,25 @@ ktlint {
     filter {
         // Generated sources are not ours to format.
         exclude { it.file.path.contains("${File.separator}build${File.separator}") }
+    }
+}
+
+// Coverage is reported for :app but not gated. Most of what is left here is
+// Compose UI and Android framework glue, which JVM unit tests can't reach —
+// a threshold would measure how much untestable code exists rather than how
+// well the testable parts are covered. :core is where the bound lives.
+kover {
+    reports {
+        filters {
+            excludes {
+                // Generated, and Compose UI that only the instrumented suite exercises.
+                classes(
+                    "*.BuildConfig",
+                    "*ComposableSingletons*",
+                    "*_Factory*",
+                    "com.lowerbackstretching.ui.theme.*",
+                )
+            }
+        }
     }
 }
