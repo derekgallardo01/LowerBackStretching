@@ -9,8 +9,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 
-class SessionRepository(private val dao: SessionDao) {
-
+class SessionRepository(
+    private val dao: SessionDao,
+) {
     fun completedDays(): Flow<Set<LocalDate>> =
         dao.completedDays().map { list -> list.map { LocalDate.ofEpochDay(it) }.toSet() }
 
@@ -22,10 +23,13 @@ class SessionRepository(private val dao: SessionDao) {
 
     fun totalDurationSeconds(): Flow<Int> = dao.totalDurationSeconds().map { it ?: 0 }
 
-    fun recent(limit: Int = 20): Flow<List<SessionEntity>> =
-        dao.recent(limit)
+    fun recent(limit: Int = 20): Flow<List<SessionEntity>> = dao.recent(limit)
 
-    suspend fun recordCompletion(programId: String, day: Int, durationSeconds: Int): Long {
+    suspend fun recordCompletion(
+        programId: String,
+        day: Int,
+        durationSeconds: Int,
+    ): Long {
         val now = System.currentTimeMillis()
         return dao.insert(
             SessionEntity(
@@ -35,7 +39,7 @@ class SessionRepository(private val dao: SessionDao) {
                 completedAtEpochMillis = now,
                 durationSeconds = durationSeconds,
                 type = SyntheticProgramId.typeFor(programId).storageValue,
-            )
+            ),
         )
     }
 }

@@ -7,13 +7,17 @@ import android.content.Intent
 import java.util.Calendar
 
 object ReminderScheduler {
-
     private const val REQUEST_CODE = 1001
     private const val STREAK_NUDGE_REQUEST_CODE = 1002
+
     /** Evening hour at which we check whether the user's streak is about to break. */
     const val STREAK_NUDGE_HOUR = 20
 
-    fun schedule(context: Context, hour: Int, minute: Int) {
+    fun schedule(
+        context: Context,
+        hour: Int,
+        minute: Int,
+    ) {
         val alarmManager = context.getSystemService(AlarmManager::class.java)
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
@@ -85,7 +89,11 @@ object ReminderScheduler {
  * occurrence one day later. Pure — extracted from [ReminderScheduler] for
  * unit testing.
  */
-internal fun nextOccurrence(hour: Int, minute: Int, now: Calendar): Long {
+internal fun nextOccurrence(
+    hour: Int,
+    minute: Int,
+    now: Calendar,
+): Long {
     val target = (now.clone() as Calendar).apply {
         set(Calendar.HOUR_OF_DAY, hour)
         set(Calendar.MINUTE, minute)

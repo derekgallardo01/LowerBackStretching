@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class SettingsTest {
-
     @Test
     fun themeMode_fromStorage_round_trips_every_value() {
         for (mode in ThemeMode.entries) {

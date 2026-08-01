@@ -11,12 +11,14 @@ import android.os.VibratorManager
  * pass the user's preference for the relevant event before calling.
  */
 object Haptics {
-
     fun short(context: Context) = vibrate(context, durationMillis = 30)
 
     fun finish(context: Context) = vibrate(context, durationMillis = 120)
 
-    private fun vibrate(context: Context, durationMillis: Long) {
+    private fun vibrate(
+        context: Context,
+        durationMillis: Long,
+    ) {
         val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator
         } else {
@@ -25,7 +27,7 @@ object Haptics {
         } ?: return
         if (!vibrator.hasVibrator()) return
         vibrator.vibrate(
-            VibrationEffect.createOneShot(durationMillis, VibrationEffect.DEFAULT_AMPLITUDE)
+            VibrationEffect.createOneShot(durationMillis, VibrationEffect.DEFAULT_AMPLITUDE),
         )
     }
 }

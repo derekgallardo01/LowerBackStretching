@@ -10,12 +10,13 @@ import kotlinx.serialization.json.Json
  * — it ships a small hardcoded routine instead so it works standalone.
  */
 object WatchContent {
-
     private val json = Json { ignoreUnknownKeys = true }
 
     fun loadRoutine(context: Context): WatchRoutine {
-        val text = context.assets.open("watch_routine.json")
-            .bufferedReader().use { it.readText() }
+        val text = context.assets
+            .open("watch_routine.json")
+            .bufferedReader()
+            .use { it.readText() }
         return json.decodeFromString(text)
     }
 }

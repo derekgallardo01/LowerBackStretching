@@ -49,7 +49,11 @@ internal fun LatestPainCard(latest: PainLogEntity) {
 }
 
 @Composable
-internal fun SessionDeltaRow(delta: SessionPainDelta, recordedAtEpochMillis: Long, locationTag: String?) {
+internal fun SessionDeltaRow(
+    delta: SessionPainDelta,
+    recordedAtEpochMillis: Long,
+    locationTag: String?,
+) {
     Card(shape = RoundedCornerShape(12.dp)) {
         Column(Modifier.padding(12.dp)) {
             Text(formatTime(recordedAtEpochMillis), style = MaterialTheme.typography.titleSmall)
@@ -74,8 +78,11 @@ internal fun SessionDeltaRow(delta: SessionPainDelta, recordedAtEpochMillis: Lon
                         }
                     },
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (d != null && d < 0) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurface,
+                    color = if (d != null && d < 0) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
                 )
             }
         }
@@ -107,11 +114,12 @@ internal fun PainHistoryRow(entry: PainLogEntity) {
     }
 }
 
-private fun String.label(): String = when (this) {
-    PainContext.PRE_SESSION -> "Before session"
-    PainContext.POST_SESSION -> "After session"
-    else -> this
-}
+private fun String.label(): String =
+    when (this) {
+        PainContext.PRE_SESSION -> "Before session"
+        PainContext.POST_SESSION -> "After session"
+        else -> this
+    }
 
 private fun displayName(bodyPartTag: String): String =
     BodyZone.entries.firstOrNull { it.bodyPartTag == bodyPartTag }?.displayName

@@ -38,7 +38,6 @@ class PlayerEngine<T : Timed>(
     initialStretches: List<T>,
     startIndex: Int = 0,
 ) {
-
     data class Snapshot<S : Timed>(
         val stretches: List<S>,
         val index: Int,
@@ -50,8 +49,11 @@ class PlayerEngine<T : Timed>(
 
         val progress: Float
             get() = current?.let {
-                if (it.durationSeconds == 0) 0f
-                else (it.durationSeconds - remainingSeconds).toFloat() / it.durationSeconds
+                if (it.durationSeconds == 0) {
+                    0f
+                } else {
+                    (it.durationSeconds - remainingSeconds).toFloat() / it.durationSeconds
+                }
             } ?: 0f
 
         /**
@@ -71,7 +73,9 @@ class PlayerEngine<T : Timed>(
     }
 
     /** Emitted exactly once when the routine completes. */
-    data class FinishedEvent(val totalDurationSeconds: Int)
+    data class FinishedEvent(
+        val totalDurationSeconds: Int,
+    )
 
     private val safeStartIndex = startIndex.coerceIn(0, (initialStretches.size - 1).coerceAtLeast(0))
 
@@ -82,7 +86,7 @@ class PlayerEngine<T : Timed>(
             remainingSeconds = initialStretches.getOrNull(safeStartIndex)?.durationSeconds ?: 0,
             running = initialStretches.isNotEmpty(),
             finished = initialStretches.isEmpty(),
-        )
+        ),
     )
     val state: StateFlow<Snapshot<T>> = _state.asStateFlow()
 

@@ -6,8 +6,9 @@ import com.lowerbackstretching.core.model.Program
 import com.lowerbackstretching.core.model.Stretch
 import kotlinx.serialization.json.Json
 
-class ContentRepository(private val context: Context) {
-
+class ContentRepository(
+    private val context: Context,
+) {
     private val json = Json { ignoreUnknownKeys = true }
 
     val stretches: List<Stretch> by lazy { loadList("stretches.json") }
@@ -18,18 +19,24 @@ class ContentRepository(private val context: Context) {
     private val programById: Map<String, Program> by lazy { programs.associateBy { it.id } }
 
     fun stretch(id: String): Stretch? = stretchById[id]
+
     fun program(id: String): Program? = programById[id]
 
-    fun stretchesFor(program: Program, day: Int): List<Stretch> {
+    fun stretchesFor(
+        program: Program,
+        day: Int,
+    ): List<Stretch> {
         val d = program.days.firstOrNull { it.day == day } ?: return emptyList()
         return d.stretchIds.mapNotNull { stretchById[it] }
     }
 
-    fun totalDurationSeconds(stretchIds: List<String>): Int =
-        stretchIds.sumOf { stretchById[it]?.durationSeconds ?: 0 }
+    fun totalDurationSeconds(stretchIds: List<String>): Int = stretchIds.sumOf { stretchById[it]?.durationSeconds ?: 0 }
 
     private inline fun <reified T> loadList(filename: String): List<T> {
-        val text = context.assets.open(filename).bufferedReader().use { it.readText() }
+        val text = context.assets
+            .open(filename)
+            .bufferedReader()
+            .use { it.readText() }
         return json.decodeFromString(text)
     }
 }

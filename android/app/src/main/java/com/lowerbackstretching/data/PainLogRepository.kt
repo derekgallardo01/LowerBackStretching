@@ -6,13 +6,17 @@ import com.lowerbackstretching.data.db.PainLogEntity
 import kotlinx.coroutines.flow.Flow
 import java.time.ZoneId
 
-class PainLogRepository(private val dao: PainLogDao) {
-
+class PainLogRepository(
+    private val dao: PainLogDao,
+) {
     fun all(): Flow<List<PainLogEntity>> = dao.all()
 
     fun latest(): Flow<PainLogEntity?> = dao.latest()
 
-    suspend fun recordPre(painLevel: Int, bodyLocationTag: String?): Long =
+    suspend fun recordPre(
+        painLevel: Int,
+        bodyLocationTag: String?,
+    ): Long =
         dao.insert(
             PainLogEntity(
                 recordedAtEpochMillis = System.currentTimeMillis(),
@@ -20,10 +24,14 @@ class PainLogRepository(private val dao: PainLogDao) {
                 bodyLocationTag = bodyLocationTag,
                 context = PainContext.PRE_SESSION,
                 sessionId = null,
-            )
+            ),
         )
 
-    suspend fun recordPost(painLevel: Int, bodyLocationTag: String?, sessionId: Long): Long =
+    suspend fun recordPost(
+        painLevel: Int,
+        bodyLocationTag: String?,
+        sessionId: Long,
+    ): Long =
         dao.insert(
             PainLogEntity(
                 recordedAtEpochMillis = System.currentTimeMillis(),
@@ -31,7 +39,7 @@ class PainLogRepository(private val dao: PainLogDao) {
                 bodyLocationTag = bodyLocationTag,
                 context = PainContext.POST_SESSION,
                 sessionId = sessionId,
-            )
+            ),
         )
 
     suspend fun delete(log: PainLogEntity) = dao.delete(log)
@@ -46,7 +54,10 @@ class PainLogRepository(private val dao: PainLogDao) {
 
     private fun startOfDayEpochMillis(nowEpochMillis: Long): Long {
         val zone = ZoneId.systemDefault()
-        val today = java.time.Instant.ofEpochMilli(nowEpochMillis).atZone(zone).toLocalDate()
+        val today = java.time.Instant
+            .ofEpochMilli(nowEpochMillis)
+            .atZone(zone)
+            .toLocalDate()
         return today.atStartOfDay(zone).toInstant().toEpochMilli()
     }
 }

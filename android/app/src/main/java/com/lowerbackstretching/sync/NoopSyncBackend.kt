@@ -8,7 +8,9 @@ package com.lowerbackstretching.sync
  */
 class NoopSyncBackend : SyncBackend {
     override suspend fun signedInUid(): String? = null
+
     override suspend fun signInAnonymously(): String? = null
+
     override suspend fun signOut() = Unit
 
     override suspend fun pushSession(

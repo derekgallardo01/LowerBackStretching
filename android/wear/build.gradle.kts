@@ -2,6 +2,7 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
+    alias(libs.plugins.ktlint)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
@@ -43,10 +44,12 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // Matches :app — R8 on so the watch AAB isn't shipping unused code.
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
             if (keystorePropsFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
@@ -85,4 +88,21 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)
+}
+
+// ktlint. The codebase was formatted rather than baselined, so there is no
+// exemption file — `ktlintCheck` runs clean and CI fails on any new deviation.
+// Compose-specific carve-outs (PascalCase composables, multiline-expression
+// wrapping) live in android/.editorconfig with the reasoning.
+ktlint {
+    version.set("1.3.1")
+    android.set(true)
+    ignoreFailures.set(false)
+    reporters {
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
+    }
+    filter {
+        // Generated sources are not ours to format.
+        exclude { it.file.path.contains("${File.separator}build${File.separator}") }
+    }
 }

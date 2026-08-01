@@ -2,8 +2,8 @@ package com.lowerbackstretching.data.db
 
 import android.content.Context
 import androidx.sqlite.db.SupportSQLiteDatabase
-import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.sqlite.db.SupportSQLiteOpenHelper
+import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -26,7 +26,6 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class AppDatabaseMigrationsTest {
-
     private val context: Context get() = ApplicationProvider.getApplicationContext()
     private val dbName = "migration-test.db"
     private lateinit var helper: SupportSQLiteOpenHelper
@@ -44,17 +43,21 @@ class AppDatabaseMigrationsTest {
     private fun openWithSchema(setup: (SupportSQLiteDatabase) -> Unit): SupportSQLiteDatabase {
         val factory = FrameworkSQLiteOpenHelperFactory()
         helper = factory.create(
-            SupportSQLiteOpenHelper.Configuration.builder(context)
+            SupportSQLiteOpenHelper.Configuration
+                .builder(context)
                 .name(dbName)
                 .callback(object : SupportSQLiteOpenHelper.Callback(1) {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         setup(db)
                     }
+
                     override fun onUpgrade(
-                        db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int,
+                        db: SupportSQLiteDatabase,
+                        oldVersion: Int,
+                        newVersion: Int,
                     ) = Unit
                 })
-                .build()
+                .build(),
         )
         return helper.writableDatabase
     }
@@ -71,12 +74,12 @@ class AppDatabaseMigrationsTest {
                   completedAtEpochMillis INTEGER NOT NULL,
                   durationSeconds INTEGER NOT NULL
                 )
-                """.trimIndent()
+                """.trimIndent(),
             )
             v2.execSQL(
                 "INSERT INTO sessions(programId, dayNumber, completedAtEpochDay, " +
                     "completedAtEpochMillis, durationSeconds) " +
-                    "VALUES ('seven-day', 3, 19000, 1640995200000, 180)"
+                    "VALUES ('seven-day', 3, 19000, 1640995200000, 180)",
             )
         }
 
@@ -98,11 +101,11 @@ class AppDatabaseMigrationsTest {
                   stretchIdsCsv TEXT NOT NULL,
                   createdAtEpochMillis INTEGER NOT NULL
                 )
-                """.trimIndent()
+                """.trimIndent(),
             )
             v3.execSQL(
                 "INSERT INTO custom_routines(name, stretchIdsCsv, createdAtEpochMillis) " +
-                    "VALUES ('Morning', 'cat-cow,child-pose', 1640995200000)"
+                    "VALUES ('Morning', 'cat-cow,child-pose', 1640995200000)",
             )
         }
 
@@ -123,7 +126,7 @@ class AppDatabaseMigrationsTest {
         // Should be able to insert + select without error.
         db.execSQL(
             "INSERT INTO program_progress(programId, currentDay, updatedAtEpochMillis) " +
-                "VALUES ('seven-day', 4, 1640995200000)"
+                "VALUES ('seven-day', 4, 1640995200000)",
         )
         db.query("SELECT currentDay FROM program_progress WHERE programId = 'seven-day'").use { c ->
             assertThat(c.moveToFirst()).isTrue()
@@ -138,18 +141,19 @@ class AppDatabaseMigrationsTest {
 
         db.execSQL(
             "INSERT INTO flexibility_tests(recordedAtEpochMillis, sitAndReachCm) " +
-                "VALUES (1640995200000, 12.5)"
+                "VALUES (1640995200000, 12.5)",
         )
-        db.query(
-            "SELECT recordedAtEpochMillis, sitAndReachCm, toeTouchCm, shoulderReachCm " +
-                "FROM flexibility_tests"
-        ).use { c ->
-            assertThat(c.moveToFirst()).isTrue()
-            assertThat(c.getLong(0)).isEqualTo(1640995200000L)
-            assertThat(c.getFloat(1)).isEqualTo(12.5f)
-            assertThat(c.isNull(2)).isTrue()
-            assertThat(c.isNull(3)).isTrue()
-        }
+        db
+            .query(
+                "SELECT recordedAtEpochMillis, sitAndReachCm, toeTouchCm, shoulderReachCm " +
+                    "FROM flexibility_tests",
+            ).use { c ->
+                assertThat(c.moveToFirst()).isTrue()
+                assertThat(c.getLong(0)).isEqualTo(1640995200000L)
+                assertThat(c.getFloat(1)).isEqualTo(12.5f)
+                assertThat(c.isNull(2)).isTrue()
+                assertThat(c.isNull(3)).isTrue()
+            }
     }
 
     @Test fun migration_6_to_7_creates_pain_logs_table_with_indices() {
@@ -161,37 +165,39 @@ class AppDatabaseMigrationsTest {
         db.execSQL(
             "INSERT INTO pain_logs(recordedAtEpochMillis, painLevel, bodyLocationTag, " +
                 "context, sessionId) " +
-                "VALUES (1640995200000, 6, 'lower-back', 'PRE_SESSION', NULL)"
+                "VALUES (1640995200000, 6, 'lower-back', 'PRE_SESSION', NULL)",
         )
         db.execSQL(
             "INSERT INTO pain_logs(recordedAtEpochMillis, painLevel, bodyLocationTag, " +
                 "context, sessionId) " +
-                "VALUES (1640995260000, 3, NULL, 'POST_SESSION', 99)"
+                "VALUES (1640995260000, 3, NULL, 'POST_SESSION', 99)",
         )
-        db.query(
-            "SELECT painLevel, bodyLocationTag, context, sessionId FROM pain_logs " +
-                "ORDER BY recordedAtEpochMillis ASC"
-        ).use { c ->
-            assertThat(c.moveToFirst()).isTrue()
-            assertThat(c.getInt(0)).isEqualTo(6)
-            assertThat(c.getString(1)).isEqualTo("lower-back")
-            assertThat(c.getString(2)).isEqualTo("PRE_SESSION")
-            assertThat(c.isNull(3)).isTrue()
-            assertThat(c.moveToNext()).isTrue()
-            assertThat(c.getInt(0)).isEqualTo(3)
-            assertThat(c.isNull(1)).isTrue()
-            assertThat(c.getString(2)).isEqualTo("POST_SESSION")
-            assertThat(c.getLong(3)).isEqualTo(99L)
-        }
+        db
+            .query(
+                "SELECT painLevel, bodyLocationTag, context, sessionId FROM pain_logs " +
+                    "ORDER BY recordedAtEpochMillis ASC",
+            ).use { c ->
+                assertThat(c.moveToFirst()).isTrue()
+                assertThat(c.getInt(0)).isEqualTo(6)
+                assertThat(c.getString(1)).isEqualTo("lower-back")
+                assertThat(c.getString(2)).isEqualTo("PRE_SESSION")
+                assertThat(c.isNull(3)).isTrue()
+                assertThat(c.moveToNext()).isTrue()
+                assertThat(c.getInt(0)).isEqualTo(3)
+                assertThat(c.isNull(1)).isTrue()
+                assertThat(c.getString(2)).isEqualTo("POST_SESSION")
+                assertThat(c.getLong(3)).isEqualTo(99L)
+            }
 
         // Indices must be present so the hot-path queries don't full-scan.
-        db.query(
-            "SELECT name FROM sqlite_master WHERE type = 'index' AND tbl_name = 'pain_logs'"
-        ).use { c ->
-            val indexNames = mutableListOf<String>()
-            while (c.moveToNext()) indexNames += c.getString(0)
-            assertThat(indexNames).contains("index_pain_logs_recordedAtEpochMillis")
-            assertThat(indexNames).contains("index_pain_logs_sessionId")
-        }
+        db
+            .query(
+                "SELECT name FROM sqlite_master WHERE type = 'index' AND tbl_name = 'pain_logs'",
+            ).use { c ->
+                val indexNames = mutableListOf<String>()
+                while (c.moveToNext()) indexNames += c.getString(0)
+                assertThat(indexNames).contains("index_pain_logs_recordedAtEpochMillis")
+                assertThat(indexNames).contains("index_pain_logs_sessionId")
+            }
     }
 }

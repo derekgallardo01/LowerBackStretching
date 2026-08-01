@@ -14,7 +14,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class SessionRepositoryIntegrationTest {
-
     private lateinit var db: AppDatabase
     private lateinit var repo: SessionRepository
 
@@ -31,34 +30,37 @@ class SessionRepositoryIntegrationTest {
     }
 
     @Test
-    fun recordCompletion_appears_in_count_and_recent() = runBlocking {
-        // Read via the one-shot suspend queries, not the reactive Flows: a
-        // fresh Flow's initial emission is delivered asynchronously by Room's
-        // InvalidationTracker and can race a just-completed write, which made
-        // this assertion flaky on faster emulators.
-        val dao = db.sessionDao()
-        assertThat(dao.countNow()).isEqualTo(0)
+    fun recordCompletion_appears_in_count_and_recent() =
+        runBlocking {
+            // Read via the one-shot suspend queries, not the reactive Flows: a
+            // fresh Flow's initial emission is delivered asynchronously by Room's
+            // InvalidationTracker and can race a just-completed write, which made
+            // this assertion flaky on faster emulators.
+            val dao = db.sessionDao()
+            assertThat(dao.countNow()).isEqualTo(0)
 
-        repo.recordCompletion(programId = "p1", day = 1, durationSeconds = 300)
-        repo.recordCompletion(programId = "p1", day = 2, durationSeconds = 240)
+            repo.recordCompletion(programId = "p1", day = 1, durationSeconds = 300)
+            repo.recordCompletion(programId = "p1", day = 2, durationSeconds = 240)
 
-        assertThat(dao.countNow()).isEqualTo(2)
-        val recent = dao.recentNow(limit = 10)
-        assertThat(recent).hasSize(2)
-        assertThat(recent[0].dayNumber).isEqualTo(2) // most recent first
-    }
-
-    @Test
-    fun streak_is_at_least_one_after_recording_today() = runBlocking {
-        repo.recordCompletion(programId = "p1", day = 1, durationSeconds = 60)
-        // Streak should include today.
-        assertThat(repo.streak().first()).isAtLeast(1)
-    }
+            assertThat(dao.countNow()).isEqualTo(2)
+            val recent = dao.recentNow(limit = 10)
+            assertThat(recent).hasSize(2)
+            assertThat(recent[0].dayNumber).isEqualTo(2) // most recent first
+        }
 
     @Test
-    fun completedDays_includes_todays_date() = runBlocking {
-        repo.recordCompletion(programId = "p1", day = 1, durationSeconds = 60)
-        val days = repo.completedDays().first()
-        assertThat(days).isNotEmpty()
-    }
+    fun streak_is_at_least_one_after_recording_today() =
+        runBlocking {
+            repo.recordCompletion(programId = "p1", day = 1, durationSeconds = 60)
+            // Streak should include today.
+            assertThat(repo.streak().first()).isAtLeast(1)
+        }
+
+    @Test
+    fun completedDays_includes_todays_date() =
+        runBlocking {
+            repo.recordCompletion(programId = "p1", day = 1, durationSeconds = 60)
+            val days = repo.completedDays().first()
+            assertThat(days).isNotEmpty()
+        }
 }

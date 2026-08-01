@@ -25,7 +25,10 @@ import java.util.Date
  */
 
 @Composable
-internal fun LatestCard(latest: FlexibilityTestEntity, delta: FlexibilityDelta) {
+internal fun LatestCard(
+    latest: FlexibilityTestEntity,
+    delta: FlexibilityDelta,
+) {
     Card(shape = RoundedCornerShape(16.dp)) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(formatTime(latest.recordedAtEpochMillis), style = MaterialTheme.typography.titleMedium)
@@ -37,7 +40,11 @@ internal fun LatestCard(latest: FlexibilityTestEntity, delta: FlexibilityDelta) 
 }
 
 @Composable
-private fun MeasurementRow(label: String, value: Float?, delta: Float?) {
+private fun MeasurementRow(
+    label: String,
+    value: Float?,
+    delta: Float?,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -49,8 +56,11 @@ private fun MeasurementRow(label: String, value: Float?, delta: Float?) {
                 if (delta != null) append("   (${formatDelta(delta)} cm)")
             },
             style = MaterialTheme.typography.bodyMedium,
-            color = if ((delta ?: 0f) > 0) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurface,
+            color = if ((delta ?: 0f) > 0) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            },
         )
     }
 }
@@ -75,5 +85,4 @@ internal fun HistoryRow(entry: FlexibilityTestEntity) {
 private fun formatTime(epochMillis: Long): String =
     DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(epochMillis))
 
-private fun formatDelta(d: Float): String =
-    if (d >= 0) "+%.1f".format(d) else "%.1f".format(d)
+private fun formatDelta(d: Float): String = if (d >= 0) "+%.1f".format(d) else "%.1f".format(d)

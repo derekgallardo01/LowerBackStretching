@@ -16,11 +16,11 @@ enum class MusicTrack(
     NONE("none", null, "None"),
     CALM("calm", "music_calm", "Calm"),
     LOFI("lofi", "music_lofi", "Lofi"),
-    PIANO("piano", "music_piano", "Piano");
+    PIANO("piano", "music_piano", "Piano"),
+    ;
 
     companion object {
-        fun fromStorage(value: String?): MusicTrack =
-            entries.firstOrNull { it.storageValue == value } ?: NONE
+        fun fromStorage(value: String?): MusicTrack = entries.firstOrNull { it.storageValue == value } ?: NONE
     }
 }
 
@@ -32,11 +32,11 @@ enum class AmbientTrack(
     NONE("none", null, "None"),
     RAIN("rain", "ambient_rain", "Rain"),
     FOREST("forest", "ambient_forest", "Forest"),
-    OCEAN("ocean", "ambient_ocean", "Ocean");
+    OCEAN("ocean", "ambient_ocean", "Ocean"),
+    ;
 
     companion object {
-        fun fromStorage(value: String?): AmbientTrack =
-            entries.firstOrNull { it.storageValue == value } ?: NONE
+        fun fromStorage(value: String?): AmbientTrack = entries.firstOrNull { it.storageValue == value } ?: NONE
     }
 }
 
@@ -48,11 +48,11 @@ enum class ChimeTrack(
     NONE("none", null, "None"),
     BELL("bell", "chime_bell", "Bell"),
     DING("ding", "chime_ding", "Ding"),
-    DROP("drop", "chime_drop", "Drop");
+    DROP("drop", "chime_drop", "Drop"),
+    ;
 
     companion object {
-        fun fromStorage(value: String?): ChimeTrack =
-            entries.firstOrNull { it.storageValue == value } ?: NONE
+        fun fromStorage(value: String?): ChimeTrack = entries.firstOrNull { it.storageValue == value } ?: NONE
     }
 }
 

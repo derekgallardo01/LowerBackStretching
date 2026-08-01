@@ -1,0 +1,27 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.{kt,kts}]
+max_line_length = 120
+
+# @Composable functions are PascalCase by Compose convention, which ktlint's
+# function-naming rule reports as a violation on every single one of them.
+ktlint_function_naming_ignore_when_annotated_with = Composable, Test
+
+# Compose builds deep nested trees; ktlint's default multiline-expression and
+# argument-wrapping rules fight that style constantly without improving
+# readability. The rules that catch real problems (spacing, imports, trailing
+# commas, indentation) stay on.
+ktlint_standard_multiline-expression-wrapping = disabled
+ktlint_standard_function-expression-body = disabled
+ktlint_standard_string-template-indent = disabled
+
+[*.{yml,yaml,json,xml}]
+indent_size = 2

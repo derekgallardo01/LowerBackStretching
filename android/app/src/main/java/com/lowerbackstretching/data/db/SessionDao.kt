@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SessionDao {
-
     @Insert
     suspend fun insert(session: SessionEntity): Long
 

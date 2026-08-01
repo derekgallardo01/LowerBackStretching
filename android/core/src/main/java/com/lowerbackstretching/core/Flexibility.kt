@@ -37,5 +37,7 @@ fun flexibilityDelta(
     )
 }
 
-private fun subtractOrNull(a: Float?, b: Float?): Float? =
-    if (a != null && b != null) a - b else null
+private fun subtractOrNull(
+    a: Float?,
+    b: Float?,
+): Float? = if (a != null && b != null) a - b else null

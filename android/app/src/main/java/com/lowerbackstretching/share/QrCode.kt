@@ -15,7 +15,10 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
  * Returns null on encoder failure (shouldn't happen for reasonable
  * payloads).
  */
-fun renderQrBitmap(text: String, sizePx: Int): Bitmap? {
+fun renderQrBitmap(
+    text: String,
+    sizePx: Int,
+): Bitmap? {
     val hints = mapOf(
         EncodeHintType.MARGIN to 1,
         EncodeHintType.ERROR_CORRECTION to ErrorCorrectionLevel.M,

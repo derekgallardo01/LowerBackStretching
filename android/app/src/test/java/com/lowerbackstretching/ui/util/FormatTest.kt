@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class FormatTest {
-
     @Test
     fun zero_padded_hour_and_minute() {
         assertThat(formatTime(8, 0)).isEqualTo("08:00")

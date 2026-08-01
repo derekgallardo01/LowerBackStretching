@@ -47,10 +47,11 @@ jobs:
         with:
           cmdline-tools-version: '11076708'
 
+      # No gradle-version here on purpose: the steps below invoke ./gradlew, so
+      # the version comes from the checked-in wrapper and can't drift from what
+      # developers run locally. This action still provides the dependency cache.
       - name: Set up Gradle (with cache)
         uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '9.0.0'
 
       # The test task implicitly compiles main + test, so any Kotlin
       # compile error surfaces here. The wrapper script tees stdout to
@@ -66,6 +67,24 @@ jobs:
       - name: Run :wear unit tests
         run: bash "$GITHUB_WORKSPACE/.github/scripts/gradle-with-diag.sh" /tmp/wear.log :wear:testDebugUnitTest
 
+      # ktlint. Runs against a baseline (see each module's build.gradle.kts), so
+      # this gates newly written or edited code without demanding a repo-wide
+      # reformat first.
+      - name: Check formatting (ktlint)
+        run: bash "$GITHUB_WORKSPACE/.github/scripts/gradle-with-diag.sh" /tmp/ktlint.log ktlintCheck
+
+      # Android Lint. Configured in app/build.gradle.kts with abortOnError, so
+      # any Lint *error* fails the build. Catches the accessibility, permission,
+      # and API-level problems that nothing else in CI was looking for.
+      - name: Run Android Lint
+        run: bash "$GITHUB_WORKSPACE/.github/scripts/gradle-with-diag.sh" /tmp/lint.log :app:lintDebug :wear:lintRelease
+
+      # Release variant only runs R8 here. Without this, ProGuard-rule breakage
+      # (e.g. a kotlinx.serialization class getting stripped) would not surface
+      # until someone built an AAB by hand for a Play upload.
+      - name: Build release (R8 + resource shrinking)
+        run: bash "$GITHUB_WORKSPACE/.github/scripts/gradle-with-diag.sh" /tmp/release.log :app:assembleRelease :wear:assembleRelease
+
       - name: Upload test reports
         if: failure()
         uses: actions/upload-artifact@v4
@@ -76,6 +95,17 @@ jobs:
             android/app/build/reports/tests/
             android/wear/build/reports/tests/
             /tmp/*.log
+          retention-days: 14
+
+      - name: Upload lint reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-reports
+          path: |
+            android/app/build/reports/lint-results-*.html
+            android/app/build/reports/lint-results-*.sarif
+            android/wear/build/reports/lint-results-*.html
           retention-days: 14
 
   # Instrumented tests need an emulator, which doubles CI time and is

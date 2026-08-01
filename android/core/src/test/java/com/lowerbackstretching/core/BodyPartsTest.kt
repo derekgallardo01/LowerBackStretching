@@ -5,10 +5,17 @@ import com.lowerbackstretching.core.model.Stretch
 import org.junit.Test
 
 class BodyPartsTest {
-
-    private fun stretch(id: String, vararg parts: String) = Stretch(
-        id = id, name = id, bodyParts = parts.toList(),
-        durationSeconds = 30, difficulty = "easy", description = "", youtubeId = "x",
+    private fun stretch(
+        id: String,
+        vararg parts: String,
+    ) = Stretch(
+        id = id,
+        name = id,
+        bodyParts = parts.toList(),
+        durationSeconds = 30,
+        difficulty = "easy",
+        description = "",
+        youtubeId = "x",
     )
 
     @Test
@@ -42,14 +49,16 @@ class BodyPartsTest {
             stretch("c", "lower-back", "hips"),
         )
         assertThat(BodyParts.distinctSorted(stretches))
-            .containsExactly("calves", "hips", "lower-back", "spine").inOrder()
+            .containsExactly("calves", "hips", "lower-back", "spine")
+            .inOrder()
     }
 
     @Test
     fun filterOptions_prepends_ALL() {
         val stretches = listOf(stretch("a", "calves"), stretch("b", "hips"))
         assertThat(BodyParts.filterOptions(stretches))
-            .containsExactly("all", "calves", "hips").inOrder()
+            .containsExactly("all", "calves", "hips")
+            .inOrder()
     }
 
     @Test

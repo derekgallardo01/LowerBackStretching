@@ -5,7 +5,6 @@ import org.junit.Test
 import java.time.LocalDate
 
 class ComputeStreakTest {
-
     private val today = LocalDate.of(2026, 5, 15)
 
     @Test

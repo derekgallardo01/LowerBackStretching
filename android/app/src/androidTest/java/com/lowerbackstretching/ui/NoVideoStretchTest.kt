@@ -24,7 +24,6 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class NoVideoStretchTest {
-
     @get:Rule val rule = createAndroidComposeRule<ComponentActivity>()
 
     private val ctx = InstrumentationRegistry.getInstrumentation().targetContext
@@ -45,8 +44,10 @@ class NoVideoStretchTest {
         }
 
         rule.waitUntil(timeoutMillis = 5_000) {
-            rule.onAllNodesWithText("Follow the description and timer below.")
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithText("Follow the description and timer below.")
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         rule.onNodeWithText("Follow the description and timer below.").assertIsDisplayed()
     }

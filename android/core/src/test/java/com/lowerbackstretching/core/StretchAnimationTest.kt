@@ -7,7 +7,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class StretchAnimationTest {
-
     private val poseA = Pose(
         name = "a",
         joints = mapOf("head" to listOf(0.0, 0.0), "foot" to listOf(0.0, 1.0)),

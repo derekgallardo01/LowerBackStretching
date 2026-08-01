@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!--
+      Lint notes that the -v26 qualifier is redundant now that minSdk is 26 and
+      suggests merging the folder into `mipmap-anydpi`. Doing that breaks the
+      build: AAPT2 fails to link `@mipmap/ic_launcher_foreground` from the
+      adaptive-icon definitions. Keep the qualifier and silence the suggestion
+      for this folder only — the code-level ObsoleteSdkInt checks stay on.
+    -->
+    <issue id="ObsoleteSdkInt">
+        <ignore path="src/main/res/mipmap-anydpi-v26" />
+    </issue>
+</lint>

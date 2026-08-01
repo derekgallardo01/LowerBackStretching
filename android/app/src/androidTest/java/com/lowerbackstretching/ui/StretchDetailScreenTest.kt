@@ -1,7 +1,7 @@
 package com.lowerbackstretching.ui
 
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -15,7 +15,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class StretchDetailScreenTest {
-
     @get:Rule val rule = createAndroidComposeRule<ComponentActivity>()
 
     @Test

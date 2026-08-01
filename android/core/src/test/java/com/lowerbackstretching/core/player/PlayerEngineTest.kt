@@ -9,8 +9,10 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class PlayerEngineTest {
-
-    private fun stretch(id: String, seconds: Int) = Stretch(
+    private fun stretch(
+        id: String,
+        seconds: Int,
+    ) = Stretch(
         id = id,
         name = id,
         bodyParts = listOf("lower-back"),
@@ -174,28 +176,30 @@ class PlayerEngineTest {
     }
 
     @Test
-    fun finishedEvents_emits_once_with_total_duration_via_tick() = runTest {
-        val engine = PlayerEngine(listOf(stretch("a", 2), stretch("b", 3)))
-        // Subscribe BEFORE emitting — the engine's MutableSharedFlow is
-        // replay=0, so emissions that happen with no active collector
-        // are dropped. Production wiring (the ViewModel) starts the
-        // collector before the ticker; the test has to mirror that.
-        val deferred = async { engine.finishedEvents.first() }
-        runCurrent()
-        repeat(5) { engine.tick() }
-        val event = deferred.await()
-        assertThat(event.totalDurationSeconds).isEqualTo(5)
-    }
+    fun finishedEvents_emits_once_with_total_duration_via_tick() =
+        runTest {
+            val engine = PlayerEngine(listOf(stretch("a", 2), stretch("b", 3)))
+            // Subscribe BEFORE emitting — the engine's MutableSharedFlow is
+            // replay=0, so emissions that happen with no active collector
+            // are dropped. Production wiring (the ViewModel) starts the
+            // collector before the ticker; the test has to mirror that.
+            val deferred = async { engine.finishedEvents.first() }
+            runCurrent()
+            repeat(5) { engine.tick() }
+            val event = deferred.await()
+            assertThat(event.totalDurationSeconds).isEqualTo(5)
+        }
 
     @Test
-    fun finishedEvents_emits_via_next() = runTest {
-        val engine = PlayerEngine(listOf(stretch("a", 10)))
-        val deferred = async { engine.finishedEvents.first() }
-        runCurrent()
-        engine.next()
-        val event = deferred.await()
-        assertThat(event.totalDurationSeconds).isEqualTo(10)
-    }
+    fun finishedEvents_emits_via_next() =
+        runTest {
+            val engine = PlayerEngine(listOf(stretch("a", 10)))
+            val deferred = async { engine.finishedEvents.first() }
+            runCurrent()
+            engine.next()
+            val event = deferred.await()
+            assertThat(event.totalDurationSeconds).isEqualTo(10)
+        }
 
     @Test
     fun startIndex_seeks_to_given_stretch() {

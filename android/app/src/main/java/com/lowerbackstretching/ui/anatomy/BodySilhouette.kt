@@ -73,7 +73,10 @@ fun BodySilhouette(
     }
 }
 
-private fun DrawScope.drawBackSilhouette(size: Size, color: Color) {
+private fun DrawScope.drawBackSilhouette(
+    size: Size,
+    color: Color,
+) {
     val w = size.width
     val h = size.height
     // Head — circle near the top.
@@ -119,7 +122,11 @@ private fun DrawScope.drawBackSilhouette(size: Size, color: Color) {
     drawPath(rightLeg, color)
 }
 
-private fun DrawScope.drawZoneFill(zone: BodyZone, size: Size, color: Color) {
+private fun DrawScope.drawZoneFill(
+    zone: BodyZone,
+    size: Size,
+    color: Color,
+) {
     val r = zone.rect
     drawRoundedBlock(
         color = color,
@@ -133,7 +140,11 @@ private fun DrawScope.drawZoneFill(zone: BodyZone, size: Size, color: Color) {
 
 private fun DrawScope.drawRoundedBlock(
     color: Color,
-    x: Float, y: Float, w: Float, h: Float, corner: Float,
+    x: Float,
+    y: Float,
+    w: Float,
+    h: Float,
+    corner: Float,
 ) {
     drawRoundRect(
         color = color,

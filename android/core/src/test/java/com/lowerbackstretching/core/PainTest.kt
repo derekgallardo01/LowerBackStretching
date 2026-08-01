@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class PainTest {
-
     private data class Log(
         override val recordedAtEpochMillis: Long,
         override val painLevel: Int,

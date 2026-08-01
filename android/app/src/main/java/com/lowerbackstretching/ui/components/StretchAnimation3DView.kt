@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -140,11 +139,12 @@ private fun DrawScope.drawMannequin(
     val headRadius = size.minDimension * 0.06f
 
     // Z-sort bones so far ones draw first.
-    val bones = SKELETON_BONES.mapNotNull { (a, b) ->
-        val pa = projected[a] ?: return@mapNotNull null
-        val pb = projected[b] ?: return@mapNotNull null
-        Triple(pa, pb, (pa.depth + pb.depth) / 2f)
-    }.sortedByDescending { it.third }
+    val bones = SKELETON_BONES
+        .mapNotNull { (a, b) ->
+            val pa = projected[a] ?: return@mapNotNull null
+            val pb = projected[b] ?: return@mapNotNull null
+            Triple(pa, pb, (pa.depth + pb.depth) / 2f)
+        }.sortedByDescending { it.third }
 
     for ((pa, pb, _) in bones) {
         val avgScale = (pa.scale + pb.scale) / 2f
@@ -193,7 +193,11 @@ private data class ProjectedJoint(
     val scale: Float,
 )
 
-private fun lerpColor(a: Color, b: Color, t: Float): Color {
+private fun lerpColor(
+    a: Color,
+    b: Color,
+    t: Float,
+): Color {
     val s = t.coerceIn(0f, 1f)
     return Color(
         red = a.red + (b.red - a.red) * s,
@@ -202,4 +206,3 @@ private fun lerpColor(a: Color, b: Color, t: Float): Color {
         alpha = a.alpha + (b.alpha - a.alpha) * s,
     )
 }
-

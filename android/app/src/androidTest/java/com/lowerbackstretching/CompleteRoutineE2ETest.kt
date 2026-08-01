@@ -28,7 +28,6 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class CompleteRoutineE2ETest {
-
     @get:Rule(order = 0)
     val permissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)
@@ -39,13 +38,14 @@ class CompleteRoutineE2ETest {
     private val ctx = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Before
-    fun reset() = runBlocking {
-        val app = ctx.applicationContext as App
-        app.database.clearAllTables()
-        val prefs = Prefs(ctx)
-        prefs.resetForTests()
-        prefs.markOnboardingDone()
-    }
+    fun reset() =
+        runBlocking {
+            val app = ctx.applicationContext as App
+            app.database.clearAllTables()
+            val prefs = Prefs(ctx)
+            prefs.resetForTests()
+            prefs.markOnboardingDone()
+        }
 
     @Test
     fun complete_daily_5min_routine_shows_rewards_then_lands_in_calendar() {
@@ -64,8 +64,10 @@ class CompleteRoutineE2ETest {
         // ProgramDetail shows "Day 1 · Daily Routine" with a " · Today" suffix on
         // the current day — match by substring so either rendering works.
         rule.waitUntil(timeoutMillis = 5_000) {
-            rule.onAllNodesWithText("Daily Routine", substring = true)
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithText("Daily Routine", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         rule.onNodeWithText("Daily Routine", substring = true).performClick()
 
@@ -79,13 +81,17 @@ class CompleteRoutineE2ETest {
         // Player loads with 4 stretches. The skip-ahead control is a simple
         // tap now ("Next stretch") — no hold gesture.
         rule.waitUntil(timeoutMillis = 10_000) {
-            rule.onAllNodesWithContentDescription("Next stretch")
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithContentDescription("Next stretch")
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         val stretchCount = 4
         rule.waitUntil(timeoutMillis = 10_000) {
-            rule.onAllNodesWithText("Stretch 1 of $stretchCount")
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithText("Stretch 1 of $stretchCount")
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         for (i in 1..stretchCount) {
             rule.onNodeWithContentDescription("Next stretch").performClick()

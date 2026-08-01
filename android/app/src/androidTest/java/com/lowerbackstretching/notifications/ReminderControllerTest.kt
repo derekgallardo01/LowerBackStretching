@@ -19,7 +19,6 @@ import java.io.File
  */
 @RunWith(AndroidJUnit4::class)
 class ReminderControllerTest {
-
     private val ctx = InstrumentationRegistry.getInstrumentation().targetContext
     private val prefs = Prefs(ctx)
 
@@ -29,18 +28,20 @@ class ReminderControllerTest {
     }
 
     @Test
-    fun applyReminder_enabled_persists_all_fields() = runBlocking {
-        prefs.applyReminder(ctx, enabled = true, hour = 9, minute = 15)
-        assertThat(prefs.reminderEnabled.first()).isTrue()
-        assertThat(prefs.reminderHour.first()).isEqualTo(9)
-        assertThat(prefs.reminderMinute.first()).isEqualTo(15)
-    }
+    fun applyReminder_enabled_persists_all_fields() =
+        runBlocking {
+            prefs.applyReminder(ctx, enabled = true, hour = 9, minute = 15)
+            assertThat(prefs.reminderEnabled.first()).isTrue()
+            assertThat(prefs.reminderHour.first()).isEqualTo(9)
+            assertThat(prefs.reminderMinute.first()).isEqualTo(15)
+        }
 
     @Test
-    fun applyReminder_disabled_persists_time_but_disables() = runBlocking {
-        prefs.applyReminder(ctx, enabled = true, hour = 9, minute = 15)
-        prefs.applyReminder(ctx, enabled = false, hour = 9, minute = 15)
-        assertThat(prefs.reminderEnabled.first()).isFalse()
-        assertThat(prefs.reminderHour.first()).isEqualTo(9)
-    }
+    fun applyReminder_disabled_persists_time_but_disables() =
+        runBlocking {
+            prefs.applyReminder(ctx, enabled = true, hour = 9, minute = 15)
+            prefs.applyReminder(ctx, enabled = false, hour = 9, minute = 15)
+            assertThat(prefs.reminderEnabled.first()).isFalse()
+            assertThat(prefs.reminderHour.first()).isEqualTo(9)
+        }
 }

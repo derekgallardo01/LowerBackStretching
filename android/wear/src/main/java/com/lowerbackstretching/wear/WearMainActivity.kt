@@ -16,7 +16,6 @@ import com.lowerbackstretching.wear.ui.WearPlayerScreen
  * Quick lower-back routine.
  */
 class WearMainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -24,7 +23,7 @@ class WearMainActivity : ComponentActivity() {
                 androidx.compose.foundation.layout.Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black)
+                        .background(Color.Black),
                 ) {
                     WearPlayerScreen()
                 }

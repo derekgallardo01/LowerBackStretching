@@ -4,7 +4,7 @@ import com.lowerbackstretching.core.model.Pose
 import com.lowerbackstretching.core.model.StretchAnimationSpec
 import kotlin.math.cos
 
-/**
+/*
  * Pure-math support for the looping stick-figure animation. UI modules
  * call [interpolatedPose] every frame and translate the result into
  * platform-specific drawing primitives.
@@ -34,7 +34,10 @@ val SKELETON_BONES: List<Pair<String, String>> = listOf(
 
 /** Maps elapsed wall-clock seconds onto the half-open range `[0, poseCount)`,
  *  advancing through the full loop once every [StretchAnimationSpec.loopSeconds]. */
-fun tValueForElapsed(elapsedSeconds: Double, spec: StretchAnimationSpec): Float {
+fun tValueForElapsed(
+    elapsedSeconds: Double,
+    spec: StretchAnimationSpec,
+): Float {
     if (spec.poses.isEmpty()) return 0f
     val loop = if (spec.loopSeconds > 0) spec.loopSeconds else 1.0
     val phase = ((elapsedSeconds % loop) + loop) % loop / loop
@@ -50,7 +53,10 @@ fun tValueForElapsed(elapsedSeconds: Double, spec: StretchAnimationSpec): Float 
  * which reads as natural breath-paced motion. Joint names present in the
  * first pose but missing in the next are held in place.
  */
-fun interpolatedPose(poses: List<Pose>, t: Float): Map<String, Pair<Float, Float>> {
+fun interpolatedPose(
+    poses: List<Pose>,
+    t: Float,
+): Map<String, Pair<Float, Float>> {
     if (poses.isEmpty()) return emptyMap()
     val n = poses.size
     val wrapped = ((t.toDouble() % n) + n) % n
@@ -73,4 +79,8 @@ fun interpolatedPose(poses: List<Pose>, t: Float): Map<String, Pair<Float, Float
     return out
 }
 
-private fun lerp(a: Float, b: Float, t: Float): Float = a + (b - a) * t
+private fun lerp(
+    a: Float,
+    b: Float,
+    t: Float,
+): Float = a + (b - a) * t

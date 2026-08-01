@@ -4,22 +4,30 @@ import com.lowerbackstretching.data.db.CustomRoutineDao
 import com.lowerbackstretching.data.db.CustomRoutineEntity
 import kotlinx.coroutines.flow.Flow
 
-class CustomRoutineRepository(private val dao: CustomRoutineDao) {
-
+class CustomRoutineRepository(
+    private val dao: CustomRoutineDao,
+) {
     fun all(): Flow<List<CustomRoutineEntity>> = dao.all()
 
     suspend fun byId(id: Long): CustomRoutineEntity? = dao.byId(id)
 
-    suspend fun create(name: String, stretchIds: List<String>): Long =
+    suspend fun create(
+        name: String,
+        stretchIds: List<String>,
+    ): Long =
         dao.insert(
             CustomRoutineEntity(
                 name = name.trim(),
                 stretchIdsCsv = stretchIds.joinToString(","),
                 createdAtEpochMillis = System.currentTimeMillis(),
-            )
+            ),
         )
 
-    suspend fun update(routine: CustomRoutineEntity, name: String, stretchIds: List<String>) {
+    suspend fun update(
+        routine: CustomRoutineEntity,
+        name: String,
+        stretchIds: List<String>,
+    ) {
         dao.update(routine.copy(name = name.trim(), stretchIdsCsv = stretchIds.joinToString(",")))
     }
 
@@ -34,7 +42,7 @@ class CustomRoutineRepository(private val dao: CustomRoutineDao) {
                 createdAtEpochMillis = System.currentTimeMillis(),
                 displayOrder = 0,
                 deletedAtEpochMillis = null,
-            )
+            ),
         )
 
     /**

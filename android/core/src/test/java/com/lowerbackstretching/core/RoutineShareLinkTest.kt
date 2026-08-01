@@ -4,12 +4,11 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class RoutineShareLinkTest {
-
     @Test fun `build then parse round-trips`() {
         val link = buildRoutineLink("Morning Routine", listOf("cat-cow", "child-pose", "knee-to-chest"))
         val parsed = parseRoutineLink(link)
         assertThat(parsed).isEqualTo(
-            SharedRoutine("Morning Routine", listOf("cat-cow", "child-pose", "knee-to-chest"))
+            SharedRoutine("Morning Routine", listOf("cat-cow", "child-pose", "knee-to-chest")),
         )
     }
 

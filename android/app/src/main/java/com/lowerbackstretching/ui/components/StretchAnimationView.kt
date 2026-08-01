@@ -1,7 +1,6 @@
 package com.lowerbackstretching.ui.components
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -42,6 +41,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.lowerbackstretching.core.SKELETON_BONES
 import com.lowerbackstretching.core.interpolatedPose
 import com.lowerbackstretching.core.model.StretchAnimationSpec
@@ -111,7 +111,10 @@ private fun AnimatedFigure(
     }
 }
 
-private fun DrawScope.drawFigure(joints: Map<String, Pair<Float, Float>>, color: Color) {
+private fun DrawScope.drawFigure(
+    joints: Map<String, Pair<Float, Float>>,
+    color: Color,
+) {
     val w = size.width
     val h = size.height
     val strokeWidth = (size.minDimension * 0.018f).coerceAtLeast(3f)
@@ -179,7 +182,7 @@ private fun WatchOnYouTubeChip(
             onClick = {
                 val intent = Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://www.youtube.com/watch?v=$youtubeId"),
+                    "https://www.youtube.com/watch?v=$youtubeId".toUri(),
                 ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
             },
