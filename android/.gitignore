@@ -7,4 +7,8 @@ build/
 captures/
 .externalNativeBuild/
 .cxx/
-gradle/wrapper/gradle-wrapper.jar
+
+# gradle/wrapper/gradle-wrapper.jar is deliberately NOT ignored. Gradle's own
+# guidance is to commit it — without it `./gradlew` cannot run, which is the
+# whole point of a wrapper. CI verifies its checksum via
+# gradle/actions/wrapper-validation.

@@ -9,9 +9,15 @@ Kotlin + Jetpack Compose. Targets Android 8.0 (API 26) and up.
    sync Gradle.
 3. Plug in a device with USB debugging enabled (or start an emulator) and Run.
 
-The Gradle wrapper is checked in (`gradlew`, `gradlew.bat`,
-`gradle/wrapper/`) and pins Gradle 9.0.0 — use `./gradlew` rather than a
-system `gradle` so local builds match CI.
+The Gradle wrapper is checked in — `gradlew`, `gradlew.bat`, and
+`gradle/wrapper/` including `gradle-wrapper.jar` — and pins Gradle 9.0.0.
+Use `./gradlew` rather than a system `gradle` so local builds match CI.
+
+The jar used to be gitignored, which meant `./gradlew` only worked for people
+who happened to have it locally; CI fell back to a system `gradle` and could
+silently run a different Gradle version. It is now committed, per Gradle's own
+guidance, and CI verifies its checksum with `gradle/actions/wrapper-validation`
+before executing it.
 
 ## Build from CLI
 
