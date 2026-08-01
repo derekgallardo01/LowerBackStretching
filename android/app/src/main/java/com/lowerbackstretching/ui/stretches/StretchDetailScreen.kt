@@ -27,8 +27,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.BodyParts
 import com.lowerbackstretching.core.DurationUnit
 import com.lowerbackstretching.core.formatDuration
@@ -37,7 +39,6 @@ import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.DifficultyDots
 import com.lowerbackstretching.ui.components.SectionHeader
 import com.lowerbackstretching.ui.components.StretchAnimationView
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,11 +57,14 @@ fun StretchDetailScreen(
                 title = { Text(stretch.name) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
-        }
+        },
     ) { inner ->
         Column(
             modifier = Modifier
@@ -110,7 +114,7 @@ fun StretchDetailScreen(
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
             ) {
                 Icon(Icons.Filled.PlayArrow, contentDescription = null)
-                Text("  Practice this stretch")
+                Text(stringResource(R.string.stretch_practice))
             }
         }
     }
@@ -124,7 +128,7 @@ private fun WhyThisStretchCard(text: String) {
         shape = RoundedCornerShape(16.dp),
     ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text("Why this stretch", style = MaterialTheme.typography.titleSmall)
+            Text(stringResource(R.string.stretch_why), style = MaterialTheme.typography.titleSmall)
             Text(text, style = MaterialTheme.typography.bodyMedium)
         }
     }

@@ -18,11 +18,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.lowerbackstretching.R
 
 /**
  * One-time celebration shown when the user reaches a major streak
@@ -83,17 +85,18 @@ fun MilestoneModal(
                     onClick = onDismiss,
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                 ) {
-                    Text("Continue")
+                    Text(stringResource(R.string.action_continue))
                 }
             }
         }
     }
 }
 
-private fun milestoneBody(days: Int): String = when (days) {
-    7 -> "A whole week of showing up. That's how habits start."
-    30 -> "A month. Your back is genuinely stronger than it was."
-    100 -> "A hundred days. This isn't a phase anymore — it's who you are."
-    365 -> "A full year. Quietly, you became someone who takes care of their back."
-    else -> "Another day, another deposit."
-}
+private fun milestoneBody(days: Int): String =
+    when (days) {
+        7 -> "A whole week of showing up. That's how habits start."
+        30 -> "A month. Your back is genuinely stronger than it was."
+        100 -> "A hundred days. This isn't a phase anymore — it's who you are."
+        365 -> "A full year. Quietly, you became someone who takes care of their back."
+        else -> "Another day, another deposit."
+    }

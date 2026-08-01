@@ -6,8 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.SectionHeader
 import kotlinx.coroutines.launch
@@ -24,13 +26,13 @@ fun HapticsCard(vm: AppViewModel = viewModel()) {
             checked = transitions,
             onChange = { scope.launch { vm.prefs.setHapticsTransitions(it) } },
         ) {
-            Text("Stretch transitions", style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(R.string.settings_haptics_transitions), style = MaterialTheme.typography.bodyMedium)
         }
         SettingsToggleRow(
             checked = finish,
             onChange = { scope.launch { vm.prefs.setHapticsFinish(it) } },
         ) {
-            Text("Routine finish", style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(R.string.settings_haptics_finish), style = MaterialTheme.typography.bodyMedium)
         }
     }
 }

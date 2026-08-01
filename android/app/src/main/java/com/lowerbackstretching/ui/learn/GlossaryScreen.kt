@@ -27,24 +27,32 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.model.GlossaryEntry
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.SectionHeader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GlossaryScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
+fun GlossaryScreen(
+    onBack: () -> Unit,
+    vm: AppViewModel = viewModel(),
+) {
     val glossary = remember { vm.content.glossary }
     var query by remember { mutableStateOf("") }
 
     val filtered = remember(query, glossary) {
-        if (query.isBlank()) glossary
-        else glossary.filter {
-            it.term.contains(query, ignoreCase = true)
-                || it.definition.contains(query, ignoreCase = true)
+        if (query.isBlank()) {
+            glossary
+        } else {
+            glossary.filter {
+                it.term.contains(query, ignoreCase = true) ||
+                    it.definition.contains(query, ignoreCase = true)
+            }
         }
     }
     val grouped = remember(filtered) {
@@ -54,14 +62,17 @@ fun GlossaryScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Glossary") },
+                title = { Text(stringResource(R.string.title_glossary)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
-        }
+        },
     ) { inner ->
         LazyColumn(
             modifier = Modifier.padding(inner),
@@ -72,7 +83,7 @@ fun GlossaryScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
                 OutlinedTextField(
                     value = query,
                     onValueChange = { query = it },
-                    label = { Text("Search terms") },
+                    label = { Text(stringResource(R.string.glossary_search)) },
                     leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.None),
                     singleLine = true,

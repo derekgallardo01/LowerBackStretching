@@ -25,9 +25,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.BodyZone
 import com.lowerbackstretching.core.shortSubtitle
 import com.lowerbackstretching.ui.AppViewModel
@@ -46,14 +48,17 @@ fun BodyDiagramScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Tap where it hurts") },
+                title = { Text(stringResource(R.string.title_body_diagram)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
-        }
+        },
     ) { inner ->
         Column(
             modifier = Modifier.padding(inner).padding(16.dp),

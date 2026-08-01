@@ -15,8 +15,10 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.SharedRoutine
 import com.lowerbackstretching.ui.AppViewModel
 import kotlinx.coroutines.launch
@@ -44,24 +46,26 @@ fun ImportRoutineSheet(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Text("Import routine", style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.routine_import_title), style = MaterialTheme.typography.titleLarge)
             Text(routine.name, style = MaterialTheme.typography.titleMedium)
             Text(
-                "${knownIds.size} stretches" + if (unknownCount > 0)
+                "${knownIds.size} stretches" + if (unknownCount > 0) {
                     " (skipped $unknownCount unknown id${if (unknownCount > 1) "s" else ""})"
-                else "",
+                } else {
+                    ""
+                },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             )
             knownIds.mapNotNull { vm.content.stretch(it)?.name }.forEach { name ->
-                Text("• $name", style = MaterialTheme.typography.bodyMedium)
+                Text(stringResource(R.string.routine_bullet_item, name), style = MaterialTheme.typography.bodyMedium)
             }
             Row(
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 TextButton(onClick = onDismiss, modifier = Modifier.weight(1f)) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.action_cancel))
                 }
                 Button(
                     onClick = {
@@ -73,7 +77,7 @@ fun ImportRoutineSheet(
                     enabled = knownIds.isNotEmpty(),
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text("Add to my routines")
+                    Text(stringResource(R.string.routine_import_add))
                 }
             }
         }

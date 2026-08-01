@@ -28,10 +28,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.Achievement
 import com.lowerbackstretching.core.pairSessionPainLogs
 import com.lowerbackstretching.core.sessionPainDelta
@@ -56,13 +58,17 @@ internal fun FinishedView(
     val headline = remember(finishedSession?.sessionId) { CelebrationCopy.pick() }
     val painLogs by appVm.painLog.all().collectAsState(initial = emptyList())
     val painPair = remember(painLogs, finishedSession?.sessionId) {
-        if (finishedSession == null) null
-        else pairSessionPainLogs(painLogs)
-            .firstOrNull { pair ->
-                // The pair's post log is the one for this session.
-                pair.post.recordedAtEpochMillis > 0 &&
-                    (pair.post as? com.lowerbackstretching.data.db.PainLogEntity)?.sessionId == finishedSession.sessionId
-            }
+        if (finishedSession == null) {
+            null
+        } else {
+            pairSessionPainLogs(painLogs)
+                .firstOrNull { pair ->
+                    // The pair's post log is the one for this session.
+                    pair.post.recordedAtEpochMillis > 0 &&
+                        (pair.post as? com.lowerbackstretching.data.db.PainLogEntity)?.sessionId ==
+                        finishedSession.sessionId
+                }
+        }
     }
 
     Box(modifier = modifier) {
@@ -112,7 +118,7 @@ internal fun FinishedView(
                 onClick = onDone,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Done")
+                Text(stringResource(R.string.action_done))
             }
             Spacer(Modifier.height(24.dp))
         }
@@ -140,7 +146,11 @@ private fun LevelUpCard(newLevel: Int) {
                 modifier = Modifier.size(28.dp),
             )
             Column(modifier = Modifier.weight(1f)) {
-                Text("Level $newLevel", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(
+                    stringResource(R.string.finished_level, newLevel),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
                 Text(
                     "You leveled up.",
                     style = MaterialTheme.typography.labelMedium,
@@ -185,7 +195,11 @@ private fun UnlockCard(achievement: Achievement) {
 }
 
 @Composable
-private fun PainDeltaCard(pre: Int?, post: Int, change: Int?) {
+private fun PainDeltaCard(
+    pre: Int?,
+    post: Int,
+    change: Int?,
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -216,8 +230,11 @@ private fun PainDeltaCard(pre: Int?, post: Int, change: Int?) {
                     Text(
                         label,
                         style = MaterialTheme.typography.labelMedium,
-                        color = if (change < 0) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        color = if (change < 0) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        },
                     )
                 }
             }

@@ -11,7 +11,9 @@ package com.lowerbackstretching.ui.safety
  * loss, and night pain matter clinically but are harder to phrase
  * non-scarily for a first onboarding pass. Defer to a future expansion.
  */
-data class RedFlag(val short: String)
+data class RedFlag(
+    val short: String,
+)
 
 internal val redFlags = listOf(
     RedFlag("Numbness or weakness in your legs or feet"),
