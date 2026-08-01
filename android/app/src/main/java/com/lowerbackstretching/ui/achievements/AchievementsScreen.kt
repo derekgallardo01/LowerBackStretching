@@ -26,13 +26,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.AchievementStatus
 import com.lowerbackstretching.core.evaluateAchievements
 import com.lowerbackstretching.core.levelFor
@@ -41,10 +43,13 @@ import com.lowerbackstretching.ui.AppViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AchievementsScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
-    val totalSessions by vm.sessions.count().collectAsState(initial = 0)
-    val longestStreak by vm.sessions.longestStreak().collectAsState(initial = 0)
-    val totalSeconds by vm.sessions.totalDurationSeconds().collectAsState(initial = 0)
+fun AchievementsScreen(
+    onBack: () -> Unit,
+    vm: AppViewModel = viewModel(),
+) {
+    val totalSessions by vm.sessionCount.collectAsStateWithLifecycle()
+    val longestStreak by vm.longestStreak.collectAsStateWithLifecycle()
+    val totalSeconds by vm.totalDurationSeconds.collectAsStateWithLifecycle()
     val level = remember(totalSeconds) { levelFor(xpForSession(totalSeconds)) }
 
     val statuses = remember(totalSessions, longestStreak, level) {
@@ -54,14 +59,17 @@ fun AchievementsScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Achievements") },
+                title = { Text(stringResource(R.string.title_achievements)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
-        }
+        },
     ) { inner ->
         LazyColumn(
             modifier = Modifier.padding(inner),
@@ -110,15 +118,21 @@ private fun Badge(unlocked: Boolean) {
     Surface(
         modifier = Modifier.size(56.dp),
         shape = CircleShape,
-        color = if (unlocked) MaterialTheme.colorScheme.primaryContainer
-                else MaterialTheme.colorScheme.surfaceVariant,
+        color = if (unlocked) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant
+        },
     ) {
         Box(contentAlignment = Alignment.Center) {
             Icon(
                 if (unlocked) Icons.Filled.EmojiEvents else Icons.Filled.Lock,
                 contentDescription = if (unlocked) "Unlocked" else "Locked",
-                tint = if (unlocked) MaterialTheme.colorScheme.onPrimaryContainer
-                       else MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = if (unlocked) {
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
             )
         }
     }

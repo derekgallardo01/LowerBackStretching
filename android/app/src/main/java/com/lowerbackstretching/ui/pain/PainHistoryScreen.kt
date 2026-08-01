@@ -15,12 +15,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.pairSessionPainLogs
 import com.lowerbackstretching.core.sessionPainDelta
 import com.lowerbackstretching.ui.AppViewModel
@@ -30,21 +32,27 @@ import com.lowerbackstretching.ui.components.SectionHeader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PainHistoryScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
-    val history by vm.painLog.all().collectAsState(initial = emptyList())
+fun PainHistoryScreen(
+    onBack: () -> Unit,
+    vm: AppViewModel = viewModel(),
+) {
+    val history by vm.painHistory.collectAsStateWithLifecycle()
     val pairs = remember(history) { pairSessionPainLogs(history) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Pain log") },
+                title = { Text(stringResource(R.string.title_pain_log)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
-        }
+        },
     ) { inner ->
         LazyColumn(
             modifier = Modifier.padding(inner),
@@ -55,8 +63,8 @@ fun PainHistoryScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
                 item {
                     EmptyState(
                         icon = Icons.Filled.Favorite,
-                        title = "No ratings yet",
-                        body = "Your next session will ask you how things feel.",
+                        title = stringResource(R.string.pain_empty_title),
+                        body = stringResource(R.string.pain_empty_body),
                     )
                 }
                 return@LazyColumn

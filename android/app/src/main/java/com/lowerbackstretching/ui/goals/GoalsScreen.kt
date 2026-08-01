@@ -23,12 +23,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.monthlyCompletions
 import com.lowerbackstretching.core.weeklyCompletions
 import com.lowerbackstretching.ui.AppViewModel
@@ -36,9 +39,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GoalsScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
+fun GoalsScreen(
+    onBack: () -> Unit,
+    vm: AppViewModel = viewModel(),
+) {
     val scope = rememberCoroutineScope()
-    val completedDays by vm.sessions.completedDays().collectAsState(initial = emptySet())
+    val completedDays by vm.completedDays.collectAsStateWithLifecycle()
     val weeklyGoal by vm.prefs.weeklyGoal.collectAsState(initial = 3)
     val monthlyGoal by vm.prefs.monthlyGoal.collectAsState(initial = 12)
 
@@ -48,14 +54,17 @@ fun GoalsScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Goals") },
+                title = { Text(stringResource(R.string.title_goals)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
-        }
+        },
     ) { inner ->
         LazyColumn(
             modifier = Modifier.padding(inner),
@@ -64,7 +73,7 @@ fun GoalsScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
         ) {
             item {
                 GoalCard(
-                    title = "This week",
+                    title = stringResource(R.string.goals_this_week),
                     completed = weekly,
                     target = weeklyGoal,
                     sliderRange = 1f..14f,
@@ -73,7 +82,7 @@ fun GoalsScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
             }
             item {
                 GoalCard(
-                    title = "This month",
+                    title = stringResource(R.string.goals_this_month),
                     completed = monthly,
                     target = monthlyGoal,
                     sliderRange = 1f..30f,
