@@ -19,7 +19,7 @@ zxing = "3.5.3"
 wearCompose = "1.4.1"
 junit = "4.13.2"
 androidx-test-ext = "1.2.1"
-espresso = "3.6.1"
+espresso = "3.7.0"
 truth = "1.4.4"
 coroutines = "1.8.1"
 
