@@ -57,6 +57,12 @@ jobs:
       - name: Set up Gradle (with cache)
         uses: gradle/actions/setup-gradle@v4
 
+      # Windows checkouts don't preserve the exec bit, so it can get dropped
+      # again by a future commit. Cheap guard — losing it fails with a bare
+      # "exit 126" that reads like a Gradle problem rather than a file mode.
+      - name: Ensure wrapper is executable
+        run: chmod +x gradlew
+
       # Gate the release on the same checks main uses. A tag should never
       # produce an artifact that wouldn't have passed CI.
       - name: Verify (tests, format, lint)

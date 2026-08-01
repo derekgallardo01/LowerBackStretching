@@ -53,6 +53,12 @@ jobs:
       - name: Set up Gradle (with cache)
         uses: gradle/actions/setup-gradle@v4
 
+      # Windows checkouts don't preserve the exec bit, so it can get dropped
+      # again by a future commit. Cheap guard — losing it fails with a bare
+      # "exit 126" that reads like a Gradle problem rather than a file mode.
+      - name: Ensure wrapper is executable
+        run: chmod +x gradlew
+
       # The test task implicitly compiles main + test, so any Kotlin
       # compile error surfaces here. The wrapper script tees stdout to
       # /tmp/*.log and runs print-kotlin-errors.sh on failure so the
