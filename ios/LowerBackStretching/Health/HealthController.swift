@@ -7,9 +7,15 @@ import HealthKit
 ///
 /// Cross-platform parity for `HealthController.kt` on Android.
 ///
+/// Write-only: the app shares completed stretching workouts and reads
+/// nothing back. This mirrors the Android side, which dropped its
+/// `READ_STEPS` permission for Google Play's Minimum Scope policy; keeping
+/// the two platforms aligned means the shared privacy policy stays true of
+/// both. See `README.md` under "Health Connect & platform notes".
+///
 /// Wiring required outside the code: HealthKit capability on the app
-/// target, plus `NSHealthShareUsageDescription` and
-/// `NSHealthUpdateUsageDescription` strings in Info.plist. See
+/// target, plus an `NSHealthUpdateUsageDescription` string in Info.plist
+/// (no `NSHealthShareUsageDescription` — nothing is read). See
 /// `ios/README.md` for the exact entries.
 final class HealthController {
 
@@ -21,20 +27,16 @@ final class HealthController {
     private let shareTypes: Set<HKSampleType> = [
         .workoutType(),
     ]
-    private let readTypes: Set<HKObjectType> = [
-        HKObjectType.quantityType(forIdentifier: .stepCount)!,
-    ]
 
     var isAvailable: Bool { HKHealthStore.isHealthDataAvailable() }
 
-    /// Asks the user for both write (workouts) and read (steps) access.
-    /// Calls back with `true` if HealthKit is available and the
-    /// authorization request didn't error out — the user may still have
-    /// denied individual scopes; consumers check write/read status
-    /// before actually using the API.
+    /// Asks the user for write (workout) access. Calls back with `true` if
+    /// HealthKit is available and the authorization request didn't error
+    /// out — the user may still have denied the scope, so consumers check
+    /// `canWriteWorkouts` before actually writing.
     func requestAuthorization(_ completion: @escaping (Bool) -> Void) {
         guard isAvailable else { completion(false); return }
-        store.requestAuthorization(toShare: shareTypes, read: readTypes) { granted, _ in
+        store.requestAuthorization(toShare: shareTypes, read: []) { granted, _ in
             DispatchQueue.main.async { completion(granted) }
         }
     }
@@ -62,26 +64,5 @@ final class HealthController {
                 }
             }
         }
-    }
-
-    /// Sum of step counts recorded between local midnight (today) and
-    /// now. Returns nil if HealthKit is unavailable, the permission is
-    /// missing, or no steps have been recorded yet.
-    func readStepsToday(completion: @escaping (Int?) -> Void) {
-        guard isAvailable, let stepsType = HKObjectType.quantityType(forIdentifier: .stepCount) else {
-            completion(nil); return
-        }
-        let cal = Calendar.current
-        let start = cal.startOfDay(for: .now)
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: .now)
-        let query = HKStatisticsQuery(
-            quantityType: stepsType,
-            quantitySamplePredicate: predicate,
-            options: .cumulativeSum
-        ) { _, result, _ in
-            let sum = result?.sumQuantity()?.doubleValue(for: .count())
-            DispatchQueue.main.async { completion(sum.map { Int($0) }) }
-        }
-        store.execute(query)
     }
 }

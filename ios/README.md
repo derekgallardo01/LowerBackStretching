@@ -24,18 +24,25 @@ files break easily. Steps:
    the app target.
 6. In the project's `Info` settings, add `NSUserActivityTypes` if you plan to
    add Siri shortcuts (optional). Local notifications need no Info.plist entry.
-7. **HealthKit (Wave 5).** If you want the "Apple Health" toggles in
+7. **HealthKit (Wave 5).** If you want the "Apple Health" toggle in
    Settings to do anything:
    - Project → Signing & Capabilities → **+ Capability → HealthKit**.
      Leave "Clinical Health Records" and "Background Delivery" off.
-   - Info.plist: add string entries
-     - `NSHealthShareUsageDescription` — e.g. "Reads your daily step
-       count to suggest a cooldown stretch after long walks."
+   - Info.plist: add one string entry
      - `NSHealthUpdateUsageDescription` — e.g. "Logs your stretching
        sessions as flexibility workouts in Apple Health."
+
+   **Write-only — do not add `NSHealthShareUsageDescription`.** The app
+   reads nothing from HealthKit. Version 1.0.8 removed the step-count
+   read and its "cooldown stretch" card to match Android, which had to
+   drop the equivalent `READ_STEPS` permission under Google Play's
+   Minimum Scope policy. Keeping both platforms write-only means the
+   shared `PRIVACY.md` is accurate for both; adding a read scope back
+   means updating that policy too.
+
    Without the capability, `HKHealthStore.isHealthDataAvailable()`
    returns false and the Settings section shows "Apple Health isn't
-   available on this device." instead of the toggles.
+   available on this device." instead of the toggle.
 8. **Custom URL scheme (Wave 8 — share routine via link/QR).**
    Info.plist → CFBundleURLTypes → add an entry:
      - URL identifier: `com.lowerbackstretching.routine`

@@ -33,7 +33,9 @@ enum SettingsKeys {
     static let monthlyGoal = "monthly_goal"
 
     static let healthWriteEnabled = "health_write_enabled"
-    static let healthReadEnabled = "health_read_enabled"
+    // health_read_enabled was retired in 1.0.8 along with the step-driven
+    // cooldown card. Don't reuse the key — old installs still have a value
+    // stored under it.
 
     static let cloudSyncEnabled = "cloud_sync_enabled"
 

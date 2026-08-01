@@ -4,9 +4,7 @@ import SwiftData
 struct HomeView: View {
     @EnvironmentObject private var content: ContentStore
     @Query private var sessions: [SessionRecord]
-    @AppStorage(SettingsKeys.healthReadEnabled) private var healthReadEnabled: Bool = false
     @AppStorage(SettingsKeys.lastSessionEpochDay) private var lastSessionEpochDay: Int = 0
-    @State private var stepsToday: Int?
     @State private var showingCalendar: Bool = false
 
     private var completedDays: Set<Date> { SessionStore.completedDays(from: sessions) }
@@ -15,13 +13,6 @@ struct HomeView: View {
     private var totalSeconds: Int { sessions.reduce(0) { $0 + $1.durationSeconds } }
     private var xpStats: XpProgress { xpProgress(totalXp: xp(forSessionSeconds: totalSeconds)) }
     private var stretchedToday: Bool { lastSessionEpochDay == EpochDay.current() }
-    private var showCooldown: Bool {
-        shouldShowCooldown(
-            enabledRead: healthReadEnabled,
-            stretchedToday: stretchedToday,
-            stepsToday: stepsToday
-        )
-    }
 
     enum Quick: Hashable { case achievements, goals, flexibility, glossary, bodyDiagram, painLog }
 
@@ -30,12 +21,6 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 16) {
                 ScreenHeader("Welcome back")
 
-                if showCooldown, let steps = stepsToday, let program = content.programs.first {
-                    NavigationLink(value: program) {
-                        CooldownCard(steps: steps)
-                    }
-                    .buttonStyle(.plain)
-                }
 
                 StatsCard(streak: streak, total: total, xp: xpStats)
 
@@ -108,24 +93,12 @@ struct HomeView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            if healthReadEnabled {
-                HealthController.shared.readStepsToday { stepsToday = $0 }
-            } else {
-                stepsToday = nil
-            }
             // Keep the streak-nudge foreground gate in sync with the
             // streak this view just computed.
             StreakNudgeForegroundGate.setStreak(streak)
         }
         .onChange(of: streak) { _, new in
             StreakNudgeForegroundGate.setStreak(new)
-        }
-        .onChange(of: healthReadEnabled) { _, on in
-            if on {
-                HealthController.shared.readStepsToday { stepsToday = $0 }
-            } else {
-                stepsToday = nil
-            }
         }
         .sheet(isPresented: $showingCalendar) {
             CalendarEventComposer(
@@ -136,22 +109,6 @@ struct HomeView: View {
                 showingCalendar = false
             }
         }
-    }
-}
-
-private struct CooldownCard: View {
-    let steps: Int
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("Walked \(steps) steps today.").font(.headline)
-            Text("Try a quick cooldown stretch to keep your back happy.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(Color.accentColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 16))
     }
 }
 
