@@ -67,6 +67,14 @@ The script ([scripts/generate_play_store_icon.py](scripts/generate_play_store_ic
 
 ### 3a. Bump version (one-line change before each release)
 
+> **versionCode is burned on upload, not on release.** Play permanently
+> consumes a versionCode the moment a bundle carrying it is uploaded — even if
+> that upload is rejected, or you never roll it out. Re-uploading the same code
+> fails with "Version code N has already been used."
+>
+> Burned to date: **10** and **11**, both by failed 1.0.8 submissions.
+> 1.0.8 shipped as versionCode **12**. Always bump before a re-upload.
+
 ```kotlin
 defaultConfig {
     ...

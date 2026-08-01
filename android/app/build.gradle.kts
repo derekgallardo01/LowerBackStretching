@@ -20,7 +20,11 @@ android {
         applicationId = "com.lowerbackstretching"
         minSdk = 26
         targetSdk = 36
-        versionCode = 11
+        // Play permanently burns a versionCode once a bundle carrying it is
+        // uploaded — even if that upload is later rejected or never rolled out.
+        // Burned so far: 10 and 11, both consumed by failed 1.0.8 submissions.
+        // Always bump on re-upload; never reuse.
+        versionCode = 12
         versionName = "1.0.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

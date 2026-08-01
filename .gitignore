@@ -18,3 +18,4 @@ android/local.properties
 android/app/build/
 android/core/build/
 android/wear/build/
+release/
