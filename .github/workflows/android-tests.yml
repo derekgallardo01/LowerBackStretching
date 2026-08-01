@@ -34,7 +34,7 @@ jobs:
       run:
         working-directory: android
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # The wrapper jar is a committed binary, so verify it matches a known-good
       # Gradle release checksum before executing it.
