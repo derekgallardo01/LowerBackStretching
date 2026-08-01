@@ -6,10 +6,8 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.SoundPool
-import android.os.Build
 import android.util.Log
 import com.lowerbackstretching.core.AmbientTrack
-import com.lowerbackstretching.core.AudioDefaults
 import com.lowerbackstretching.core.ChimeTrack
 import com.lowerbackstretching.core.MusicTrack
 
@@ -30,7 +28,6 @@ import com.lowerbackstretching.core.MusicTrack
  * focus (Spotify, Apple Music) lower their volume for the duration.
  */
 object AudioController {
-
     private const val TAG = "AudioController"
 
     private var musicPlayer: MediaPlayer? = null
@@ -43,7 +40,11 @@ object AudioController {
 
     // ---------- Music ----------
 
-    fun setMusic(context: Context, track: MusicTrack, volume: Float) {
+    fun setMusic(
+        context: Context,
+        track: MusicTrack,
+        volume: Float,
+    ) {
         if (track == currentMusic) {
             musicPlayer?.setVolumeSafely(volume)
             return
@@ -66,7 +67,11 @@ object AudioController {
 
     // ---------- Ambient ----------
 
-    fun setAmbient(context: Context, track: AmbientTrack, volume: Float) {
+    fun setAmbient(
+        context: Context,
+        track: AmbientTrack,
+        volume: Float,
+    ) {
         if (track == currentAmbient) {
             ambientPlayer?.setVolumeSafely(volume)
             return
@@ -89,7 +94,10 @@ object AudioController {
 
     // ---------- Chimes ----------
 
-    fun playChime(context: Context, track: ChimeTrack) {
+    fun playChime(
+        context: Context,
+        track: ChimeTrack,
+    ) {
         val resName = track.resName ?: return
         val pool = ensureSoundPool()
         val soundId = chimeSoundIds.getOrPut(resName) {
@@ -99,20 +107,72 @@ object AudioController {
 
         // Briefly request ducking focus around the chime.
         requestDuckingFocus(context)
-        pool.play(soundId, 1f, 1f, /* priority */ 1, /* loop */ 0, /* rate */ 1f)
+        pool.play(
+            soundId,
+            // leftVolume =
+            1f,
+            // rightVolume =
+            1f,
+            // priority =
+            1,
+            // loop =
+            0,
+            // rate =
+            1f,
+        )
         // Auto-release focus 500ms later (chimes are very short).
         android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(
-            { releaseDuckingFocus(context) }, 500
+            { releaseDuckingFocus(context) },
+            500,
         )
     }
+
+    // ---------- Availability ----------
+
+    /**
+     * True when this track can actually be heard — i.e. it's [MusicTrack.NONE]
+     * and friends (no resource needed), or its MP3 is present in `res/raw/`.
+     *
+     * The audio MP3s are not checked into the repo (see
+     * `android/app/AUDIO_FILES.md`), so a stock build has none of them. Settings
+     * uses this to hide tracks it can't play rather than offering the user a
+     * dropdown of silence. Drop the files in and the options appear on their own.
+     */
+    fun isTrackAvailable(
+        context: Context,
+        resName: String?,
+    ): Boolean = resName == null || resIdOrNull(context, resName) != null
+
+    /** [MusicTrack] values this build can actually play. Always includes [MusicTrack.NONE]. */
+    fun availableMusicTracks(context: Context): List<MusicTrack> =
+        MusicTrack.entries.filter { isTrackAvailable(context, it.resName) }
+
+    /** [AmbientTrack] values this build can actually play. Always includes [AmbientTrack.NONE]. */
+    fun availableAmbientTracks(context: Context): List<AmbientTrack> =
+        AmbientTrack.entries.filter { isTrackAvailable(context, it.resName) }
+
+    /** [ChimeTrack] values this build can actually play. Always includes [ChimeTrack.NONE]. */
+    fun availableChimeTracks(context: Context): List<ChimeTrack> =
+        ChimeTrack.entries.filter { isTrackAvailable(context, it.resName) }
+
+    /** True when no audio asset at all is bundled, so the whole Audio card is pointless. */
+    fun hasAnyAudioAssets(context: Context): Boolean =
+        availableMusicTracks(context).size > 1 ||
+            availableAmbientTracks(context).size > 1 ||
+            availableChimeTracks(context).size > 1
 
     // ---------- Lifecycle ----------
 
     /** Tear down everything. Call when the player screen disposes. */
     fun stopAll() {
-        musicPlayer?.releaseSafely(); musicPlayer = null; currentMusic = MusicTrack.NONE
-        ambientPlayer?.releaseSafely(); ambientPlayer = null; currentAmbient = AmbientTrack.NONE
-        soundPool?.release(); soundPool = null
+        musicPlayer?.releaseSafely()
+        musicPlayer = null
+        currentMusic = MusicTrack.NONE
+        ambientPlayer?.releaseSafely()
+        ambientPlayer = null
+        currentAmbient = AmbientTrack.NONE
+        soundPool?.release()
+        soundPool = null
         chimeSoundIds.clear()
     }
 
@@ -120,11 +180,13 @@ object AudioController {
 
     private fun ensureSoundPool(): SoundPool {
         soundPool?.let { return it }
-        val attrs = AudioAttributes.Builder()
+        val attrs = AudioAttributes
+            .Builder()
             .setUsage(AudioAttributes.USAGE_MEDIA)
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .build()
-        return SoundPool.Builder()
+        return SoundPool
+            .Builder()
             .setMaxStreams(2)
             .setAudioAttributes(attrs)
             .build()
@@ -133,43 +195,47 @@ object AudioController {
 
     private var focusRequest: AudioFocusRequest? = null
 
+    // AudioFocusRequest is API 26+, which is our minSdk — no legacy branch needed.
     private fun requestDuckingFocus(context: Context) {
         val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val attrs = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-            val req = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
-                .setAudioAttributes(attrs)
-                .setOnAudioFocusChangeListener { /* no-op */ }
-                .build()
-            am.requestAudioFocus(req)
-            focusRequest = req
-        } else {
-            @Suppress("DEPRECATION")
-            am.requestAudioFocus(
-                null,
-                AudioManager.STREAM_MUSIC,
-                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK,
-            )
-        }
+        val attrs = AudioAttributes
+            .Builder()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+        val req = AudioFocusRequest
+            .Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+            .setAudioAttributes(attrs)
+            .setOnAudioFocusChangeListener { /* no-op */ }
+            .build()
+        am.requestAudioFocus(req)
+        focusRequest = req
     }
 
     private fun releaseDuckingFocus(context: Context) {
         val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            focusRequest?.let { am.abandonAudioFocusRequest(it) }
-            focusRequest = null
-        } else {
-            @Suppress("DEPRECATION")
-            am.abandonAudioFocus(null)
-        }
+        focusRequest?.let { am.abandonAudioFocusRequest(it) }
+        focusRequest = null
     }
 
-    private fun resIdOrNull(context: Context, resName: String): Int? {
+    /**
+     * Resolve `res/raw/<name>` by name.
+     *
+     * Lint flags `getIdentifier` as discouraged, and normally it's right — a
+     * direct `R.raw.foo` is verified at compile time. Here it's deliberate: the
+     * MP3s are optional and not checked into the repo (see `app/AUDIO_FILES.md`),
+     * so `R.raw.music_calm` would not compile in a stock clone. Name lookup is
+     * what lets the app build and run without them.
+     */
+    @Suppress("DiscouragedApi")
+    private fun resIdOrNull(
+        context: Context,
+        resName: String,
+    ): Int? {
         val id = context.resources.getIdentifier(resName, "raw", context.packageName)
-        return if (id != 0) id else {
+        return if (id != 0) {
+            id
+        } else {
             Log.d(TAG, "Audio resource not found: res/raw/$resName")
             null
         }
@@ -187,9 +253,11 @@ object AudioController {
     private fun MediaPlayer.releaseSafely() {
         try {
             if (isPlaying) stop()
-        } catch (_: Throwable) { }
+        } catch (_: Throwable) {
+        }
         try {
             release()
-        } catch (_: Throwable) { }
+        } catch (_: Throwable) {
+        }
     }
 }

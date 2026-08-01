@@ -21,11 +21,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
+import com.lowerbackstretching.audio.AudioController
 import com.lowerbackstretching.core.AmbientTrack
+import com.lowerbackstretching.core.AudioDefaults
 import com.lowerbackstretching.core.ChimeTrack
 import com.lowerbackstretching.core.MusicTrack
 import com.lowerbackstretching.ui.AppViewModel
@@ -35,45 +40,69 @@ import kotlinx.coroutines.launch
 @Composable
 fun AudioCard(vm: AppViewModel = viewModel()) {
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     val music by vm.prefs.musicTrack.collectAsState(initial = MusicTrack.NONE)
-    val musicVolume by vm.prefs.musicVolume.collectAsState(initial = 0.4f)
+    val musicVolume by vm.prefs.musicVolume.collectAsState(initial = AudioDefaults.MUSIC_VOLUME)
     val ambient by vm.prefs.ambientTrack.collectAsState(initial = AmbientTrack.NONE)
-    val ambientVolume by vm.prefs.ambientVolume.collectAsState(initial = 0.6f)
+    val ambientVolume by vm.prefs.ambientVolume.collectAsState(initial = AudioDefaults.AMBIENT_VOLUME)
     val chime by vm.prefs.chimeTrack.collectAsState(initial = ChimeTrack.NONE)
 
+    // The audio MP3s aren't checked into the repo (see app/AUDIO_FILES.md), so
+    // a stock build ships none. Offering dropdowns that silently play nothing
+    // reads as a broken feature — show only what this build can actually play.
+    val musicOptions = remember(context) { AudioController.availableMusicTracks(context) }
+    val ambientOptions = remember(context) { AudioController.availableAmbientTracks(context) }
+    val chimeOptions = remember(context) { AudioController.availableChimeTracks(context) }
+    val hasAnyAudio = remember(context) { AudioController.hasAnyAudioAssets(context) }
+
     SettingsCard {
-        SectionHeader("Audio", topPadding = 0.dp)
+        SectionHeader(stringResource(R.string.settings_audio), topPadding = 0.dp)
 
-        TrackDropdown(
-            label = "Music",
-            options = MusicTrack.entries.map { it to it.displayName },
-            selected = music,
-            onChange = { scope.launch { vm.prefs.setMusicTrack(it) } },
-        )
-        VolumeSlider(
-            label = "Music volume",
-            value = musicVolume,
-            onValueChange = { scope.launch { vm.prefs.setMusicVolume(it) } },
-        )
+        if (!hasAnyAudio) {
+            Text(
+                stringResource(R.string.settings_audio_unavailable),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            )
+            return@SettingsCard
+        }
 
-        TrackDropdown(
-            label = "Ambient",
-            options = AmbientTrack.entries.map { it to it.displayName },
-            selected = ambient,
-            onChange = { scope.launch { vm.prefs.setAmbientTrack(it) } },
-        )
-        VolumeSlider(
-            label = "Ambient volume",
-            value = ambientVolume,
-            onValueChange = { scope.launch { vm.prefs.setAmbientVolume(it) } },
-        )
+        if (musicOptions.size > 1) {
+            TrackDropdown(
+                label = stringResource(R.string.settings_audio_music),
+                options = musicOptions.map { it to it.displayName },
+                selected = music,
+                onChange = { scope.launch { vm.prefs.setMusicTrack(it) } },
+            )
+            VolumeSlider(
+                label = stringResource(R.string.settings_audio_music_volume),
+                value = musicVolume,
+                onValueChange = { scope.launch { vm.prefs.setMusicVolume(it) } },
+            )
+        }
 
-        TrackDropdown(
-            label = "Chime on transition",
-            options = ChimeTrack.entries.map { it to it.displayName },
-            selected = chime,
-            onChange = { scope.launch { vm.prefs.setChimeTrack(it) } },
-        )
+        if (ambientOptions.size > 1) {
+            TrackDropdown(
+                label = stringResource(R.string.settings_audio_ambient),
+                options = ambientOptions.map { it to it.displayName },
+                selected = ambient,
+                onChange = { scope.launch { vm.prefs.setAmbientTrack(it) } },
+            )
+            VolumeSlider(
+                label = stringResource(R.string.settings_audio_ambient_volume),
+                value = ambientVolume,
+                onValueChange = { scope.launch { vm.prefs.setAmbientVolume(it) } },
+            )
+        }
+
+        if (chimeOptions.size > 1) {
+            TrackDropdown(
+                label = stringResource(R.string.settings_audio_chime),
+                options = chimeOptions.map { it to it.displayName },
+                selected = chime,
+                onChange = { scope.launch { vm.prefs.setChimeTrack(it) } },
+            )
+        }
     }
 }
 
@@ -100,7 +129,10 @@ private fun <T> TrackDropdown(
             options.forEach { (value, optionLabel) ->
                 DropdownMenuItem(
                     text = { Text(optionLabel) },
-                    onClick = { onChange(value); expanded = false },
+                    onClick = {
+                        onChange(value)
+                        expanded = false
+                    },
                 )
             }
         }
@@ -109,7 +141,11 @@ private fun <T> TrackDropdown(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun VolumeSlider(label: String, value: Float, onValueChange: (Float) -> Unit) {
+private fun VolumeSlider(
+    label: String,
+    value: Float,
+    onValueChange: (Float) -> Unit,
+) {
     Column {
         Text(label, style = MaterialTheme.typography.bodyMedium)
         // Default M3 1.3 Slider renders a pill thumb with a visible gap to

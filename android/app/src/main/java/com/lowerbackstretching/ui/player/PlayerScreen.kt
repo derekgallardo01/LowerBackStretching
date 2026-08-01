@@ -3,7 +3,9 @@ package com.lowerbackstretching.ui.player
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 
 /**
  * Three entry composables for the player. Each loads a different kind of
@@ -20,7 +22,12 @@ fun PlayerScreen(
     vm: PlayerViewModel = viewModel(),
 ) {
     LaunchedEffect(programId, dayNumber) { vm.loadProgram(programId, dayNumber) }
-    PlayerBody(title = "Day $dayNumber", onFinished = onFinished, onBack = onBack, vm = vm)
+    PlayerBody(
+        title = stringResource(R.string.player_day_title, dayNumber),
+        onFinished = onFinished,
+        onBack = onBack,
+        vm = vm,
+    )
 }
 
 @Composable
@@ -31,18 +38,23 @@ fun SingleStretchPlayerScreen(
     vm: PlayerViewModel = viewModel(),
 ) {
     LaunchedEffect(stretchId) { vm.loadSingle(stretchId) }
-    val title = vm.state.collectAsState().value?.current?.name ?: "Practice"
+    val title = vm.state
+        .collectAsState()
+        .value
+        ?.current
+        ?.name ?: stringResource(R.string.player_practice_title)
     PlayerBody(title = title, onFinished = onFinished, onBack = onBack, vm = vm)
 }
 
 @Composable
 fun CustomRoutinePlayerScreen(
     routineId: Long,
-    routineName: String,
     onFinished: () -> Unit,
     onBack: () -> Unit,
     vm: PlayerViewModel = viewModel(),
 ) {
     LaunchedEffect(routineId) { vm.loadCustomRoutine(routineId) }
-    PlayerBody(title = routineName, onFinished = onFinished, onBack = onBack, vm = vm)
+    // Falls back only for the frame or two before the routine row is read.
+    val title = vm.routineName.collectAsState().value ?: stringResource(R.string.player_fallback_title)
+    PlayerBody(title = title, onFinished = onFinished, onBack = onBack, vm = vm)
 }

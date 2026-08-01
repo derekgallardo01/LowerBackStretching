@@ -12,11 +12,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lowerbackstretching.calendar.scheduleStretchBreakIntent
+import com.lowerbackstretching.core.SessionType
+import com.lowerbackstretching.core.SharedRoutine
+import com.lowerbackstretching.core.SyntheticProgramId
 import com.lowerbackstretching.data.Prefs
 import com.lowerbackstretching.ui.achievements.AchievementsScreen
 import com.lowerbackstretching.ui.anatomy.BodyDiagramScreen
@@ -31,11 +35,10 @@ import com.lowerbackstretching.ui.pain.PainHistoryScreen
 import com.lowerbackstretching.ui.player.CustomRoutinePlayerScreen
 import com.lowerbackstretching.ui.player.PlayerScreen
 import com.lowerbackstretching.ui.player.SingleStretchPlayerScreen
-import com.lowerbackstretching.ui.safety.RedFlagAdvisoryScreen
 import com.lowerbackstretching.ui.programs.ProgramDetailScreen
 import com.lowerbackstretching.ui.programs.ProgramsScreen
-import com.lowerbackstretching.core.SharedRoutine
 import com.lowerbackstretching.ui.routines.RoutineBuilderScreen
+import com.lowerbackstretching.ui.safety.RedFlagAdvisoryScreen
 import com.lowerbackstretching.ui.settings.SettingsScreen
 import com.lowerbackstretching.ui.share.ImportRoutineSheet
 import com.lowerbackstretching.ui.share.ShareRoutineScreen
@@ -83,13 +86,15 @@ private fun AppRoot(
                                     }
                                 }
                             },
-                            icon = { Icon(tab.icon, contentDescription = tab.label) },
-                            label = { Text(tab.label) },
+                            icon = {
+                                Icon(tab.icon, contentDescription = stringResource(tab.labelRes))
+                            },
+                            label = { Text(stringResource(tab.labelRes)) },
                         )
                     }
                 }
             }
-        }
+        },
     ) { inner ->
         NavHost(
             navController = nav,
@@ -108,6 +113,23 @@ private fun AppRoot(
                         HomeAction.OpenGlossary -> nav.navigate(Dest.glossary)
                         HomeAction.OpenBodyDiagram -> nav.navigate(Dest.bodyDiagram)
                         HomeAction.ScheduleBreak -> ctx.startActivity(scheduleStretchBreakIntent())
+                        is HomeAction.ResumeSession -> {
+                            val s = action.session
+                            // The player reads Prefs.inProgressSession on init and
+                            // seeks to the stored index, so plain navigation resumes.
+                            val route = when (SyntheticProgramId.typeFor(s.programId)) {
+                                SessionType.PROGRAM -> Dest.player(s.programId, s.dayNumber)
+                                SessionType.SINGLE ->
+                                    SyntheticProgramId
+                                        .stretchIdFrom(s.programId)
+                                        ?.let { Dest.singlePlayer(it) }
+                                SessionType.ROUTINE ->
+                                    SyntheticProgramId
+                                        .routineIdFrom(s.programId)
+                                        ?.let { Dest.routinePlayer(it) }
+                            }
+                            route?.let { nav.navigate(it) }
+                        }
                     }
                 })
             }
@@ -160,7 +182,6 @@ private fun AppRoot(
                 val id = backStack.arguments?.getString("id")?.toLongOrNull() ?: return@composable
                 CustomRoutinePlayerScreen(
                     routineId = id,
-                    routineName = "Routine",
                     onFinished = { nav.popBackStack(route = Tab.Programs.path, inclusive = false) },
                     onBack = { nav.popBackStack() },
                 )
