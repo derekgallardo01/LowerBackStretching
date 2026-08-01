@@ -34,7 +34,6 @@ import java.time.LocalDate
  */
 @RunWith(AndroidJUnit4::class)
 class MilestoneModalE2ETest {
-
     @get:Rule(order = 0)
     val permissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)
@@ -46,36 +45,37 @@ class MilestoneModalE2ETest {
     private val app = ctx.applicationContext as App
 
     @Before
-    fun seedSixDayStreak() = runBlocking {
-        // Same Assume gate as CompleteRoutineE2ETest — gesture timing inside
-        // the player flakes on the tablet AVD; phone is the canonical
-        // verification surface for player-driven flows.
-        val sw = ctx.resources.configuration.smallestScreenWidthDp
-        Assume.assumeTrue(
-            "Skipping gesture-heavy E2E on tablet AVD (smallestScreenWidthDp=$sw)",
-            sw < 600,
-        )
-        Prefs(ctx).resetForTests()
-        app.database.clearAllTables()
-        Prefs(ctx).markOnboardingDone()
-
-        val dao = app.database.sessionDao()
-        val today = LocalDate.now()
-        // Days -6 through -1 inclusive: 6 prior consecutive days.
-        for (offset in 6 downTo 1) {
-            val date = today.minusDays(offset.toLong())
-            dao.insert(
-                SessionEntity(
-                    programId = "daily-5min",
-                    dayNumber = 1,
-                    completedAtEpochDay = date.toEpochDay(),
-                    completedAtEpochMillis = date.toEpochDay() * 86_400_000L,
-                    durationSeconds = 180,
-                    type = "program",
-                )
+    fun seedSixDayStreak() =
+        runBlocking {
+            // Same Assume gate as CompleteRoutineE2ETest — gesture timing inside
+            // the player flakes on the tablet AVD; phone is the canonical
+            // verification surface for player-driven flows.
+            val sw = ctx.resources.configuration.smallestScreenWidthDp
+            Assume.assumeTrue(
+                "Skipping gesture-heavy E2E on tablet AVD (smallestScreenWidthDp=$sw)",
+                sw < 600,
             )
+            Prefs(ctx).resetForTests()
+            app.database.clearAllTables()
+            Prefs(ctx).markOnboardingDone()
+
+            val dao = app.database.sessionDao()
+            val today = LocalDate.now()
+            // Days -6 through -1 inclusive: 6 prior consecutive days.
+            for (offset in 6 downTo 1) {
+                val date = today.minusDays(offset.toLong())
+                dao.insert(
+                    SessionEntity(
+                        programId = "daily-5min",
+                        dayNumber = 1,
+                        completedAtEpochDay = date.toEpochDay(),
+                        completedAtEpochMillis = date.toEpochDay() * 86_400_000L,
+                        durationSeconds = 180,
+                        type = "program",
+                    ),
+                )
+            }
         }
-    }
 
     @Test
     fun completing_session_on_seventh_day_shows_milestone_modal() {
@@ -88,27 +88,35 @@ class MilestoneModalE2ETest {
         }
         rule.onNodeWithText("Daily 5-Minute").performClick()
         rule.waitUntil(timeoutMillis = 5_000) {
-            rule.onAllNodesWithText("Daily Routine", substring = true)
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithText("Daily Routine", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         rule.onNodeWithText("Daily Routine", substring = true).performClick()
 
         // Skip pre-session prompt.
         rule.waitUntil(timeoutMillis = 10_000) {
-            rule.onAllNodesWithText("How's your back right now?")
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithText("How's your back right now?")
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         rule.onNodeWithText("Skip").performClick()
 
         // Hold-skip through all 4 stretches in the Daily 5-Minute day 1.
         rule.waitUntil(timeoutMillis = 10_000) {
-            rule.onAllNodesWithContentDescription("Hold to skip ahead")
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithContentDescription("Hold to skip ahead")
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         val stretchCount = 4
         rule.waitUntil(timeoutMillis = 10_000) {
-            rule.onAllNodesWithText("Stretch 1 of $stretchCount")
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithText("Stretch 1 of $stretchCount")
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         for (i in 1..stretchCount) {
             rule.onNodeWithContentDescription("Hold to skip ahead").performTouchInput {
@@ -125,8 +133,10 @@ class MilestoneModalE2ETest {
 
         // Skip post-session prompt so the milestone modal can surface.
         rule.waitUntil(timeoutMillis = 15_000) {
-            rule.onAllNodesWithText("How does it feel now?")
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithText("How does it feel now?")
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         rule.onNodeWithText("Skip").performClick()
 
@@ -134,10 +144,13 @@ class MilestoneModalE2ETest {
         // "7-day streak" appears in BOTH the StreakBadge and the modal, so we
         // anchor on the modal-specific body copy which is unique.
         rule.waitUntil(timeoutMillis = 5_000) {
-            rule.onAllNodesWithText("A whole week of showing up. That's how habits start.")
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithText("A whole week of showing up. That's how habits start.")
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
-        rule.onNodeWithText("A whole week of showing up. That's how habits start.")
+        rule
+            .onNodeWithText("A whole week of showing up. That's how habits start.")
             .assertIsDisplayed()
         rule.onNodeWithText("Continue").performClick()
     }

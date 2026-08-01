@@ -22,9 +22,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.BodyZone
 import com.lowerbackstretching.ui.anatomy.BodySilhouette
 
@@ -42,6 +44,7 @@ fun PainCheckInDialog(
     onSkip: () -> Unit,
 ) {
     var level by remember { mutableIntStateOf(3) }
+    val levelDescription = stringResource(R.string.pain_level_description, level)
     var selectedZone by remember { mutableStateOf<BodyZone?>(null) }
 
     AlertDialog(
@@ -60,7 +63,7 @@ fun PainCheckInDialog(
                     steps = 9,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .semantics { contentDescription = "Pain level $level out of 10" },
+                        .semantics { contentDescription = levelDescription },
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -113,11 +116,11 @@ fun PainCheckInDialog(
         },
         confirmButton = {
             TextButton(onClick = { onSubmit(level, selectedZone?.bodyPartTag) }) {
-                Text("Save")
+                Text(stringResource(R.string.action_save))
             }
         },
         dismissButton = {
-            TextButton(onClick = onSkip) { Text("Skip") }
+            TextButton(onClick = onSkip) { Text(stringResource(R.string.action_skip)) }
         },
     )
 }

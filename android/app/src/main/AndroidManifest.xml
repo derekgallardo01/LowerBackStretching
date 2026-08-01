@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- No INTERNET permission: the app makes no network requests. It was
+         needed for the YouTube embeds removed in 80b5baa; demonstrations are
+         now drawn on-device. Re-add it if the Firebase sync backend ever
+         replaces NoopSyncBackend. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -12,10 +15,10 @@
          not require an exact-alarm declaration for this app. -->
 
 
-    <!-- Health Connect: opt-in writes for stretching sessions, opt-in reads
-         for daily step count. Both gated by user preferences in Settings. -->
+    <!-- Health Connect: opt-in writes for stretching sessions only.
+         Reads have been removed to comply with Google Play's Minimum Scope
+         policy for Health Connect permissions. -->
     <uses-permission android:name="android.permission.health.WRITE_EXERCISE" />
-    <uses-permission android:name="android.permission.health.READ_STEPS" />
 
     <!-- Health Connect requires this query to discover the provider app on
          Android 13 and below. -->
@@ -29,6 +32,7 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.App.Starting"

@@ -45,19 +45,23 @@ fun evaluateAchievements(
     totalSessions: Int,
     longestStreak: Int,
     level: Int,
-): List<AchievementStatus> = Achievements.all.map { a ->
-    val raw = when (a.id) {
-        AchievementId.FIRST_SESSION,
-        AchievementId.FIFTY_SESSIONS,
-        AchievementId.HUNDRED_SESSIONS -> totalSessions
-        AchievementId.SEVEN_DAY_STREAK,
-        AchievementId.THIRTY_DAY_STREAK -> longestStreak
-        AchievementId.LEVEL_FIVE,
-        AchievementId.LEVEL_TEN -> level
+): List<AchievementStatus> =
+    Achievements.all.map { a ->
+        val raw = when (a.id) {
+            AchievementId.FIRST_SESSION,
+            AchievementId.FIFTY_SESSIONS,
+            AchievementId.HUNDRED_SESSIONS,
+            -> totalSessions
+            AchievementId.SEVEN_DAY_STREAK,
+            AchievementId.THIRTY_DAY_STREAK,
+            -> longestStreak
+            AchievementId.LEVEL_FIVE,
+            AchievementId.LEVEL_TEN,
+            -> level
+        }
+        AchievementStatus(
+            achievement = a,
+            progress = raw.coerceAtMost(a.target),
+            unlocked = raw >= a.target,
+        )
     }
-    AchievementStatus(
-        achievement = a,
-        progress = raw.coerceAtMost(a.target),
-        unlocked = raw >= a.target,
-    )
-}

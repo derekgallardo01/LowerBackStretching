@@ -9,7 +9,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class CalendarIntentTest {
-
     @Test
     fun action_and_data_target_the_calendar_events_uri() {
         val intent = scheduleStretchBreakIntent()
@@ -24,7 +23,7 @@ class CalendarIntentTest {
             .isEqualTo("Stretching break")
         val start = intent.getLongExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, 0)
         val end = intent.getLongExtra(CalendarContract.EXTRA_EVENT_END_TIME, 0)
-        assertThat(end - start).isEqualTo(10 * 60 * 1000L)  // 10 min default
+        assertThat(end - start).isEqualTo(10 * 60 * 1000L) // 10 min default
         assertThat(start).isGreaterThan(System.currentTimeMillis())
     }
 

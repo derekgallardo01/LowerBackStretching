@@ -21,15 +21,15 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ProgramsScreenTest {
-
     @get:Rule val rule = createAndroidComposeRule<ComponentActivity>()
 
     @Before
-    fun reset() = runBlocking {
-        val ctx = InstrumentationRegistry.getInstrumentation().targetContext
-        Prefs(ctx).resetForTests()
-        (ctx.applicationContext as App).database.clearAllTables()
-    }
+    fun reset() =
+        runBlocking {
+            val ctx = InstrumentationRegistry.getInstrumentation().targetContext
+            Prefs(ctx).resetForTests()
+            (ctx.applicationContext as App).database.clearAllTables()
+        }
 
     @Test
     fun renders_header_and_first_built_in_program() {

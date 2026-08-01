@@ -4,7 +4,7 @@ import java.time.LocalDate
 import java.time.temporal.WeekFields
 import java.util.Locale
 
-/**
+/*
  * Pure calculation functions for the gamification layer. Every function
  * here is total — no I/O, no time-of-day dependency unless passed in
  * explicitly. The view layer combines these with reactive Flows of
@@ -31,8 +31,7 @@ fun totalXpForLevel(level: Int): Int {
     return 50 * l * (l + 1)
 }
 
-fun xpForSession(durationSeconds: Int): Int =
-    (durationSeconds.coerceAtLeast(0) * XP_PER_SECOND).toInt()
+fun xpForSession(durationSeconds: Int): Int = (durationSeconds.coerceAtLeast(0) * XP_PER_SECOND).toInt()
 
 fun levelFor(totalXp: Int): Int {
     if (totalXp <= 0) return 1
@@ -70,7 +69,10 @@ fun xpProgress(totalXp: Int): XpProgress {
  * plus every consecutive prior day must be in [days]. The chain breaks
  * on the first gap.
  */
-fun computeStreak(days: Set<LocalDate>, today: LocalDate = LocalDate.now()): Int {
+fun computeStreak(
+    days: Set<LocalDate>,
+    today: LocalDate = LocalDate.now(),
+): Int {
     if (days.isEmpty()) return 0
     var streak = 0
     var cursor = today
@@ -99,7 +101,10 @@ fun longestStreak(days: Set<LocalDate>): Int {
     return longest
 }
 
-fun weeklyCompletions(days: Set<LocalDate>, today: LocalDate = LocalDate.now()): Int {
+fun weeklyCompletions(
+    days: Set<LocalDate>,
+    today: LocalDate = LocalDate.now(),
+): Int {
     val wf = WeekFields.of(Locale.getDefault())
     val week = today.get(wf.weekOfWeekBasedYear())
     val year = today.get(wf.weekBasedYear())
@@ -108,5 +113,7 @@ fun weeklyCompletions(days: Set<LocalDate>, today: LocalDate = LocalDate.now()):
     }
 }
 
-fun monthlyCompletions(days: Set<LocalDate>, today: LocalDate = LocalDate.now()): Int =
-    days.count { it.year == today.year && it.month == today.month }
+fun monthlyCompletions(
+    days: Set<LocalDate>,
+    today: LocalDate = LocalDate.now(),
+): Int = days.count { it.year == today.year && it.month == today.month }

@@ -1,0 +1,43 @@
+version: 2
+
+updates:
+  # Gradle dependencies are declared in android/gradle/libs.versions.toml.
+  # Dependabot reads the version catalog and opens PRs against it.
+  - package-ecosystem: gradle
+    directory: /android
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+    groups:
+      # Compose ships as a coordinated set — bumping one artifact without the
+      # rest is how you get runtime crashes rather than compile errors.
+      androidx-compose:
+        patterns:
+          - "androidx.compose*"
+      androidx-lifecycle:
+        patterns:
+          - "androidx.lifecycle*"
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "com.google.devtools.ksp"
+    ignore:
+      # AGP and Kotlin have to move together with KSP and the Compose compiler,
+      # so they get bumped deliberately rather than by a bot.
+      - dependency-name: com.android.tools.build:gradle
+      - dependency-name: org.jetbrains.kotlin:kotlin-gradle-plugin
+      # connect-client is pinned intentionally; 1.1.0-rc02 required a source
+      # change (ExerciseSessionRecord now needs explicit Metadata). Review
+      # those upgrades by hand — see android/README.md.
+      - dependency-name: androidx.health.connect:connect-client
+        update-types:
+          - version-update:semver-major
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci"

@@ -14,7 +14,6 @@ import java.io.File
  * dev-time sentinel into a release build.
  */
 class StretchesContentTest {
-
     private val json = Json { ignoreUnknownKeys = true }
 
     @Test

@@ -19,7 +19,7 @@ import androidx.core.content.ContextCompat
 @Composable
 fun rememberNotificationPermissionAsk(): () -> Unit {
     val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
+        ActivityResultContracts.RequestPermission(),
     ) { /* no-op: scheduling proceeds regardless; OS will silently drop if denied */ }
 
     return remember(launcher) {
@@ -35,6 +35,7 @@ fun rememberNotificationPermissionAsk(): () -> Unit {
 fun isNotificationPermissionGranted(context: Context): Boolean {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true
     return ContextCompat.checkSelfPermission(
-        context, Manifest.permission.POST_NOTIFICATIONS,
+        context,
+        Manifest.permission.POST_NOTIFICATIONS,
     ) == PackageManager.PERMISSION_GRANTED
 }

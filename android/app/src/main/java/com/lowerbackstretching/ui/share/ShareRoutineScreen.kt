@@ -25,7 +25,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,10 +32,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.buildRoutineLink
 import com.lowerbackstretching.share.renderQrBitmap
 import com.lowerbackstretching.ui.AppViewModel
@@ -50,24 +52,27 @@ fun ShareRoutineScreen(
 ) {
     val ctx = LocalContext.current
     val clipboard = LocalClipboardManager.current
-    val routine by vm.customRoutines.all().collectAsState(initial = emptyList())
+    val routine by vm.routines.collectAsStateWithLifecycle()
     val target = routine.firstOrNull { it.id == routineId }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Share routine") },
+                title = { Text(stringResource(R.string.title_share_routine)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
-        }
+        },
     ) { inner ->
         if (target == null) {
             Box(Modifier.padding(inner).padding(16.dp)) {
-                Text("Routine no longer exists.")
+                Text(stringResource(R.string.routine_missing))
             }
             return@Scaffold
         }
@@ -102,7 +107,7 @@ fun ShareRoutineScreen(
                     ) {
                         Image(
                             bitmap = qrBitmap.asImageBitmap(),
-                            contentDescription = "QR code for $link",
+                            contentDescription = stringResource(R.string.routine_qr_description, link),
                             modifier = Modifier.size(240.dp).padding(12.dp),
                         )
                     }
@@ -123,7 +128,7 @@ fun ShareRoutineScreen(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Icon(Icons.Filled.ContentCopy, contentDescription = null)
-                    Text("  Copy link")
+                    Text(stringResource(R.string.routine_copy_link))
                 }
                 Button(
                     onClick = {
@@ -137,7 +142,7 @@ fun ShareRoutineScreen(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Icon(Icons.Filled.Share, contentDescription = null)
-                    Text("  Share…")
+                    Text(stringResource(R.string.routine_share_sheet))
                 }
             }
         }

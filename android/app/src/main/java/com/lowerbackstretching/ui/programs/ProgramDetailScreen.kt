@@ -21,12 +21,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.headerTitle
 import com.lowerbackstretching.core.subtitle
 import com.lowerbackstretching.ui.AppViewModel
@@ -43,7 +46,8 @@ fun ProgramDetailScreen(
 ) {
     val program = vm.content.program(programId) ?: return
     val totalDays = program.days.size
-    val currentDay by vm.programProgress.currentDay(programId).collectAsState(initial = 1)
+    val currentDayFlow = remember(programId) { vm.programProgress.currentDay(programId) }
+    val currentDay by currentDayFlow.collectAsStateWithLifecycle(initialValue = 1)
     val scope = rememberCoroutineScope()
     val completedProgram = currentDay > totalDays
 
@@ -53,11 +57,14 @@ fun ProgramDetailScreen(
                 title = { Text(program.title) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
-        }
+        },
     ) { inner ->
         LazyColumn(
             modifier = Modifier.padding(inner),
@@ -107,7 +114,7 @@ private fun ProgressCallout(
             )
             TextButton(onClick = onReset) {
                 Icon(Icons.Filled.Restore, contentDescription = null)
-                Text(" Restart")
+                Text(stringResource(R.string.program_restart))
             }
         }
         currentDay > 1 -> Row(
@@ -116,15 +123,15 @@ private fun ProgressCallout(
         ) {
             Button(onClick = onResume) {
                 Icon(Icons.Filled.PlayArrow, contentDescription = null)
-                Text(" Resume Day $currentDay")
+                Text(stringResource(R.string.program_resume_day, currentDay))
             }
             TextButton(onClick = onReset) {
-                Text("Start over")
+                Text(stringResource(R.string.program_start_over))
             }
         }
         else -> Button(onClick = onResume) {
             Icon(Icons.Filled.PlayArrow, contentDescription = null)
-            Text(" Start Day 1 of $totalDays")
+            Text(stringResource(R.string.program_start_day_one, totalDays))
         }
     }
 }

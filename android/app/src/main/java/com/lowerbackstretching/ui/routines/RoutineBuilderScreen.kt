@@ -20,16 +20,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.BodyParts
 import com.lowerbackstretching.core.DurationUnit
 import com.lowerbackstretching.core.filteredBy
@@ -38,7 +40,6 @@ import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.ChipsRow
 import com.lowerbackstretching.ui.components.InfoRow
 import kotlinx.coroutines.launch
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,10 +63,13 @@ fun RoutineBuilderScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("New routine") },
+                title = { Text(stringResource(R.string.title_new_routine)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
                 actions = {
@@ -77,10 +81,10 @@ fun RoutineBuilderScreen(
                                 onSaved()
                             }
                         },
-                    ) { Icon(Icons.Filled.Check, contentDescription = "Save") }
+                    ) { Icon(Icons.Filled.Check, contentDescription = stringResource(R.string.action_save)) }
                 },
             )
-        }
+        },
     ) { inner ->
         Column(
             modifier = Modifier.padding(inner).fillMaxSize(),
@@ -89,7 +93,7 @@ fun RoutineBuilderScreen(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Routine name") },
+                label = { Text(stringResource(R.string.routine_name_label)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 16.dp),
             )
@@ -113,8 +117,16 @@ fun RoutineBuilderScreen(
                             if (isSelected) selected.remove(stretch.id) else selected.add(stretch.id)
                         },
                         trailing = if (isSelected) {
-                            { Icon(Icons.Filled.Check, contentDescription = "Selected", tint = MaterialTheme.colorScheme.primary) }
-                        } else null,
+                            {
+                                Icon(
+                                    Icons.Filled.Check,
+                                    contentDescription = stringResource(R.string.action_selected),
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        } else {
+                            null
+                        },
                     )
                 }
             }

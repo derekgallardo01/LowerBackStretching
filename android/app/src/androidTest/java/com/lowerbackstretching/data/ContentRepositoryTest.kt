@@ -9,7 +9,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ContentRepositoryTest {
-
     private val repo = ContentRepository(InstrumentationRegistry.getInstrumentation().targetContext)
 
     @Test

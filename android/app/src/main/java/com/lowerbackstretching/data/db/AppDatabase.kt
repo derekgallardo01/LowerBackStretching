@@ -20,9 +20,13 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
+
     abstract fun customRoutineDao(): CustomRoutineDao
+
     abstract fun programProgressDao(): ProgramProgressDao
+
     abstract fun flexibilityTestDao(): FlexibilityTestDao
+
     abstract fun painLogDao(): PainLogDao
 
     companion object {
@@ -32,7 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
         internal val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
-                    "ALTER TABLE sessions ADD COLUMN type TEXT NOT NULL DEFAULT 'program'"
+                    "ALTER TABLE sessions ADD COLUMN type TEXT NOT NULL DEFAULT 'program'",
                 )
             }
         }
@@ -41,10 +45,10 @@ abstract class AppDatabase : RoomDatabase() {
         internal val MIGRATION_3_4 = object : Migration(3, 4) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
-                    "ALTER TABLE custom_routines ADD COLUMN displayOrder INTEGER NOT NULL DEFAULT 0"
+                    "ALTER TABLE custom_routines ADD COLUMN displayOrder INTEGER NOT NULL DEFAULT 0",
                 )
                 db.execSQL(
-                    "ALTER TABLE custom_routines ADD COLUMN deletedAtEpochMillis INTEGER DEFAULT NULL"
+                    "ALTER TABLE custom_routines ADD COLUMN deletedAtEpochMillis INTEGER DEFAULT NULL",
                 )
             }
         }
@@ -56,7 +60,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "CREATE TABLE IF NOT EXISTS program_progress (" +
                         "programId TEXT NOT NULL PRIMARY KEY, " +
                         "currentDay INTEGER NOT NULL, " +
-                        "updatedAtEpochMillis INTEGER NOT NULL)"
+                        "updatedAtEpochMillis INTEGER NOT NULL)",
                 )
             }
         }
@@ -70,7 +74,7 @@ abstract class AppDatabase : RoomDatabase() {
                         "recordedAtEpochMillis INTEGER NOT NULL, " +
                         "sitAndReachCm REAL, " +
                         "toeTouchCm REAL, " +
-                        "shoulderReachCm REAL)"
+                        "shoulderReachCm REAL)",
                 )
             }
         }
@@ -85,35 +89,50 @@ abstract class AppDatabase : RoomDatabase() {
                         "painLevel INTEGER NOT NULL, " +
                         "bodyLocationTag TEXT, " +
                         "context TEXT NOT NULL, " +
-                        "sessionId INTEGER)"
+                        "sessionId INTEGER)",
                 )
                 db.execSQL(
                     "CREATE INDEX IF NOT EXISTS index_pain_logs_recordedAtEpochMillis " +
-                        "ON pain_logs(recordedAtEpochMillis)"
+                        "ON pain_logs(recordedAtEpochMillis)",
                 )
                 db.execSQL(
                     "CREATE INDEX IF NOT EXISTS index_pain_logs_sessionId " +
-                        "ON pain_logs(sessionId)"
+                        "ON pain_logs(sessionId)",
                 )
             }
         }
 
-        fun get(context: Context): AppDatabase = instance ?: synchronized(this) {
-            instance ?: Room.databaseBuilder(
-                context.applicationContext,
-                AppDatabase::class.java,
-                "lowerback.db",
-            )
-                .addMigrations(
-                    MIGRATION_2_3,
-                    MIGRATION_3_4,
-                    MIGRATION_4_5,
-                    MIGRATION_5_6,
-                    MIGRATION_6_7,
-                )
-                .fallbackToDestructiveMigration()
-                .build()
-                .also { instance = it }
-        }
+        fun get(context: Context): AppDatabase =
+            instance ?: synchronized(this) {
+                instance ?: Room
+                    .databaseBuilder(
+                        context.applicationContext,
+                        AppDatabase::class.java,
+                        "lowerback.db",
+                    ).addMigrations(
+                        MIGRATION_2_3,
+                        MIGRATION_3_4,
+                        MIGRATION_4_5,
+                        MIGRATION_5_6,
+                        MIGRATION_6_7,
+                    )
+                    // No fallbackToDestructiveMigration: it used to sit here
+                    // alongside these hand-written migrations, which meant any
+                    // version bump someone forgot to write a migration for would
+                    // silently delete the user's entire history — sessions, pain
+                    // logs, flexibility tests — with no error and no warning.
+                    //
+                    // Without it, a missing migration throws at open time instead:
+                    // loud in development, and impossible to ship past the
+                    // AppDatabaseMigrationsTest. Every schema change from here needs
+                    // a matching MIGRATION_x_y and a test.
+                    //
+                    // Downgrades are still allowed to reset, since a user moving to
+                    // an older build has no forward path and the alternative is a
+                    // permanently uninstallable app.
+                    .fallbackToDestructiveMigrationOnDowngrade()
+                    .build()
+                    .also { instance = it }
+            }
     }
 }

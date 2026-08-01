@@ -2,8 +2,6 @@ package com.lowerbackstretching
 
 import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasClickAction
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
@@ -20,7 +18,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class OnboardingE2ETest {
-
     @get:Rule(order = 0)
     val permissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)
@@ -29,10 +26,11 @@ class OnboardingE2ETest {
     val rule = createAndroidComposeRule<MainActivity>()
 
     @Before
-    fun reset() = runBlocking {
-        val ctx = InstrumentationRegistry.getInstrumentation().targetContext
-        Prefs(ctx).resetForTests()
-    }
+    fun reset() =
+        runBlocking {
+            val ctx = InstrumentationRegistry.getInstrumentation().targetContext
+            Prefs(ctx).resetForTests()
+        }
 
     @Test
     fun tapping_skip_lands_on_home_tab() {
@@ -88,8 +86,10 @@ class OnboardingE2ETest {
         rule.onNodeWithText("One or more applies").performClick()
 
         rule.waitUntil(timeoutMillis = 5_000) {
-            rule.onAllNodesWithText("Please see a doctor before stretching.")
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithText("Please see a doctor before stretching.")
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         rule.onNodeWithText("I've already seen a doctor").performClick()
 

@@ -7,13 +7,17 @@ Kotlin + Jetpack Compose. Targets Android 8.0 (API 26) and up.
 1. Install Android Studio (Hedgehog 2023.1.1 or newer).
 2. Open this `android/` folder. Studio will prompt to install missing SDKs and
    sync Gradle.
-3. Generate the Gradle wrapper jar (not checked in):
-   ```sh
-   gradle wrapper --gradle-version 8.7
-   ```
-   Or use Studio: File → Sync Project with Gradle Files. Studio will create
-   `gradle/wrapper/gradle-wrapper.jar` on first build.
-4. Plug in a device with USB debugging enabled (or start an emulator) and Run.
+3. Plug in a device with USB debugging enabled (or start an emulator) and Run.
+
+The Gradle wrapper is checked in — `gradlew`, `gradlew.bat`, and
+`gradle/wrapper/` including `gradle-wrapper.jar` — and pins Gradle 9.0.0.
+Use `./gradlew` rather than a system `gradle` so local builds match CI.
+
+The jar used to be gitignored, which meant `./gradlew` only worked for people
+who happened to have it locally; CI fell back to a system `gradle` and could
+silently run a different Gradle version. It is now committed, per Gradle's own
+guidance, and CI verifies its checksum with `gradle/actions/wrapper-validation`
+before executing it.
 
 ## Build from CLI
 
@@ -23,8 +27,13 @@ Kotlin + Jetpack Compose. Targets Android 8.0 (API 26) and up.
 ./gradlew :app:installDebug    # installs on a connected device
 ```
 
-For release, set up a signing config in `~/.gradle/gradle.properties` and add
-a `signingConfigs.release` block to `app/build.gradle.kts`, then:
+For release, both `:app` and `:wear` already declare a `signingConfigs.release`
+block that reads `keystore.properties` from the **repo root** (gitignored —
+`rootProject.file("../keystore.properties")`, where `rootProject` is
+`android/`). Create that file
+with `storeFile`, `storePassword`, `keyAlias`, and `keyPassword` pointing at
+your upload keystore. If it's absent the signing config is skipped silently and
+you'll get an unsigned AAB — which Play rejects. Then:
 
 ```sh
 ./gradlew :app:bundleRelease
@@ -41,7 +50,7 @@ Three Gradle modules:
   formulas (`computeStreak`, `longestStreak`, `xpProgress`, ...),
   achievements catalog, body-part / body-zone taxonomy, audio enums,
   settings enums (`ThemeMode`, `DurationUnit`), routine deep-link
-  encoder/parser, cooldown-suggestion decision, flexibility delta math.
+  encoder/parser, stretch-animation interpolation, flexibility delta math.
   No Android dependency — drives both `:app` and `:wear`.
 - **`:app`** — the phone app. Depends on `:core`.
   - `App.kt` — Application class; constructs `AppDatabase`, repositories,
@@ -70,7 +79,7 @@ The player activity supports PiP on Android 8 (API 26) and up. When
 the user presses Home while on a player screen, the activity calls
 `enterPictureInPictureMode(...)` with a 16:9 aspect ratio. The
 Compose tree observes the change via `PictureInPictureHost.inPip`
-and switches to a compact layout — just the YouTube video, the
+and switches to a compact layout — just the stretch animation, the
 remaining-seconds badge, and a 3dp progress bar at the bottom. No
 controls (PiP windows are too small to hit them); tapping the PiP
 expands the app back to full size.
@@ -108,15 +117,25 @@ is identical.
 Wave 5 added an optional integration with Health Connect (Google's
 cross-app health data store).
 
-- Dependency: `androidx.health.connect:connect-client` (declared in
-  `libs.versions.toml`). Pinned to `1.1.0-alpha07` — the newer
-  `1.1.0-rc02` requires compileSdk 36 and AGP 8.9.1+, which would
-  ripple through the whole project. Bump together when you're ready.
-- Permissions: `health.WRITE_EXERCISE` (to log stretching sessions)
-  and `health.READ_STEPS` (to suggest a cooldown after long walks).
-  Both declared in `AndroidManifest.xml` and gated behind user
-  toggles in Settings → Health Connect.
-- The toggles do nothing unless the device has the Health Connect
+- Dependency: `androidx.health.connect:connect-client` at `1.1.0-rc02`.
+  The old pin to `1.1.0-alpha07` existed because rc02 required compileSdk 36
+  and AGP 8.9.1+; that stopped being true in `05f521b`. Upgrading needed one
+  source change: `ExerciseSessionRecord`'s metadata-less constructor is
+  internal from rc02 onward, so the record now passes
+  `Metadata.activelyRecorded(...)` — the app times the routine live on the
+  device, which is neither a manual entry nor a background auto-record.
+  Dependabot is configured to leave major bumps of this artifact alone for
+  the same reason.
+- Permissions: `health.WRITE_EXERCISE` **only** — the app reads nothing.
+  Declared in `AndroidManifest.xml` and gated behind a user toggle in
+  Settings → Health Connect. `health.READ_STEPS` and the step-driven
+  cooldown card were removed in 1.0.8 to comply with Google Play's
+  **Minimum Scope** policy, which requires every requested data type to be
+  essential to a core user-facing feature.
+- **If you change the declared permissions, update `PRIVACY.md` in the
+  same commit** — Play reviewers read that policy against this manifest,
+  and a mismatch is a rejection risk.
+- The toggle does nothing unless the device has the Health Connect
   app installed. `HealthController.availability()` reports
   `NotInstalled` / `ProviderUpdateRequired` / `Available` and the
   Settings UI surfaces the right message.
@@ -132,7 +151,13 @@ We use `AlarmManager.setRepeating` for the daily reminder. Android no longer
 guarantees exact timing for inexact alarms; if you want stricter timing on
 modern OS versions, swap to `WorkManager`'s periodic work request with a
 scheduled `OneTimeWorkRequest` chain — the API in `ReminderScheduler` is
-isolated so the call sites won't change.
+isolated so the call sites won't change. Note that the WorkManager dependency
+was removed (it had been declared for years without a single `Worker`), so
+that swap means re-adding `androidx.work:work-runtime-ktx` first.
+
+Both receivers dispatch to `Dispatchers.IO` and hold the broadcast open with
+`goAsync()`. `goAsync()` alone is not enough — it extends the receiver's
+lifetime but does not move work off the main thread.
 
 ## Tests
 
@@ -156,7 +181,6 @@ Tests in **`:core`** cover the pure logic — no Android, no Room:
 | `AchievementsTest` | unlock rules at various stat thresholds |
 | `BodyPartsTest` | display formatting, distinctSorted, filterOptions |
 | `BodyZoneTest` | tag → zone mapping |
-| `CooldownSuggestionTest` | opt-in / stretched-today / threshold gates |
 | `FlexibilityTest` | per-metric delta, missing-snapshot handling |
 | `RoutineShareLinkTest` | build / parse round-trip, malformed links |
 | `SyntheticProgramIdTest` | single/routine prefix classification |
@@ -203,7 +227,7 @@ confirms the layout works on both form factors.
 
 | File | Covers |
 |------|--------|
-| `AppDatabaseMigrationsTest` | Room migrations v2 → v6: column adds, table creates, defaults |
+| `AppDatabaseMigrationsTest` | Room migrations v2 → v7: column adds, table creates, defaults |
 | `ContentRepositoryTest` | bundled JSON integrity, totalDurationSeconds |
 | `SessionDaoTest` | Room insert/recent/completedDays/forDay |
 | `CustomRoutineDaoTest` | Room insert/update/delete/byId |
@@ -227,9 +251,17 @@ so `viewModel()` can construct AndroidViewModels with an Application context.
 `CompleteRoutineE2ETest` uses `createAndroidComposeRule<MainActivity>()` instead
 to exercise the real navigation graph; it wipes Room + DataStore in `@Before`.
 
-## YouTube playback
+## Stretch animation
 
-`ui/components/YouTubePlayerView.kt` renders the YouTube iframe API inside a
-WebView. No SDK key is required. If a video says "video unavailable, video
-owner has disabled embedding", pick a different curated video — see
-`content/README.md`.
+`ui/components/StretchAnimationView.kt` renders the looping stick-figure
+demo on a Compose `Canvas`, driven by an `InfiniteTransition`. The pure
+interpolation math lives in `core/StretchAnimation.kt` so it's testable
+in plain JVM tests (see `core/test/.../StretchAnimationTest.kt`) and
+reusable by `:wear` if we ever add an animation surface there.
+
+YouTube embeds were removed entirely in `80b5baa` — the mid-2025
+embedder-verification tightening (Error 152) made the WebView path
+unreliable. Demonstrations are now drawn on-device from keyframe data, so
+the app fetches no media at runtime. The legacy `youtubeId` field survives
+in `stretches.json` but drives nothing; 12 of 26 entries have it empty.
+See `content/README.md` for the pose schema.

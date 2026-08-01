@@ -35,8 +35,6 @@
         <string>UIInterfaceOrientationLandscapeLeft</string>
         <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
-    <key>NSHealthShareUsageDescription</key>
-    <string>Reads your daily step count to suggest a cooldown stretch after long walks.</string>
     <key>NSHealthUpdateUsageDescription</key>
     <string>Logs your stretching sessions as flexibility workouts in Apple Health.</string>
     <key>NSCalendarsWriteOnlyAccessUsageDescription</key>

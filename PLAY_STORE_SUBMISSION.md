@@ -96,41 +96,19 @@ keyAlias=upload
 keyPassword=YOUR_STRONG_PASSWORD
 ```
 
-Add the signing block to `android/app/build.gradle.kts`:
+**The signing block already exists** in both `android/app/build.gradle.kts`
+and `android/wear/build.gradle.kts` — you only need to create the properties
+file. Both read `rootProject.file("../keystore.properties")`, and since Gradle's
+root project is `android/`, that resolves to the **repo root**.
 
-```kotlin
-import java.util.Properties
-import java.io.FileInputStream
+If the file is absent the signing config is skipped *silently* and you get an
+unsigned bundle, which Play rejects at upload. That is how `111568a` happened.
+The release workflow (§10b) checks for a signature block explicitly so this
+fails in CI instead.
 
-android {
-    // ... existing config ...
-
-    signingConfigs {
-        create("release") {
-            val keystoreProperties = Properties()
-            val keystorePropertiesFile = rootProject.file("keystore.properties")
-            if (keystorePropertiesFile.exists()) {
-                keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-                storeFile = file(keystoreProperties["storeFile"] as String)
-                storePassword = keystoreProperties["storePassword"] as String
-                keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["keyPassword"] as String
-            }
-        }
-    }
-
-    buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = false        // turn on once you've audited Proguard
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-}
-```
+Release builds run R8 with resource shrinking (`isMinifyEnabled = true`,
+`isShrinkResources = true`). Keep the generated `mapping.txt` for every
+release you publish — without it, Play Console crash reports are unreadable.
 
 **Important:** add `keystore.properties` and `*.jks` to `.gitignore` if they're not already there — never commit either.
 
@@ -147,13 +125,22 @@ cd android
 
 Output: `android/app/build/outputs/bundle/release/app-release.aab`
 
-Verify it's signed:
+The wear module ships in the same release, so build both:
 
 ```bash
-"$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs --verbose app/build/outputs/bundle/release/app-release.aab
+./gradlew :app:bundleRelease :wear:bundleRelease
 ```
 
-(Or use Android Studio: **Build → Generate Signed Bundle / APK → Android App Bundle**, point at your keystore.)
+Verify each is signed:
+
+```bash
+"$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs --verbose   app/build/outputs/bundle/release/app-release.aab
+unzip -l app/build/outputs/bundle/release/app-release.aab | grep 'META-INF/.*\.RSA'
+```
+
+**Prefer the automated path in §10b** — push a `v*` tag and CI does the build,
+the signature check, and artifact retention (including `mapping.txt`) for you.
+These manual steps are the fallback.
 
 ---
 
@@ -198,7 +185,7 @@ Stretch on the days you can. The app's streak safety net keeps you motivated wit
 
 PRIVATE BY DESIGN
 
-All your data — pain logs, flexibility tests, completed sessions — stays on your device unless you opt into Health Connect for steps and exercise logging. No accounts, no ads, no tracking.
+All your data — pain logs, flexibility tests, completed sessions — stays on your device. The only thing that can ever leave is a completed stretching session written to Health Connect, and only if you turn that on. The app reads nothing from Health Connect. No accounts, no ads, no tracking.
 
 GOOD FOR
 
@@ -304,13 +291,13 @@ Expected outcome: **Everyone** or **Everyone 10+** rating in all regions.
 Play Console → App content → Data Safety. Required for every app.
 
 ### Does your app collect or share user data?
-**Yes** — for the pain logs, session history, flexibility tests stored on device, AND optional Health Connect read/write.
+**Yes** — for the pain logs, session history, and flexibility tests stored on device, plus the optional Health Connect session **write**. The app performs no Health Connect reads.
 
 ### Data types collected
 
 | Type | Collected? | Optional? | Purpose | Shared? |
 |---|---|---|---|---|
-| Health and fitness — *Fitness info* | Yes | Required (the app's core feature) | App functionality, Analytics (internal only) | No |
+| Health and fitness — *Fitness info* | Yes | Required (the app's core feature) | App functionality | No |
 | Health and fitness — *Health info* (pain logs, body location) | Yes | Optional (user can skip every prompt) | App functionality | No |
 | App activity — *Other in-app actions* (which programs, completed days) | Yes | Required | App functionality | No |
 | Personal info — *Name, email, address, phone, IDs* | No | — | — | — |
@@ -333,7 +320,9 @@ Play Console → App content → Data Safety. Required for every app.
 
 ### Health Connect integration
 
-If you use Health Connect read (steps) or write (exercise sessions) — declare this in the Health Connect-specific data flow. The app currently does both **opt-in only** behind Settings toggles. Make sure to declare this honestly.
+The app declares exactly one Health Connect permission — `WRITE_EXERCISE` — and reads nothing. Declare **write only** in the Health Connect-specific data flow. It is opt-in behind a Settings toggle and off by default.
+
+> **History / do not re-add casually.** Version 1.0.7 also requested `READ_STEPS` to power a step-driven "cooldown stretch" card. It was removed in 1.0.8 (versionCode 11) under Play's **Minimum Scope** policy, which requires each requested data type to be essential to a core user-facing feature. If you ever re-add a read permission, you must update `PRIVACY.md`, this section, §10's Health features row, and the store listing in §7 **in the same change** — reviewers cross-check all four against the manifest.
 
 ---
 
@@ -353,8 +342,50 @@ In Play Console under "App content," fill all of these:
 | **Data safety** | Complete the form (see §9) |
 | **Government apps** | No |
 | **Financial features** | No |
-| **Health features** | Yes (Health Connect read/write, optional) |
+| **Health features** | Yes — Health Connect **write only** (`WRITE_EXERCISE`), optional/opt-in |
 | **Tax category** | Service (Health & Fitness) |
+
+---
+
+## 10b. Building the AAB (automated)
+
+`.github/workflows/android-release.yml` builds signed bundles for both modules
+so the build/sign step isn't done by hand under deadline pressure — commit
+`111568a` shipped an unsigned wear AAB that Play rejected, which is exactly
+what this prevents.
+
+**One-time setup.** Add four repository secrets (Settings → Secrets and
+variables → Actions):
+
+| Secret | Value |
+|---|---|
+| `UPLOAD_KEYSTORE_BASE64` | `base64 -w0 upload-keystore.jks` |
+| `UPLOAD_KEYSTORE_PASSWORD` | `storePassword` from `keystore.properties` |
+| `UPLOAD_KEY_ALIAS` | `keyAlias` |
+| `UPLOAD_KEY_PASSWORD` | `keyPassword` |
+
+**Cutting a release.**
+
+```sh
+# bump versionCode / versionName in android/app/build.gradle.kts first
+git tag v1.0.8
+git push origin v1.0.8
+```
+
+The workflow re-runs the full verify set (tests, ktlint, lint, coverage)
+before building, so a tag can't produce an artifact that wouldn't have passed
+CI. It then builds `:app:bundleRelease` and `:wear:bundleRelease`, **verifies
+each AAB actually carries a signature block**, and uploads both bundles plus
+their R8 `mapping.txt` files as run artifacts (90-day retention). Keep the
+mapping files — without them, Play Console crash reports are unreadable now
+that R8 is enabled.
+
+Signing material is reconstructed on the runner and deleted in an `always()`
+step, so it never survives the job.
+
+The workflow deliberately does **not** upload to Play. Release notes, staged
+rollout percentage, and the Data Safety review in §9 stay a human decision.
+Use `workflow_dispatch` with `skip_signing` for an unsigned dry run.
 
 ---
 
@@ -379,6 +410,8 @@ To submit:
 - **Common rejection reasons for health apps:**
   - Privacy policy URL not reachable / missing
   - Health Connect permissions declared in manifest but no UI to enable
+  - Health Connect permissions broader than the feature justifies (**Minimum Scope** — this is what cost us 1.0.7; see §9)
+  - Privacy policy contradicting the manifest's declared permissions
   - Claims in the listing copy that imply medical treatment ("cure" / "diagnose")
   - **Our copy avoids all of these** — it positions the app as a wellness/habit tool, not a medical device.
 

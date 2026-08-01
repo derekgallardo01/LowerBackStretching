@@ -7,8 +7,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.SectionHeader
 import kotlinx.coroutines.launch
@@ -35,7 +37,7 @@ fun CloudSyncCard(vm: AppViewModel = viewModel()) {
                 checked = enabled,
                 onChange = { on -> scope.launch { vm.sync.setEnabled(on) } },
             ) {
-                Text("Enable cloud sync", style = MaterialTheme.typography.titleSmall)
+                Text(stringResource(R.string.settings_cloud_sync), style = MaterialTheme.typography.titleSmall)
                 Text(
                     "Sessions, routines, and progress back up to your account.",
                     style = MaterialTheme.typography.bodySmall,

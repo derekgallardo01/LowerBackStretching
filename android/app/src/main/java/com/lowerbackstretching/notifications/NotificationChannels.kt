@@ -3,21 +3,22 @@ package com.lowerbackstretching.notifications
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
+import com.lowerbackstretching.R
 
 object NotificationChannels {
     const val REMINDER = "stretch_reminders"
 
+    // Notification channels are API 26+, which is our minSdk.
     fun registerAll(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val manager = context.getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(
-                NotificationChannel(
-                    REMINDER,
-                    "Stretching reminders",
-                    NotificationManager.IMPORTANCE_DEFAULT,
-                ).apply { description = "Daily nudges to do your stretching routine" }
-            )
-        }
+        val manager = context.getSystemService(NotificationManager::class.java)
+        manager.createNotificationChannel(
+            NotificationChannel(
+                REMINDER,
+                context.getString(R.string.notif_channel_reminders),
+                NotificationManager.IMPORTANCE_DEFAULT,
+            ).apply {
+                description = context.getString(R.string.notif_channel_reminders_desc)
+            },
+        )
     }
 }

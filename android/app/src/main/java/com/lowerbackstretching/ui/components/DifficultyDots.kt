@@ -20,7 +20,10 @@ import androidx.compose.ui.unit.dp
  * readers don't lose the information.
  */
 @Composable
-fun DifficultyDots(difficulty: String, modifier: Modifier = Modifier) {
+fun DifficultyDots(
+    difficulty: String,
+    modifier: Modifier = Modifier,
+) {
     val filled = filledCount(difficulty)
     val label = difficulty.replaceFirstChar(Char::titlecase)
     Row(
@@ -29,19 +32,26 @@ fun DifficultyDots(difficulty: String, modifier: Modifier = Modifier) {
     ) {
         repeat(3) { i ->
             val isFilled = i < filled
-            val color = if (isFilled) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+            val color = if (isFilled) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+            }
             Row(
                 modifier = Modifier
                     .size(8.dp)
                     .clip(CircleShape)
                     .background(color)
                     .then(
-                        if (!isFilled) Modifier.border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f),
-                            shape = CircleShape,
-                        ) else Modifier
+                        if (!isFilled) {
+                            Modifier.border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f),
+                                shape = CircleShape,
+                            )
+                        } else {
+                            Modifier
+                        },
                     ),
                 content = {},
             )
@@ -49,9 +59,10 @@ fun DifficultyDots(difficulty: String, modifier: Modifier = Modifier) {
     }
 }
 
-internal fun filledCount(difficulty: String): Int = when (difficulty.lowercase()) {
-    "easy" -> 1
-    "medium" -> 2
-    "hard" -> 3
-    else -> 1
-}
+internal fun filledCount(difficulty: String): Int =
+    when (difficulty.lowercase()) {
+        "easy" -> 1
+        "medium" -> 2
+        "hard" -> 3
+        else -> 1
+    }

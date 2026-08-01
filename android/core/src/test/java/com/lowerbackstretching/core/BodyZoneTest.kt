@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class BodyZoneTest {
-
     @Test fun `empty tags produce empty zone set`() {
         assertThat(bodyZonesForTags(emptyList())).isEmpty()
     }
@@ -31,7 +30,9 @@ class BodyZoneTest {
     @Test fun `multiple tags merge into a single zone set`() {
         val zones = bodyZonesForTags(listOf("lower-back", "hamstrings", "calves"))
         assertThat(zones).containsExactly(
-            BodyZone.LOWER_BACK, BodyZone.HAMSTRINGS, BodyZone.CALVES,
+            BodyZone.LOWER_BACK,
+            BodyZone.HAMSTRINGS,
+            BodyZone.CALVES,
         )
     }
 

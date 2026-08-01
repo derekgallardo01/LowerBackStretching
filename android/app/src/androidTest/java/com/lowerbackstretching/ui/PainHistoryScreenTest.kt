@@ -19,17 +19,17 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class PainHistoryScreenTest {
-
     @get:Rule val rule = createAndroidComposeRule<ComponentActivity>()
 
     private val ctx = InstrumentationRegistry.getInstrumentation().targetContext
     private val app = ctx.applicationContext as App
 
     @Before
-    fun reset() = runBlocking {
-        Prefs(ctx).resetForTests()
-        app.database.clearAllTables()
-    }
+    fun reset() =
+        runBlocking {
+            Prefs(ctx).resetForTests()
+            app.database.clearAllTables()
+        }
 
     @Test
     fun empty_state_renders_when_no_logs() {
@@ -38,7 +38,8 @@ class PainHistoryScreenTest {
             rule.onAllNodesWithText("No ratings yet").fetchSemanticsNodes().isNotEmpty()
         }
         rule.onNodeWithText("No ratings yet").assertIsDisplayed()
-        rule.onNodeWithText("Your next session will ask you how things feel.")
+        rule
+            .onNodeWithText("Your next session will ask you how things feel.")
             .assertIsDisplayed()
     }
 

@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class AchievementsTest {
-
     @Test fun `nothing unlocked at zero stats`() {
         val statuses = evaluateAchievements(totalSessions = 0, longestStreak = 0, level = 1)
         assertThat(statuses.filter { it.unlocked }).isEmpty()

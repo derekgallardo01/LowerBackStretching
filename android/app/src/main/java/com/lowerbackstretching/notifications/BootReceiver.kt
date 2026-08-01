@@ -10,7 +10,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class BootReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context, intent: Intent?) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent?,
+    ) {
+        // BOOT_COMPLETED and MY_PACKAGE_REPLACED are protected broadcasts, but an
+        // explicit intent with no action (or a different one) can still reach an
+        // exported receiver. Verify the action rather than rescheduling on
+        // anything that arrives.
+        if (intent?.action !in HANDLED_ACTIONS) return
+
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.Default).launch {
             try {
@@ -27,5 +36,12 @@ class BootReceiver : BroadcastReceiver() {
                 pendingResult.finish()
             }
         }
+    }
+
+    private companion object {
+        val HANDLED_ACTIONS = setOf(
+            Intent.ACTION_BOOT_COMPLETED,
+            Intent.ACTION_MY_PACKAGE_REPLACED,
+        )
     }
 }

@@ -22,7 +22,7 @@ interface PainLogDao {
 
     @Query(
         "SELECT EXISTS(SELECT 1 FROM pain_logs " +
-            "WHERE context = 'PRE_SESSION' AND recordedAtEpochMillis >= :sinceEpochMillis)"
+            "WHERE context = 'PRE_SESSION' AND recordedAtEpochMillis >= :sinceEpochMillis)",
     )
     suspend fun hasPreLogSince(sinceEpochMillis: Long): Boolean
 }

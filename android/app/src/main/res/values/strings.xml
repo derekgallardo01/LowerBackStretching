@@ -1,4 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  All user-facing copy lives here rather than as Kotlin literals, so the app can
+  be translated by adding values-<locale>/ folders. Values are byte-identical to
+  the literals they replaced, so existing UI tests that match on rendered text
+  continue to pass.
+
+  Naming: <area>_<thing>, grouped by area.
+-->
 <resources>
     <string name="app_name">Lower Back Stretching</string>
+
+    <!-- Bottom navigation -->
+    <string name="tab_home">Home</string>
+    <string name="tab_programs">Programs</string>
+    <string name="tab_stretches">Stretches</string>
+    <string name="tab_calendar">Calendar</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Common actions -->
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_done">Done</string>
+    <string name="action_save">Save</string>
+    <string name="action_skip">Skip</string>
+
+    <!-- Home -->
+    <string name="home_welcome">Welcome back</string>
+    <string name="home_resume_title">Pick up where you left off</string>
+    <string name="home_section_programs">Programs</string>
+    <string name="home_quick_goals">Goals</string>
+    <string name="home_quick_goals_sub">Weekly &amp; monthly targets</string>
+    <string name="home_quick_achievements">Achievements</string>
+    <string name="home_quick_achievements_sub">Badges &amp; milestones</string>
+    <string name="home_quick_pain">Pain log</string>
+    <string name="home_quick_pain_sub">Track how your back feels</string>
+    <string name="home_quick_flexibility">Flexibility self-test</string>
+    <string name="home_quick_flexibility_sub">Track your reach over time</string>
+    <string name="home_quick_glossary">Glossary</string>
+    <string name="home_quick_glossary_sub">Anatomy &amp; stretching terms</string>
+    <string name="home_quick_body_diagram">Tap where it hurts</string>
+    <string name="home_quick_body_diagram_sub">Find a stretch by body area</string>
+    <string name="home_quick_schedule">Schedule a break</string>
+    <string name="home_quick_schedule_sub">Add to your calendar</string>
+    <string name="home_stat_streak">Day streak</string>
+    <string name="home_stat_sessions">Sessions</string>
+    <string name="home_stat_level">Level</string>
+
+    <!-- Screen titles -->
+    <string name="title_achievements">Achievements</string>
+    <string name="title_body_diagram">Tap where it hurts</string>
+    <string name="title_flexibility">Flexibility self-test</string>
+    <string name="title_glossary">Glossary</string>
+    <string name="title_goals">Goals</string>
+    <string name="title_pain_log">Pain log</string>
+    <string name="title_safety_check">Safety check</string>
+    <string name="title_share_routine">Share routine</string>
+    <string name="title_new_routine">New routine</string>
+
+    <!-- Player -->
+    <string name="player_previous">Previous stretch</string>
+    <string name="player_next">Next stretch</string>
+    <string name="player_pause">Pause</string>
+    <string name="player_resume">Resume</string>
+    <string name="player_mark_complete">Mark stretch complete</string>
+    <string name="player_finish_routine">Finish routine</string>
+    <string name="player_what_you_should_feel">What you should feel</string>
+    <string name="player_switch_to_2d">Switch to 2D view</string>
+    <string name="player_switch_to_3d">Switch to 3D view</string>
+    <string name="player_stretch_position">Stretch %1$d of %2$d</string>
+    <string name="player_stretch_position_named">Stretch %1$d of %2$d: %3$s</string>
+    <string name="player_fallback_title">Routine</string>
+    <string name="player_practice_title">Practice</string>
+    <string name="player_day_title">Day %1$d</string>
+    <plurals name="player_seconds_remaining">
+        <item quantity="one">%1$d second remaining</item>
+        <item quantity="other">%1$d seconds remaining</item>
+    </plurals>
+
+    <!-- Program detail -->
+    <string name="program_start_over">Start over</string>
+
+    <!-- Routines -->
+    <string name="routine_name_label">Routine name</string>
+    <string name="routine_missing">Routine no longer exists.</string>
+    <string name="routine_import_title">Import routine</string>
+    <string name="routine_import_add">Add to my routines</string>
+
+    <!-- Stretch detail -->
+    <string name="stretch_why">Why this stretch</string>
+    <string name="stretch_watch_demo">Watch demo</string>
+
+    <!-- Glossary -->
+    <string name="glossary_search">Search terms</string>
+
+    <!-- Flexibility -->
+    <string name="flexibility_save">Save measurement</string>
+
+    <!-- Pain check-in -->
+    <string name="pain_level_description">Pain level %1$d out of 10</string>
+
+    <!-- Safety -->
+    <string name="safety_one_or_more_applies">One or more applies</string>
+    <string name="safety_seen_doctor">I\'ve already seen a doctor</string>
+    <string name="safety_continue_anyway">Continue anyway</string>
+    <string name="safety_reviewed_on">Reviewed %1$s</string>
+
+    <!-- Settings -->
+    <string name="settings_about">About</string>
+    <string name="settings_about_version">Lower Back Stretching · v%1$s</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_duration_display">Duration display</string>
+    <string name="settings_haptics_transitions">Stretch transitions</string>
+    <string name="settings_haptics_finish">Routine finish</string>
+    <string name="settings_daily_reminder">Daily reminder</string>
+    <string name="settings_streak_safety_net">Streak safety net</string>
+    <string name="settings_reminder_time">Reminder time</string>
+    <string name="settings_safety_check">Safety check</string>
+    <string name="settings_safety_check_sub">Symptoms to watch for before stretching</string>
+    <string name="settings_cloud_sync">Enable cloud sync</string>
+    <string name="settings_audio">Audio</string>
+    <string name="settings_audio_unavailable">This build doesn\'t include any audio files, so music, ambient sound, and transition chimes are unavailable.</string>
+    <string name="settings_audio_music">Music</string>
+    <string name="settings_audio_music_volume">Music volume</string>
+    <string name="settings_audio_ambient">Ambient</string>
+    <string name="settings_audio_ambient_volume">Ambient volume</string>
+    <string name="settings_audio_chime">Chime on transition</string>
+
+    <!-- Finished -->
+    <string name="finished_level">Level %1$d</string>
+
+    <!-- Notifications -->
+    <string name="notif_reminder_title">Time to stretch</string>
+    <string name="notif_reminder_body">A few minutes today keeps your back happy.</string>
+    <string name="notif_streak_title">Your %1$d-day streak is hanging on</string>
+    <string name="notif_streak_body">Three minutes is enough to keep it alive.</string>
+    <string name="notif_channel_reminders">Stretching reminders</string>
+    <string name="notif_channel_reminders_desc">Daily nudges to do your stretching routine</string>
+
+    <!-- Navigation / icon labels -->
+    <string name="action_next">Next</string>
+    <string name="action_previous">Previous</string>
+    <string name="action_share">Share</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_duplicate">Duplicate</string>
+    <string name="action_move_up">Move up</string>
+    <string name="action_move_down">Move down</string>
+    <string name="action_selected">Selected</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_intro_title">Less back pain, day by day.</string>
+    <string name="onboarding_intro_body">Short guided routines you can fit between meetings — built around your lower back, hips, and posture.</string>
+    <string name="onboarding_build_title">Build your own</string>
+    <string name="onboarding_build_body">Pick any stretches from the library to build a routine that fits you. Practice single stretches anytime.</string>
+    <string name="onboarding_consistent_title">Stay consistent</string>
+    <string name="onboarding_consistent_body">Track every session on the calendar. Streaks show your habit at a glance.</string>
+    <string name="onboarding_reminder_title">Daily reminder (optional)</string>
+    <string name="onboarding_reminder_body">A gentle nudge once a day so you don\'t forget. You can change the time or turn it off later.</string>
+
+    <!-- Empty states -->
+    <string name="calendar_empty_title">Your consistency journey starts here.</string>
+    <string name="calendar_empty_body">Finish your first session and you\'ll see it on this calendar.</string>
+    <string name="pain_empty_title">No ratings yet</string>
+    <string name="pain_empty_body">Your next session will ask you how things feel.</string>
+
+    <!-- Goals -->
+    <string name="goals_this_week">This week</string>
+    <string name="goals_this_month">This month</string>
+
+    <!-- Pain check-in -->
+    <string name="pain_prompt_pre">How\'s your back right now?</string>
+    <string name="pain_prompt_post">How does it feel now?</string>
+    <string name="pain_selected_location">Selected pain location: %1$s</string>
+
+    <!-- Program detail (leading spaces separate the label from its icon) -->
+    <string name="program_restart">" Restart"</string>
+    <string name="program_resume_day">" Resume Day %1$d"</string>
+    <string name="program_start_day_one">" Start Day 1 of %1$d"</string>
+
+    <!-- Share / import -->
+    <string name="routine_copy_link">"  Copy link"</string>
+    <string name="routine_share_sheet">"  Share…"</string>
+    <string name="routine_bullet_item">• %1$s</string>
+    <string name="routine_qr_description">QR code for %1$s</string>
+
+    <!-- Stretch detail -->
+    <string name="stretch_practice">"  Practice this stretch"</string>
+
+    <!-- Health Connect -->
+    <string name="health_write_title">Write stretching sessions</string>
+    <string name="health_write_subtitle">Adds each completed session to Health Connect.</string>
+    <string name="health_session_title">Stretching</string>
 </resources>

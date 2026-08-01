@@ -11,7 +11,6 @@ package com.lowerbackstretching.sync
  * branch on success without parsing exceptions.
  */
 interface SyncBackend {
-
     /** UID if the user is already signed in, else null. */
     suspend fun signedInUid(): String?
 

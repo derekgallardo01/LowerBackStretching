@@ -57,7 +57,12 @@ fun Confetti(
     }
 }
 
-private fun DrawScope.drawParticle(p: Particle, elapsedMillis: Long, durationMillis: Long, size: Size) {
+private fun DrawScope.drawParticle(
+    p: Particle,
+    elapsedMillis: Long,
+    durationMillis: Long,
+    size: Size,
+) {
     val t = elapsedMillis / 1_000f
     val progress = (elapsedMillis.toFloat() / durationMillis).coerceIn(0f, 1f)
     val fadeOutStart = 0.6f
@@ -97,18 +102,19 @@ private data class Particle(
     companion object {
         private val palette = listOf(Sage80, Sand40, Cream)
 
-        fun random(): Particle = Particle(
-            startXFraction = Random.nextFloat(),
-            startYOffset = Random.nextFloat() * 0.4f + 0.05f,
-            fallSpeed = 0.18f + Random.nextFloat() * 0.18f,
-            swayFreq = 0.6f + Random.nextFloat() * 1.4f,
-            swayAmplitude = 0.04f + Random.nextFloat() * 0.06f,
-            phaseSeconds = Random.nextFloat() * 6f,
-            rotationDegPerSec = (Random.nextFloat() - 0.5f) * 180f,
-            size = 8f + Random.nextFloat() * 10f,
-            aspect = 0.4f + Random.nextFloat() * 0.6f,
-            color = palette.random(),
-            alpha = 0.5f + Random.nextFloat() * 0.3f,
-        )
+        fun random(): Particle =
+            Particle(
+                startXFraction = Random.nextFloat(),
+                startYOffset = Random.nextFloat() * 0.4f + 0.05f,
+                fallSpeed = 0.18f + Random.nextFloat() * 0.18f,
+                swayFreq = 0.6f + Random.nextFloat() * 1.4f,
+                swayAmplitude = 0.04f + Random.nextFloat() * 0.06f,
+                phaseSeconds = Random.nextFloat() * 6f,
+                rotationDegPerSec = (Random.nextFloat() - 0.5f) * 180f,
+                size = 8f + Random.nextFloat() * 10f,
+                aspect = 0.4f + Random.nextFloat() * 0.6f,
+                color = palette.random(),
+                alpha = 0.5f + Random.nextFloat() * 0.3f,
+            )
     }
 }

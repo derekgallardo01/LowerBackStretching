@@ -32,8 +32,7 @@ data class CalendarMonth(
         return rotated.map { it.getDisplayName(TextStyle.NARROW, locale) }
     }
 
-    fun isInMonth(date: LocalDate): Boolean =
-        date.month == month.month && date.year == month.year
+    fun isInMonth(date: LocalDate): Boolean = date.month == month.month && date.year == month.year
 }
 
 private fun <T> List<T>.rotated(by: Int): List<T> {

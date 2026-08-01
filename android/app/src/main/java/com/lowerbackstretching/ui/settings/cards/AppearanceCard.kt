@@ -11,8 +11,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.DurationUnit
 import com.lowerbackstretching.core.ThemeMode
 import com.lowerbackstretching.ui.AppViewModel
@@ -27,7 +29,7 @@ fun AppearanceCard(vm: AppViewModel = viewModel()) {
 
     SettingsCard {
         SectionHeader("Appearance", topPadding = 0.dp)
-        Text("Theme", style = MaterialTheme.typography.bodyMedium)
+        Text(stringResource(R.string.settings_theme), style = MaterialTheme.typography.bodyMedium)
         Segmented(
             options = listOf(
                 ThemeMode.SYSTEM to "System",
@@ -37,7 +39,7 @@ fun AppearanceCard(vm: AppViewModel = viewModel()) {
             selected = themeMode,
             onChange = { scope.launch { vm.prefs.setThemeMode(it) } },
         )
-        Text("Duration display", style = MaterialTheme.typography.bodyMedium)
+        Text(stringResource(R.string.settings_duration_display), style = MaterialTheme.typography.bodyMedium)
         Segmented(
             options = listOf(
                 DurationUnit.SECONDS to "Seconds",

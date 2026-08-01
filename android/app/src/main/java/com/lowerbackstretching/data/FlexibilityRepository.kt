@@ -4,8 +4,9 @@ import com.lowerbackstretching.data.db.FlexibilityTestDao
 import com.lowerbackstretching.data.db.FlexibilityTestEntity
 import kotlinx.coroutines.flow.Flow
 
-class FlexibilityRepository(private val dao: FlexibilityTestDao) {
-
+class FlexibilityRepository(
+    private val dao: FlexibilityTestDao,
+) {
     fun all(): Flow<List<FlexibilityTestEntity>> = dao.all()
 
     fun latest(): Flow<FlexibilityTestEntity?> = dao.latest()
@@ -14,14 +15,15 @@ class FlexibilityRepository(private val dao: FlexibilityTestDao) {
         sitAndReachCm: Float?,
         toeTouchCm: Float?,
         shoulderReachCm: Float?,
-    ): Long = dao.insert(
-        FlexibilityTestEntity(
-            recordedAtEpochMillis = System.currentTimeMillis(),
-            sitAndReachCm = sitAndReachCm,
-            toeTouchCm = toeTouchCm,
-            shoulderReachCm = shoulderReachCm,
+    ): Long =
+        dao.insert(
+            FlexibilityTestEntity(
+                recordedAtEpochMillis = System.currentTimeMillis(),
+                sitAndReachCm = sitAndReachCm,
+                toeTouchCm = toeTouchCm,
+                shoulderReachCm = shoulderReachCm,
+            ),
         )
-    )
 
     suspend fun delete(test: FlexibilityTestEntity) = dao.delete(test)
 }

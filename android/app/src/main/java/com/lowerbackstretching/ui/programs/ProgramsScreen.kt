@@ -15,17 +15,19 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.BodyParts.ALL
 import com.lowerbackstretching.core.stretchCountSubtitle
 import com.lowerbackstretching.core.subtitle
@@ -46,12 +48,15 @@ fun ProgramsScreen(
     vm: AppViewModel = viewModel(),
 ) {
     val programs = vm.content.programs
-    val customRoutines by vm.customRoutines.all().collectAsState(initial = emptyList())
+    val customRoutines by vm.routines.collectAsStateWithLifecycle()
     val categories = remember(programs) { listOf(ALL) + programs.map { it.category }.distinct() }
     var selectedCategory by remember { mutableStateOf(ALL) }
     val visiblePrograms = remember(selectedCategory, programs) {
-        if (selectedCategory == ALL) programs
-        else programs.filter { it.category == selectedCategory }
+        if (selectedCategory == ALL) {
+            programs
+        } else {
+            programs.filter { it.category == selectedCategory }
+        }
     }
 
     val scope = rememberCoroutineScope()
@@ -60,11 +65,13 @@ fun ProgramsScreen(
 
     Scaffold(
         floatingActionButton = {
+            // semantics {} is not @Composable, so resolve the label first.
+            val newRoutineLabel = stringResource(R.string.title_new_routine)
             ExtendedFloatingActionButton(
                 onClick = onCreateRoutine,
                 icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-                text = { Text("New routine") },
-                modifier = Modifier.semantics { contentDescription = "New routine" },
+                text = { Text(newRoutineLabel) },
+                modifier = Modifier.semantics { contentDescription = newRoutineLabel },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHost) },

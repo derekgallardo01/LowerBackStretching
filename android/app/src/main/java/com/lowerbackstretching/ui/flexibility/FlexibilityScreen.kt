@@ -21,16 +21,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.flexibilityDelta
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.ScreenHeader
@@ -39,9 +41,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FlexibilityScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
+fun FlexibilityScreen(
+    onBack: () -> Unit,
+    vm: AppViewModel = viewModel(),
+) {
     val scope = rememberCoroutineScope()
-    val history by vm.flexibility.all().collectAsState(initial = emptyList())
+    val history by vm.flexibilityHistory.collectAsStateWithLifecycle()
 
     var sitAndReach by remember { mutableStateOf("") }
     var toeTouch by remember { mutableStateOf("") }
@@ -66,14 +71,17 @@ fun FlexibilityScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Flexibility self-test") },
+                title = { Text(stringResource(R.string.title_flexibility)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
-        }
+        },
     ) { inner ->
         LazyColumn(
             modifier = Modifier.padding(inner),
@@ -92,7 +100,7 @@ fun FlexibilityScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
                             enabled = anyValueEntered,
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            Text("Save measurement")
+                            Text(stringResource(R.string.flexibility_save))
                         }
                     }
                 }
@@ -116,7 +124,11 @@ fun FlexibilityScreen(onBack: () -> Unit, vm: AppViewModel = viewModel()) {
 }
 
 @Composable
-private fun MeasurementField(label: String, value: String, onChange: (String) -> Unit) {
+private fun MeasurementField(
+    label: String,
+    value: String,
+    onChange: (String) -> Unit,
+) {
     OutlinedTextField(
         value = value,
         onValueChange = { input ->

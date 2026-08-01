@@ -21,7 +21,9 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.lowerbackstretching.R
 
 /**
  * Bottom sheet shown when the user long-presses a custom routine row.
@@ -50,31 +52,31 @@ fun RoutineActionsSheet(
             Text(routineName, style = MaterialTheme.typography.titleMedium)
             ActionRow(
                 icon = Icons.Filled.Share,
-                label = "Share",
+                label = stringResource(R.string.action_share),
                 onClick = onShare,
                 enabled = true,
             )
             ActionRow(
                 icon = Icons.Filled.ContentCopy,
-                label = "Duplicate",
+                label = stringResource(R.string.action_duplicate),
                 onClick = onDuplicate,
                 enabled = true,
             )
             ActionRow(
                 icon = Icons.Filled.ArrowUpward,
-                label = "Move up",
+                label = stringResource(R.string.action_move_up),
                 onClick = onMoveUp,
                 enabled = canMoveUp,
             )
             ActionRow(
                 icon = Icons.Filled.ArrowDownward,
-                label = "Move down",
+                label = stringResource(R.string.action_move_down),
                 onClick = onMoveDown,
                 enabled = canMoveDown,
             )
             ActionRow(
                 icon = Icons.Filled.Delete,
-                label = "Delete",
+                label = stringResource(R.string.action_delete),
                 onClick = onDelete,
                 enabled = true,
             )

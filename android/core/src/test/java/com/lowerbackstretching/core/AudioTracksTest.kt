@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class AudioTracksTest {
-
     @Test
     fun music_fromStorage_round_trips_all_cases() {
         for (track in MusicTrack.entries) {

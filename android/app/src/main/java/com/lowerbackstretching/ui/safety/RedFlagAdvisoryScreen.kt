@@ -28,8 +28,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.lowerbackstretching.R
 
 /**
  * Full-screen advisory shown when the user attests on the onboarding
@@ -53,14 +55,17 @@ fun RedFlagAdvisoryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Safety check") },
+                title = { Text(stringResource(R.string.title_safety_check)) },
                 navigationIcon = {
                     IconButton(onClick = onContinueAnyway) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                        )
                     }
                 },
             )
-        }
+        },
     ) { inner ->
         Column(
             modifier = Modifier
@@ -116,14 +121,14 @@ fun RedFlagAdvisoryScreen(
                 onClick = onSeenDoctor,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("I've already seen a doctor")
+                Text(stringResource(R.string.safety_seen_doctor))
             }
             Spacer(Modifier.height(8.dp))
             OutlinedButton(
                 onClick = onContinueAnyway,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Continue anyway")
+                Text(stringResource(R.string.safety_continue_anyway))
             }
             Spacer(Modifier.height(24.dp))
         }

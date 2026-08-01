@@ -13,7 +13,10 @@ import kotlin.math.roundToInt
 
 /** A big number with a small label underneath. Used on Home and Calendar. */
 @Composable
-fun Stat(value: String, label: String) {
+fun Stat(
+    value: String,
+    label: String,
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(value, style = MaterialTheme.typography.headlineMedium)
         Text(label, style = MaterialTheme.typography.labelLarge)
@@ -26,7 +29,10 @@ fun Stat(value: String, label: String) {
  * session count *feels* like an increment instead of a jump.
  */
 @Composable
-fun AnimatedStat(value: Int, label: String) {
+fun AnimatedStat(
+    value: Int,
+    label: String,
+) {
     val animated by animateFloatAsState(
         targetValue = value.toFloat(),
         animationSpec = tween(durationMillis = 800, easing = EaseOutCubic),

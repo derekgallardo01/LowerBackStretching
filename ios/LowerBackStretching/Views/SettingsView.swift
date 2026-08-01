@@ -14,7 +14,6 @@ struct SettingsView: View {
     @AppStorage(SettingsKeys.ambientVolume) private var ambientVolume: Double = Double(AudioDefaults.ambientVolume)
     @AppStorage(SettingsKeys.chimeTrack) private var chimeTrackRaw: String = ChimeTrack.none.storageValue
     @AppStorage(SettingsKeys.healthWriteEnabled) private var healthWriteEnabled: Bool = false
-    @AppStorage(SettingsKeys.healthReadEnabled) private var healthReadEnabled: Bool = false
     @AppStorage(SettingsKeys.cloudSyncEnabled) private var cloudSyncEnabled: Bool = false
     @AppStorage(SettingsKeys.streakNudgeEnabled) private var streakNudgeEnabled: Bool = true
 
@@ -144,18 +143,6 @@ struct SettingsView: View {
                     .onChange(of: healthWriteEnabled) { _, on in
                         if on { HealthController.shared.requestAuthorization { _ in } }
                     }
-
-                    Toggle(isOn: $healthReadEnabled) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Read daily step count from Apple Health")
-                            Text("Used to suggest a cooldown stretch after long walks. Steps never leave your device.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    .onChange(of: healthReadEnabled) { _, on in
-                        if on { HealthController.shared.requestAuthorization { _ in } }
-                    }
                 } else {
                     Text("Apple Health isn't available on this device.")
                         .font(.caption)
@@ -166,7 +153,7 @@ struct SettingsView: View {
                     .foregroundStyle(.pink)
                     .textCase(nil)
             } footer: {
-                Text("This app integrates with Apple Health using HealthKit. With your permission it writes completed stretching sessions as Flexibility workouts and reads your daily step count to time cooldown suggestions. All data stays on your device — nothing is sent to a server. You can revoke access any time in Settings → Health → Data Access & Devices.")
+                Text("This app integrates with Apple Health using HealthKit. With your permission it writes completed stretching sessions as Flexibility workouts. It does not read any data from Apple Health. Everything stays on your device — nothing is sent to a server. You can revoke access any time in Settings → Health → Data Access & Devices.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

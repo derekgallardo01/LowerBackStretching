@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class FlexibilityTest {
-
     private data class Measurement(
         override val sitAndReachCm: Float?,
         override val toeTouchCm: Float?,
@@ -20,8 +19,8 @@ class FlexibilityTest {
 
     @Test
     fun `subtracts per-metric and skips when one side is null`() {
-        val now  = Measurement(sitAndReachCm = 12f, toeTouchCm = null, shoulderReachCm = 7f)
-        val prev = Measurement(sitAndReachCm = 10f, toeTouchCm = 3f,   shoulderReachCm = null)
+        val now = Measurement(sitAndReachCm = 12f, toeTouchCm = null, shoulderReachCm = 7f)
+        val prev = Measurement(sitAndReachCm = 10f, toeTouchCm = 3f, shoulderReachCm = null)
         val delta = flexibilityDelta(now, prev)
         assertThat(delta.sitAndReachCm).isEqualTo(2f)
         assertThat(delta.toeTouchCm).isNull()

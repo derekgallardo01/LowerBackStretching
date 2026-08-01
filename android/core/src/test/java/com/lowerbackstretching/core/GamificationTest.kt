@@ -5,7 +5,6 @@ import org.junit.Test
 import java.time.LocalDate
 
 class GamificationTest {
-
     // ----------- XP / levels -----------
 
     @Test fun `level 1 starts at 0 xp`() {
@@ -56,9 +55,12 @@ class GamificationTest {
 
     @Test fun `longestStreak picks the longer of two runs`() {
         val days = setOf(
-            LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 2),                          // 2-day run
-            LocalDate.of(2025, 1, 10), LocalDate.of(2025, 1, 11), LocalDate.of(2025, 1, 12), // 3-day run
-            LocalDate.of(2025, 1, 20),                                                     // 1-day run
+            LocalDate.of(2025, 1, 1),
+            LocalDate.of(2025, 1, 2), // 2-day run
+            LocalDate.of(2025, 1, 10),
+            LocalDate.of(2025, 1, 11),
+            LocalDate.of(2025, 1, 12), // 3-day run
+            LocalDate.of(2025, 1, 20), // 1-day run
         )
         assertThat(longestStreak(days)).isEqualTo(3)
     }
@@ -76,7 +78,7 @@ class GamificationTest {
         val days = setOf(
             LocalDate.of(2025, 1, 13), // Monday — same week
             LocalDate.of(2025, 1, 15), // Wed
-            LocalDate.of(2025, 1, 6),  // prior week
+            LocalDate.of(2025, 1, 6), // prior week
         )
         assertThat(weeklyCompletions(days, today)).isEqualTo(2)
     }

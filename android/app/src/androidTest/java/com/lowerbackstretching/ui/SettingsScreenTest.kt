@@ -18,14 +18,14 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class SettingsScreenTest {
-
     @get:Rule val rule = createAndroidComposeRule<ComponentActivity>()
 
     @Before
-    fun reset() = runBlocking {
-        val ctx = InstrumentationRegistry.getInstrumentation().targetContext
-        Prefs(ctx).resetForTests()
-    }
+    fun reset() =
+        runBlocking {
+            val ctx = InstrumentationRegistry.getInstrumentation().targetContext
+            Prefs(ctx).resetForTests()
+        }
 
     @Test
     fun renders_reminder_section_and_about() {

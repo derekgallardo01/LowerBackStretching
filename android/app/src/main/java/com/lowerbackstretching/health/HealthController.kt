@@ -6,12 +6,10 @@ import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.ExerciseSessionRecord
-import androidx.health.connect.client.records.StepsRecord
-import androidx.health.connect.client.request.AggregateRequest
-import androidx.health.connect.client.time.TimeRangeFilter
+import androidx.health.connect.client.records.metadata.Device
+import androidx.health.connect.client.records.metadata.Metadata
+import com.lowerbackstretching.R
 import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
 
 /**
  * Thin wrapper over Health Connect's [HealthConnectClient]. Every entry
@@ -20,11 +18,12 @@ import java.time.ZoneId
  * logged, never thrown.
  *
  * The view layer asks for permissions via [permissionsContract] /
- * [hasAllPermissions], gates writes/reads on the user pref, and calls
- * [writeStretchingSession] or [readStepsToday] when appropriate.
+ * [hasWritePermission], gates writes on the user pref, and calls
+ * [writeStretchingSession] when appropriate.
  */
-class HealthController(private val context: Context) {
-
+class HealthController(
+    private val context: Context,
+) {
     enum class Availability { Available, ProviderUpdateRequired, NotInstalled }
 
     companion object {
@@ -33,46 +32,36 @@ class HealthController(private val context: Context) {
         val writePermissions: Set<String> = setOf(
             HealthPermission.getWritePermission(ExerciseSessionRecord::class),
         )
-        val readPermissions: Set<String> = setOf(
-            HealthPermission.getReadPermission(StepsRecord::class),
-        )
-        val allPermissions: Set<String> = writePermissions + readPermissions
     }
 
-    fun availability(): Availability = when (HealthConnectClient.getSdkStatus(context)) {
-        HealthConnectClient.SDK_AVAILABLE -> Availability.Available
-        HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED -> Availability.ProviderUpdateRequired
-        else -> Availability.NotInstalled
-    }
+    fun availability(): Availability =
+        when (HealthConnectClient.getSdkStatus(context)) {
+            HealthConnectClient.SDK_AVAILABLE -> Availability.Available
+            HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED -> Availability.ProviderUpdateRequired
+            else -> Availability.NotInstalled
+        }
 
-    private fun client(): HealthConnectClient? = try {
-        if (availability() == Availability.Available) HealthConnectClient.getOrCreate(context)
-        else null
-    } catch (t: Throwable) {
-        Log.w(TAG, "Health Connect getOrCreate failed: ${t.message}")
-        null
-    }
+    private fun client(): HealthConnectClient? =
+        try {
+            if (availability() == Availability.Available) {
+                HealthConnectClient.getOrCreate(context)
+            } else {
+                null
+            }
+        } catch (t: Throwable) {
+            Log.w(TAG, "Health Connect getOrCreate failed: ${t.message}")
+            null
+        }
 
     /**
      * Returns the [androidx.activity.result.contract.ActivityResultContract]
-     * the UI uses to request the union of write+read permissions.
+     * the UI uses to request [writePermissions].
      */
-    fun permissionsContract() =
-        PermissionController.createRequestPermissionResultContract()
-
-    suspend fun hasAllPermissions(): Boolean {
-        val c = client() ?: return false
-        return c.permissionController.getGrantedPermissions().containsAll(allPermissions)
-    }
+    fun permissionsContract() = PermissionController.createRequestPermissionResultContract()
 
     suspend fun hasWritePermission(): Boolean {
         val c = client() ?: return false
         return c.permissionController.getGrantedPermissions().containsAll(writePermissions)
-    }
-
-    suspend fun hasReadPermission(): Boolean {
-        val c = client() ?: return false
-        return c.permissionController.getGrantedPermissions().containsAll(readPermissions)
     }
 
     /**
@@ -80,7 +69,10 @@ class HealthController(private val context: Context) {
      * success; false if Health Connect is unavailable, the permission
      * is missing, or the write fails.
      */
-    suspend fun writeStretchingSession(start: Instant, end: Instant): Boolean {
+    suspend fun writeStretchingSession(
+        start: Instant,
+        end: Instant,
+    ): Boolean {
         val c = client() ?: return false
         if (!hasWritePermission()) return false
         if (!end.isAfter(start)) return false
@@ -93,39 +85,22 @@ class HealthController(private val context: Context) {
                         endTime = end,
                         endZoneOffset = null,
                         exerciseType = ExerciseSessionRecord.EXERCISE_TYPE_STRETCHING,
-                        title = "Stretching",
-                    )
-                )
+                        title = context.getString(R.string.health_session_title),
+                        // Required from connect-client 1.1.0-rc02 — the
+                        // metadata-less constructor is internal there. The app
+                        // times the routine live on this device while the user
+                        // performs it, so this is actively recorded rather than
+                        // a manual entry or a background auto-record.
+                        metadata = Metadata.activelyRecorded(
+                            device = Device(type = Device.TYPE_PHONE),
+                        ),
+                    ),
+                ),
             )
             true
         } catch (t: Throwable) {
             Log.w(TAG, "writeStretchingSession failed: ${t.message}")
             false
-        }
-    }
-
-    /**
-     * Sum of step counts recorded between local midnight (today) and
-     * now. Returns null if Health Connect is unavailable, permission
-     * is missing, or no steps have been recorded yet.
-     */
-    suspend fun readStepsToday(): Long? {
-        val c = client() ?: return null
-        if (!hasReadPermission()) return null
-        val zone = ZoneId.systemDefault()
-        val start = LocalDate.now(zone).atStartOfDay(zone).toInstant()
-        val end = Instant.now()
-        return try {
-            val response = c.aggregate(
-                AggregateRequest(
-                    metrics = setOf(StepsRecord.COUNT_TOTAL),
-                    timeRangeFilter = TimeRangeFilter.between(start, end),
-                )
-            )
-            response[StepsRecord.COUNT_TOTAL]
-        } catch (t: Throwable) {
-            Log.w(TAG, "readStepsToday failed: ${t.message}")
-            null
         }
     }
 }

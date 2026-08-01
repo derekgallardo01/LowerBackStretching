@@ -23,10 +23,17 @@ object PainContext {
 }
 
 /** A POST-session log paired with its closest preceding PRE log (if any). */
-data class SessionPainPair(val pre: PainMeasurement?, val post: PainMeasurement)
+data class SessionPainPair(
+    val pre: PainMeasurement?,
+    val post: PainMeasurement,
+)
 
 /** Numeric view of a paired session — `delta` is null if no pre log was found. */
-data class SessionPainDelta(val pre: Int?, val post: Int, val delta: Int?)
+data class SessionPainDelta(
+    val pre: Int?,
+    val post: Int,
+    val delta: Int?,
+)
 
 fun sessionPainDelta(pair: SessionPainPair): SessionPainDelta =
     SessionPainDelta(

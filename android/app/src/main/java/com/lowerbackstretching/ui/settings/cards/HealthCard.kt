@@ -8,8 +8,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.health.HealthController
 import com.lowerbackstretching.ui.AppViewModel
 import com.lowerbackstretching.ui.components.SectionHeader
@@ -19,10 +21,9 @@ import kotlinx.coroutines.launch
 fun HealthCard(vm: AppViewModel = viewModel()) {
     val scope = rememberCoroutineScope()
     val write by vm.prefs.healthWriteEnabled.collectAsState(initial = false)
-    val read by vm.prefs.healthReadEnabled.collectAsState(initial = false)
     val availability = remember { vm.health.availability() }
     val launcher = rememberLauncherForActivityResult(
-        contract = vm.health.permissionsContract()
+        contract = vm.health.permissionsContract(),
     ) { /* result is the granted Set<String>; the flow re-emits regardless. */ }
 
     SettingsCard(verticalSpacing = 8.dp) {
@@ -40,21 +41,12 @@ fun HealthCard(vm: AppViewModel = viewModel()) {
             )
             HealthController.Availability.Available -> {
                 LabeledToggle(
-                    title = "Write stretching sessions",
-                    subtitle = "Adds each completed session to Health Connect.",
+                    title = stringResource(R.string.health_write_title),
+                    subtitle = stringResource(R.string.health_write_subtitle),
                     checked = write,
                     onChange = { on ->
                         scope.launch { vm.prefs.setHealthWriteEnabled(on) }
-                        if (on) launcher.launch(HealthController.allPermissions)
-                    },
-                )
-                LabeledToggle(
-                    title = "Read daily steps",
-                    subtitle = "Suggests a cooldown stretch after long walks.",
-                    checked = read,
-                    onChange = { on ->
-                        scope.launch { vm.prefs.setHealthReadEnabled(on) }
-                        if (on) launcher.launch(HealthController.allPermissions)
+                        if (on) launcher.launch(HealthController.writePermissions)
                     },
                 )
             }

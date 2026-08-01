@@ -30,10 +30,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.data.ReminderDefaults
 import com.lowerbackstretching.notifications.applyReminder
 import com.lowerbackstretching.notifications.applyStreakNudge
@@ -116,7 +118,7 @@ fun OnboardingScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TextButton(onClick = { finish(turnOnReminders = false) }) { Text("Skip") }
+                TextButton(onClick = { finish(turnOnReminders = false) }) { Text(stringResource(R.string.action_skip)) }
 
                 Button(onClick = ::advance) {
                     Text(
@@ -124,7 +126,7 @@ fun OnboardingScreen(
                             isSafetyPage -> "None of these apply"
                             isLast -> "Turn on reminders"
                             else -> "Next"
-                        }
+                        },
                     )
                 }
             }
@@ -172,13 +174,13 @@ private fun PageView(page: OnboardingPage.Standard) {
                 }
             }
             Text(
-                page.title,
+                stringResource(page.titleRes),
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                page.body,
+                stringResource(page.bodyRes),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
             )
@@ -187,14 +189,20 @@ private fun PageView(page: OnboardingPage.Standard) {
 }
 
 @Composable
-private fun DotsIndicator(currentPage: Int, totalPages: Int) {
+private fun DotsIndicator(
+    currentPage: Int,
+    totalPages: Int,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
     ) {
         repeat(totalPages) { i ->
-            val color = if (i == currentPage) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+            val color = if (i == currentPage) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+            }
             Box(
                 Modifier
                     .padding(horizontal = 4.dp)

@@ -5,14 +5,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.lowerbackstretching.App
 import com.lowerbackstretching.MainActivity
 import com.lowerbackstretching.R
 import com.lowerbackstretching.core.computeStreak
 import com.lowerbackstretching.data.Prefs
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 /**
@@ -41,31 +42,43 @@ internal suspend fun shouldNudgeStreak(
  *  - The current streak is at least 3 days (so we don't spam users who
  *    barely started).
  *
- * Reading the streak requires a quick DAO hit; we runBlocking on the
- * receiver's main-thread budget. DataStore + Room return fast enough
- * that this is safe.
+ * Reading the streak needs DataStore + a DAO hit. `onReceive` runs on the main
+ * thread, so the work is dispatched to IO and the broadcast is kept alive with
+ * [goAsync] until it completes — `goAsync()` extends the receiver's lifetime but
+ * does not move work off the main thread, so the dispatch is the part that
+ * matters.
  */
 class StreakNudgeReceiver : BroadcastReceiver() {
-
-    override fun onReceive(context: Context, intent: Intent?) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent?,
+    ) {
         val pendingResult = goAsync()
-        try {
-            runBlocking {
-                if (!shouldNotify(context)) return@runBlocking
-                postNotification(context, currentStreak(context))
+        val appContext = context.applicationContext
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Resolve the streak once and reuse it: the gate needs it and so
+                // does the notification copy.
+                val streak = currentStreak(appContext)
+                if (shouldNotify(appContext, streak)) {
+                    postNotification(appContext, streak)
+                }
+            } finally {
+                pendingResult.finish()
             }
-        } finally {
-            pendingResult.finish()
         }
     }
 
-    private suspend fun shouldNotify(context: Context): Boolean {
+    private suspend fun shouldNotify(
+        context: Context,
+        streak: Int,
+    ): Boolean {
         val prefs = Prefs(context)
         return shouldNudgeStreak(
             enabled = prefs.streakNudgeEnabled.first(),
             lastSessionEpochDay = prefs.lastSessionEpochDay.first(),
             today = LocalDate.now(),
-            streakProvider = { currentStreak(context) },
+            streakProvider = { streak },
         )
     }
 
@@ -75,25 +88,29 @@ class StreakNudgeReceiver : BroadcastReceiver() {
         return computeStreak(days, LocalDate.now())
     }
 
-    private fun postNotification(context: Context, streak: Int) {
+    private fun postNotification(
+        context: Context,
+        streak: Int,
+    ) {
         // (Body unchanged; pulled out so the gating logic above is unit-testable.)
         val openApp = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val content = PendingIntent.getActivity(
-            context, 0, openApp,
+            context,
+            0,
+            openApp,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
-        val notification = NotificationCompat.Builder(context, NotificationChannels.REMINDER)
+        val notification = NotificationCompat
+            .Builder(context, NotificationChannels.REMINDER)
             .setSmallIcon(R.drawable.ic_stat_stretch)
-            .setContentTitle("Your $streak-day streak is hanging on")
-            .setContentText("Three minutes is enough to keep it alive.")
+            .setContentTitle(context.getString(R.string.notif_streak_title, streak))
+            .setContentText(context.getString(R.string.notif_streak_body))
             .setAutoCancel(true)
             .setContentIntent(content)
             .build()
 
-        NotificationManagerCompat.from(context)
-            .takeIf { it.areNotificationsEnabled() }
-            ?.notify(2, notification)
+        context.notifyIfPermitted(2, notification)
     }
 }

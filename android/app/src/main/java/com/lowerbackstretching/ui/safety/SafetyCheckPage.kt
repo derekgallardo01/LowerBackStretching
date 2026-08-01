@@ -25,9 +25,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.lowerbackstretching.R
 
 /**
  * The onboarding page that lists red-flag symptoms and asks the user
@@ -110,7 +112,7 @@ internal fun SafetyCheckPage(onOneApplies: () -> Unit) {
                 onClick = onOneApplies,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("One or more applies")
+                Text(stringResource(R.string.safety_one_or_more_applies))
             }
             Spacer(Modifier.height(8.dp))
         }

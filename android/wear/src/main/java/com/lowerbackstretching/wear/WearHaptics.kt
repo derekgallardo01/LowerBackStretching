@@ -12,11 +12,14 @@ import android.os.VibratorManager
  * transition between stretches even when their wrist is down.
  */
 object WearHaptics {
-
     fun short(context: Context) = vibrate(context, durationMs = 60)
+
     fun finish(context: Context) = vibrate(context, durationMs = 220)
 
-    private fun vibrate(context: Context, durationMs: Long) {
+    private fun vibrate(
+        context: Context,
+        durationMs: Long,
+    ) {
         val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager)
                 ?.defaultVibrator
@@ -25,7 +28,7 @@ object WearHaptics {
             context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
         } ?: return
         vibrator.vibrate(
-            VibrationEffect.createOneShot(durationMs, VibrationEffect.DEFAULT_AMPLITUDE)
+            VibrationEffect.createOneShot(durationMs, VibrationEffect.DEFAULT_AMPLITUDE),
         )
     }
 }

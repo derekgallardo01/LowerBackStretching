@@ -28,7 +28,6 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class SafetyAdvisoryE2ETest {
-
     @get:Rule(order = 0)
     val permissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)
@@ -37,11 +36,12 @@ class SafetyAdvisoryE2ETest {
     val rule = createAndroidComposeRule<MainActivity>()
 
     @Before
-    fun reset() = runBlocking {
-        val ctx = InstrumentationRegistry.getInstrumentation().targetContext
-        Prefs(ctx).resetForTests()
-        Prefs(ctx).markOnboardingDone()
-    }
+    fun reset() =
+        runBlocking {
+            val ctx = InstrumentationRegistry.getInstrumentation().targetContext
+            Prefs(ctx).resetForTests()
+            Prefs(ctx).markOnboardingDone()
+        }
 
     @Test
     fun settings_safety_card_navigates_to_advisory_and_back() {
@@ -56,8 +56,10 @@ class SafetyAdvisoryE2ETest {
         rule.onNodeWithText("Safety check").performClick()
 
         rule.waitUntil(timeoutMillis = 5_000) {
-            rule.onAllNodesWithText("Please see a doctor before stretching.")
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithText("Please see a doctor before stretching.")
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         rule.onNodeWithText("Please see a doctor before stretching.").assertIsDisplayed()
         rule.onNodeWithText("I've already seen a doctor").assertIsDisplayed()

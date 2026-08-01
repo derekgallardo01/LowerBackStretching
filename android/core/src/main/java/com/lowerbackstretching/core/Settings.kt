@@ -7,23 +7,27 @@ package com.lowerbackstretching.core
  * UI) can reference them without pulling DataStore into the
  * dependency graph.
  */
-enum class ThemeMode(val storageValue: String) {
+enum class ThemeMode(
+    val storageValue: String,
+) {
     SYSTEM("system"),
     LIGHT("light"),
-    DARK("dark");
+    DARK("dark"),
+    ;
 
     companion object {
-        fun fromStorage(value: String?): ThemeMode =
-            entries.firstOrNull { it.storageValue == value } ?: SYSTEM
+        fun fromStorage(value: String?): ThemeMode = entries.firstOrNull { it.storageValue == value } ?: SYSTEM
     }
 }
 
-enum class DurationUnit(val storageValue: String) {
+enum class DurationUnit(
+    val storageValue: String,
+) {
     SECONDS("seconds"),
-    MINUTES_SHORT("minutes_short");
+    MINUTES_SHORT("minutes_short"),
+    ;
 
     companion object {
-        fun fromStorage(value: String?): DurationUnit =
-            entries.firstOrNull { it.storageValue == value } ?: SECONDS
+        fun fromStorage(value: String?): DurationUnit = entries.firstOrNull { it.storageValue == value } ?: SECONDS
     }
 }

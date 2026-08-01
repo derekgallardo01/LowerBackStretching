@@ -25,7 +25,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,10 +32,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lowerbackstretching.R
 import com.lowerbackstretching.core.CalendarMonth
 import com.lowerbackstretching.data.db.SessionEntity
 import com.lowerbackstretching.ui.AppViewModel
@@ -53,13 +55,12 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
-
 @Composable
 fun CalendarScreen(vm: AppViewModel = viewModel()) {
-    val completed by vm.sessions.completedDays().collectAsState(initial = emptySet())
-    val streak by vm.sessions.streak().collectAsState(initial = 0)
-    val total by vm.sessions.count().collectAsState(initial = 0)
-    val recent by vm.sessions.recent().collectAsState(initial = emptyList())
+    val completed by vm.completedDays.collectAsStateWithLifecycle()
+    val streak by vm.streak.collectAsStateWithLifecycle()
+    val total by vm.sessionCount.collectAsStateWithLifecycle()
+    val recent by vm.recentSessions.collectAsStateWithLifecycle()
     var month by remember { mutableStateOf(YearMonth.now()) }
 
     LazyColumn(
@@ -78,7 +79,11 @@ fun CalendarScreen(vm: AppViewModel = viewModel()) {
             val grid = CalendarMonth(month)
             Card(shape = RoundedCornerShape(16.dp)) {
                 Column(Modifier.padding(12.dp)) {
-                    MonthHeader(month, onPrev = { month = month.minusMonths(1) }, onNext = { month = month.plusMonths(1) })
+                    MonthHeader(
+                        month,
+                        onPrev = { month = month.minusMonths(1) },
+                        onNext = { month = month.plusMonths(1) },
+                    )
                     Spacer(Modifier.height(8.dp))
                     WeekdayLabels(grid)
                     MonthGrid(grid = grid, completed = completed)
@@ -90,8 +95,8 @@ fun CalendarScreen(vm: AppViewModel = viewModel()) {
             item {
                 EmptyState(
                     icon = Icons.Filled.CalendarMonth,
-                    title = "Your consistency journey starts here.",
-                    body = "Finish your first session and you'll see it on this calendar.",
+                    title = stringResource(R.string.calendar_empty_title),
+                    body = stringResource(R.string.calendar_empty_body),
                 )
             }
         } else {
@@ -106,11 +111,11 @@ fun CalendarScreen(vm: AppViewModel = viewModel()) {
     }
 }
 
-private fun SessionEntity.headerTitle(programTitle: String): String =
-    "$programTitle · Day $dayNumber"
+private fun SessionEntity.headerTitle(programTitle: String): String = "$programTitle · Day $dayNumber"
 
 private fun SessionEntity.subtitle(): String {
-    val date = Instant.ofEpochMilli(completedAtEpochMillis)
+    val date = Instant
+        .ofEpochMilli(completedAtEpochMillis)
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime()
     val formatted = date.format(DateTimeFormatter.ofPattern("MMM d · h:mm a", Locale.getDefault()))
@@ -118,21 +123,31 @@ private fun SessionEntity.subtitle(): String {
 }
 
 @Composable
-private fun MonthHeader(month: YearMonth, onPrev: () -> Unit, onNext: () -> Unit) {
+private fun MonthHeader(
+    month: YearMonth,
+    onPrev: () -> Unit,
+    onNext: () -> Unit,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         IconButton(onClick = onPrev) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Previous")
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = stringResource(R.string.action_previous),
+            )
         }
         Text(
             "${month.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${month.year}",
             style = MaterialTheme.typography.titleLarge,
         )
         IconButton(onClick = onNext) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Next")
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = stringResource(R.string.action_next),
+            )
         }
     }
 }
@@ -152,7 +167,10 @@ private fun WeekdayLabels(grid: CalendarMonth) {
 }
 
 @Composable
-private fun MonthGrid(grid: CalendarMonth, completed: Set<LocalDate>) {
+private fun MonthGrid(
+    grid: CalendarMonth,
+    completed: Set<LocalDate>,
+) {
     val today = LocalDate.now()
     Column {
         grid.weeks.forEach { week ->
@@ -175,7 +193,12 @@ private fun MonthGrid(grid: CalendarMonth, completed: Set<LocalDate>) {
 }
 
 @Composable
-private fun DayCell(date: LocalDate, done: Boolean, isToday: Boolean, modifier: Modifier) {
+private fun DayCell(
+    date: LocalDate,
+    done: Boolean,
+    isToday: Boolean,
+    modifier: Modifier,
+) {
     Box(
         modifier = modifier.padding(2.dp).height(44.dp),
         contentAlignment = Alignment.Center,

@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class CustomRoutineEntityTest {
-
     @Test
     fun `stretchIds parses csv`() {
         val entity = entity(csv = "cat-cow,child-pose,knee-to-chest")
@@ -29,10 +28,11 @@ class CustomRoutineEntityTest {
         assertThat(entity.stretchIds).containsExactly("cat-cow")
     }
 
-    private fun entity(csv: String) = CustomRoutineEntity(
-        id = 1L,
-        name = "test",
-        stretchIdsCsv = csv,
-        createdAtEpochMillis = 0L,
-    )
+    private fun entity(csv: String) =
+        CustomRoutineEntity(
+            id = 1L,
+            name = "test",
+            stretchIdsCsv = csv,
+            createdAtEpochMillis = 0L,
+        )
 }

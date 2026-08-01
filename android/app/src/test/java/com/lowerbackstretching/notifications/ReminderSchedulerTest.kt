@@ -6,8 +6,13 @@ import java.util.Calendar
 import java.util.TimeZone
 
 class ReminderSchedulerTest {
-
-    private fun now(year: Int, month: Int, day: Int, hour: Int, minute: Int): Calendar {
+    private fun now(
+        year: Int,
+        month: Int,
+        day: Int,
+        hour: Int,
+        minute: Int,
+    ): Calendar {
         return Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
             clear()
             set(year, month - 1, day, hour, minute, 0)

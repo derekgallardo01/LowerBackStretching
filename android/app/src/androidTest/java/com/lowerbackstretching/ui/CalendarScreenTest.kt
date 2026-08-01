@@ -19,16 +19,16 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class CalendarScreenTest {
-
     @get:Rule val rule = createAndroidComposeRule<ComponentActivity>()
 
     @Before
-    fun reset() = runBlocking {
-        // Reset Room and DataStore so the empty-state branch is what renders.
-        val ctx = InstrumentationRegistry.getInstrumentation().targetContext
-        Prefs(ctx).resetForTests()
-        (ctx.applicationContext as App).database.clearAllTables()
-    }
+    fun reset() =
+        runBlocking {
+            // Reset Room and DataStore so the empty-state branch is what renders.
+            val ctx = InstrumentationRegistry.getInstrumentation().targetContext
+            Prefs(ctx).resetForTests()
+            (ctx.applicationContext as App).database.clearAllTables()
+        }
 
     @Test
     fun renders_header_stats_and_empty_state() {

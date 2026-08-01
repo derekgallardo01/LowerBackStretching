@@ -10,17 +10,17 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class FlexibilityRepositoryTest {
-
     @Test
-    fun `record writes a row with the supplied measurements`() = runTest {
-        val dao = FakeDao()
-        val repo = FlexibilityRepository(dao)
-        repo.record(sitAndReachCm = 12.5f, toeTouchCm = -4f, shoulderReachCm = null)
-        val saved = dao.inserted.last()
-        assertThat(saved.sitAndReachCm).isEqualTo(12.5f)
-        assertThat(saved.toeTouchCm).isEqualTo(-4f)
-        assertThat(saved.shoulderReachCm).isNull()
-    }
+    fun `record writes a row with the supplied measurements`() =
+        runTest {
+            val dao = FakeDao()
+            val repo = FlexibilityRepository(dao)
+            repo.record(sitAndReachCm = 12.5f, toeTouchCm = -4f, shoulderReachCm = null)
+            val saved = dao.inserted.last()
+            assertThat(saved.sitAndReachCm).isEqualTo(12.5f)
+            assertThat(saved.toeTouchCm).isEqualTo(-4f)
+            assertThat(saved.shoulderReachCm).isNull()
+        }
 
     private class FakeDao : FlexibilityTestDao {
         val inserted = mutableListOf<FlexibilityTestEntity>()

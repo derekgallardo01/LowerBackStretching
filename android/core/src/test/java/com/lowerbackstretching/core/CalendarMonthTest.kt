@@ -7,7 +7,6 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 class CalendarMonthTest {
-
     @Test
     fun weeks_cover_full_month_and_are_35_or_42_cells() {
         val m = CalendarMonth(YearMonth.of(2026, 5))
@@ -50,7 +49,17 @@ class CalendarMonthTest {
         val mon = CalendarMonth(YearMonth.of(2026, 5), firstDayOfWeek = DayOfWeek.MONDAY)
         val sun = CalendarMonth(YearMonth.of(2026, 5), firstDayOfWeek = DayOfWeek.SUNDAY)
         // The first date in each grid is at the corresponding firstDayOfWeek.
-        assertThat(mon.weeks.first().first().dayOfWeek).isEqualTo(DayOfWeek.MONDAY)
-        assertThat(sun.weeks.first().first().dayOfWeek).isEqualTo(DayOfWeek.SUNDAY)
+        assertThat(
+            mon.weeks
+                .first()
+                .first()
+                .dayOfWeek,
+        ).isEqualTo(DayOfWeek.MONDAY)
+        assertThat(
+            sun.weeks
+                .first()
+                .first()
+                .dayOfWeek,
+        ).isEqualTo(DayOfWeek.SUNDAY)
     }
 }

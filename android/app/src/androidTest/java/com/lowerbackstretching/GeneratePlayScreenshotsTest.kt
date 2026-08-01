@@ -37,7 +37,6 @@ import java.time.LocalDate
  */
 @RunWith(AndroidJUnit4::class)
 class GeneratePlayScreenshotsTest {
-
     @get:Rule(order = 0)
     val permissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)
@@ -75,7 +74,7 @@ class GeneratePlayScreenshotsTest {
                         date.toEpochDay() * 86_400_000L + 12 * 3_600_000L,
                     durationSeconds = 180 + offset * 30,
                     type = "program",
-                )
+                ),
             )
         }
 
@@ -122,8 +121,10 @@ class GeneratePlayScreenshotsTest {
         }
         rule.onNodeWithText("Lower Back Relief").performClick()
         rule.waitUntil(timeoutMillis = 5_000) {
-            rule.onAllNodesWithText("Gentle Start", substring = true)
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithText("Gentle Start", substring = true)
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         Thread.sleep(400)
         takeScreenshot("03-program-detail")
@@ -175,8 +176,10 @@ class GeneratePlayScreenshotsTest {
         }
         rule.onNodeWithText("Cat-Cow").performClick()
         rule.waitUntil(timeoutMillis = 5_000) {
-            rule.onAllNodesWithText("  Practice this stretch")
-                .fetchSemanticsNodes().isNotEmpty()
+            rule
+                .onAllNodesWithText("  Practice this stretch")
+                .fetchSemanticsNodes()
+                .isNotEmpty()
         }
         // Give the WebView a moment to either render the video or fall
         // through to the loading skeleton.

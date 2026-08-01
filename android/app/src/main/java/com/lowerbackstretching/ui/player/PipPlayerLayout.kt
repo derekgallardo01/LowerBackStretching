@@ -15,7 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.lowerbackstretching.core.DurationUnit
 import com.lowerbackstretching.core.formatDuration
-import com.lowerbackstretching.ui.components.YouTubePlayerView
+import com.lowerbackstretching.core.model.StretchAnimationSpec
+import com.lowerbackstretching.ui.components.StretchAnimationView
 
 /**
  * Compact layout shown while the activity is in Picture-in-Picture
@@ -24,16 +25,16 @@ import com.lowerbackstretching.ui.components.YouTubePlayerView
  */
 @Composable
 internal fun PipPlayerLayout(
-    videoId: String,
-    startSeconds: Int,
+    animation: StretchAnimationSpec?,
+    youtubeId: String,
     remainingSeconds: Int,
     progress: Float,
     durationUnit: DurationUnit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        YouTubePlayerView(
-            videoId = videoId,
-            startSeconds = startSeconds,
+        StretchAnimationView(
+            animation = animation,
+            youtubeId = youtubeId,
             modifier = Modifier.fillMaxSize(),
         )
         Column(

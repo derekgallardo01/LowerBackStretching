@@ -1,6 +1,10 @@
+---
+permalink: /PRIVACY
+---
+
 # Privacy Policy — Lower Back Stretching
 
-**Effective date:** May 25, 2026
+**Effective date:** August 1, 2026
 **Contact:** derekgallardo01@gmail.com
 
 This policy describes what data the Lower Back Stretching mobile app ("the app") handles, where it lives, and your rights over it. Plain English; no legalese.
@@ -9,7 +13,7 @@ This policy describes what data the Lower Back Stretching mobile app ("the app")
 
 ## Summary in one paragraph
 
-We do not run a server. The app does not have user accounts. Everything you create in the app — your completed sessions, pain check-ins, flexibility tests, custom routines, settings — is stored **only on your phone**. Uninstalling the app deletes it permanently. The only data that ever leaves your device is what you explicitly choose to share with Health Connect (steps in, exercise sessions out), and standard requests to YouTube to play stretch demonstration videos.
+We do not run a server. The app does not have user accounts. Everything you create in the app — your completed sessions, pain check-ins, flexibility tests, custom routines, settings — is stored **only on your phone**. Uninstalling the app deletes it permanently. The only data that ever leaves your device is the completed stretching sessions you explicitly choose to write to Health Connect. Stretch demonstrations are drawn on-device as animations; nothing is streamed.
 
 ---
 
@@ -31,20 +35,17 @@ This data stays on the device. The app does not transmit it to us or any third p
 
 If you enable Health Connect integration in Settings:
 
-- The app may **read** your daily step count from Health Connect to suggest a cooldown stretch.
 - The app may **write** each completed stretching session to Health Connect as an exercise record so it appears in your overall health timeline.
 
-Both are off by default. Both are revocable at any time from Android Settings → Health Connect.
+This is off by default and revocable at any time from Android Settings → Health Connect.
 
-We never read or write any Health Connect data type other than the two listed above.
+The app requests **write access only**. It does not read any data from Health Connect — not steps, not heart rate, not any other data type. The single permission it declares is `android.permission.health.WRITE_EXERCISE`.
 
 ---
 
-## YouTube video embeds
+## Stretch demonstrations
 
-Stretch demonstrations are streamed from YouTube via a standard embedded iframe. When you load a stretch detail page or start a session, your device makes a request to YouTube to fetch the video. **This means YouTube/Google may receive standard request metadata** (IP address, device user-agent) the same way any web page that embeds YouTube would.
-
-If you don't want any data going to YouTube, turn off your device's network when using the app. The app will fall back to its description-and-timer layout for any unreachable video.
+Stretch demonstrations are rendered on your device as animated figures drawn by the app itself. No video is streamed, no media is fetched from any server, and no third party (including YouTube or Google) receives any request when you view a stretch or run a session.
 
 ---
 
@@ -95,7 +96,7 @@ Because we don't store anything off-device, "data deletion" works simply:
 
 - **Delete everything:** uninstall the app from your phone. All of your data is removed with it.
 - **Delete a specific session:** open the app, find the session in Calendar or Pain log, swipe / delete. (For features that don't yet have an in-app delete, uninstalling is the available option.)
-- **Stop Health Connect sharing:** turn off the toggles in Settings → Health Connect, or revoke at the Android system level.
+- **Stop Health Connect sharing:** turn off the toggle in Settings → Health Connect, or revoke at the Android system level.
 
 If you live in a jurisdiction that grants you GDPR, CCPA, or similar rights, you can exercise them simply by uninstalling — we have no server-side data to access, port, or delete on your behalf.
 

@@ -1,14 +1,12 @@
 package com.lowerbackstretching.core
 
 import com.google.common.truth.Truth.assertThat
-import com.lowerbackstretching.core.BodyParts
 import com.lowerbackstretching.core.model.Program
 import com.lowerbackstretching.core.model.ProgramDay
 import com.lowerbackstretching.core.model.Stretch
 import org.junit.Test
 
 class DisplayTest {
-
     private fun stretch(
         id: String = "s",
         difficulty: String = "easy",
@@ -79,8 +77,11 @@ class DisplayTest {
     @Test
     fun program_subtitle_renders_day_count_and_category() {
         val program = Program(
-            id = "p", title = "X", category = "lower-back",
-            summary = "", days = listOf(
+            id = "p",
+            title = "X",
+            category = "lower-back",
+            summary = "",
+            days = listOf(
                 ProgramDay(day = 1, title = "d1", stretchIds = listOf("a")),
                 ProgramDay(day = 2, title = "d2", stretchIds = listOf("a")),
             ),
