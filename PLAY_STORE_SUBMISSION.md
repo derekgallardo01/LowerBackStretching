@@ -198,7 +198,7 @@ Stretch on the days you can. The app's streak safety net keeps you motivated wit
 
 PRIVATE BY DESIGN
 
-All your data — pain logs, flexibility tests, completed sessions — stays on your device unless you opt into Health Connect for steps and exercise logging. No accounts, no ads, no tracking.
+All your data — pain logs, flexibility tests, completed sessions — stays on your device. The only thing that can ever leave is a completed stretching session written to Health Connect, and only if you turn that on. The app reads nothing from Health Connect. No accounts, no ads, no tracking.
 
 GOOD FOR
 
@@ -304,13 +304,13 @@ Expected outcome: **Everyone** or **Everyone 10+** rating in all regions.
 Play Console → App content → Data Safety. Required for every app.
 
 ### Does your app collect or share user data?
-**Yes** — for the pain logs, session history, flexibility tests stored on device, AND optional Health Connect read/write.
+**Yes** — for the pain logs, session history, and flexibility tests stored on device, plus the optional Health Connect session **write**. The app performs no Health Connect reads.
 
 ### Data types collected
 
 | Type | Collected? | Optional? | Purpose | Shared? |
 |---|---|---|---|---|
-| Health and fitness — *Fitness info* | Yes | Required (the app's core feature) | App functionality, Analytics (internal only) | No |
+| Health and fitness — *Fitness info* | Yes | Required (the app's core feature) | App functionality | No |
 | Health and fitness — *Health info* (pain logs, body location) | Yes | Optional (user can skip every prompt) | App functionality | No |
 | App activity — *Other in-app actions* (which programs, completed days) | Yes | Required | App functionality | No |
 | Personal info — *Name, email, address, phone, IDs* | No | — | — | — |
@@ -333,7 +333,9 @@ Play Console → App content → Data Safety. Required for every app.
 
 ### Health Connect integration
 
-If you use Health Connect read (steps) or write (exercise sessions) — declare this in the Health Connect-specific data flow. The app currently does both **opt-in only** behind Settings toggles. Make sure to declare this honestly.
+The app declares exactly one Health Connect permission — `WRITE_EXERCISE` — and reads nothing. Declare **write only** in the Health Connect-specific data flow. It is opt-in behind a Settings toggle and off by default.
+
+> **History / do not re-add casually.** Version 1.0.7 also requested `READ_STEPS` to power a step-driven "cooldown stretch" card. It was removed in 1.0.8 (versionCode 11) under Play's **Minimum Scope** policy, which requires each requested data type to be essential to a core user-facing feature. If you ever re-add a read permission, you must update `PRIVACY.md`, this section, §10's Health features row, and the store listing in §7 **in the same change** — reviewers cross-check all four against the manifest.
 
 ---
 
@@ -353,7 +355,7 @@ In Play Console under "App content," fill all of these:
 | **Data safety** | Complete the form (see §9) |
 | **Government apps** | No |
 | **Financial features** | No |
-| **Health features** | Yes (Health Connect read/write, optional) |
+| **Health features** | Yes — Health Connect **write only** (`WRITE_EXERCISE`), optional/opt-in |
 | **Tax category** | Service (Health & Fitness) |
 
 ---
@@ -379,6 +381,8 @@ To submit:
 - **Common rejection reasons for health apps:**
   - Privacy policy URL not reachable / missing
   - Health Connect permissions declared in manifest but no UI to enable
+  - Health Connect permissions broader than the feature justifies (**Minimum Scope** — this is what cost us 1.0.7; see §9)
+  - Privacy policy contradicting the manifest's declared permissions
   - Claims in the listing copy that imply medical treatment ("cure" / "diagnose")
   - **Our copy avoids all of these** — it positions the app as a wellness/habit tool, not a medical device.
 
