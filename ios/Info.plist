@@ -17,9 +17,9 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.1.0</string>
+    <string>$(MARKETING_VERSION)</string>
     <key>CFBundleVersion</key>
-    <string>1</string>
+    <string>$(CURRENT_PROJECT_VERSION)</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>UILaunchScreen</key>
@@ -37,6 +37,8 @@
     </array>
     <key>NSHealthUpdateUsageDescription</key>
     <string>Logs your stretching sessions as flexibility workouts in Apple Health.</string>
+    <key>NSHealthShareUsageDescription</key>
+    <string>Lower Back Stretching does not read your Health data. iOS requires this permission alongside the ability to log your stretching sessions to Apple Health.</string>
     <key>NSCalendarsWriteOnlyAccessUsageDescription</key>
     <string>Adds a stretching break event to your calendar.</string>
     <key>CFBundleURLTypes</key>
