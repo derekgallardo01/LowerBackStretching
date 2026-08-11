@@ -15,7 +15,8 @@ struct StretchDetailView: View {
             VStack(alignment: .leading, spacing: 12) {
                 StretchAnimationView(
                     animation: stretch.animation,
-                    youtubeId: stretch.youtubeId
+                    youtubeId: stretch.youtubeId,
+                    videoUrl: stretch.videoUrl
                 )
                 .aspectRatio(16.0 / 9.0, contentMode: .fit)
 

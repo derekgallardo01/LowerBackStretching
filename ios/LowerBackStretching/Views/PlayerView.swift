@@ -113,12 +113,14 @@ struct PlayerBody: View {
                             if show3D {
                                 StretchAnimation3DView(
                                     animation: current.animation,
-                                    youtubeId: current.youtubeId
+                                    youtubeId: current.youtubeId,
+                                    videoUrl: current.videoUrl
                                 )
                             } else {
                                 StretchAnimationView(
                                     animation: current.animation,
-                                    youtubeId: current.youtubeId
+                                    youtubeId: current.youtubeId,
+                                    videoUrl: current.videoUrl
                                 )
                             }
                         }

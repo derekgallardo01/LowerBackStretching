@@ -14,17 +14,20 @@ import SwiftUI
 struct StretchAnimation3DView: View {
     let animation: StretchAnimationSpec?
     let youtubeId: String
+    let videoUrl: String?
 
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(.secondarySystemBackground))
 
-            if let animation, !animation.poses.isEmpty {
+            if let videoUrl, !videoUrl.isEmpty {
+                StretchVideoPlayer(videoUrl: videoUrl)
+            } else if let animation, !animation.poses.isEmpty {
                 Mannequin(spec: animation)
             } else {
                 // Fallback: 2D placeholder owns the "follow the timer" copy.
-                StretchAnimationView(animation: nil, youtubeId: youtubeId)
+                StretchAnimationView(animation: nil, youtubeId: youtubeId, videoUrl: nil)
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 12))

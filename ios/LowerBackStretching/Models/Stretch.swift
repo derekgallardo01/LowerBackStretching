@@ -25,6 +25,11 @@ struct Stretch: Identifiable, Codable, Hashable {
     /// When nil, the player surface shows a placeholder + "Watch demo on
     /// YouTube" link instead.
     var animation: StretchAnimationSpec? = nil
+    /// URL to a short looping MP4 video demonstrating the stretch.
+    /// When present, the player renders video instead of the stick-figure
+    /// animation. Falls back to animation / placeholder if the video fails
+    /// to load or is absent.
+    var videoUrl: String? = nil
 }
 
 /// Looping keyframe animation for a stick-figure renderer.

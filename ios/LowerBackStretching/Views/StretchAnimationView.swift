@@ -10,13 +10,16 @@ import SwiftUI
 struct StretchAnimationView: View {
     let animation: StretchAnimationSpec?
     let youtubeId: String
+    let videoUrl: String?
 
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(.secondarySystemBackground))
 
-            if let animation, !animation.poses.isEmpty {
+            if let videoUrl, !videoUrl.isEmpty {
+                StretchVideoPlayer(videoUrl: videoUrl)
+            } else if let animation, !animation.poses.isEmpty {
                 AnimatedFigure(spec: animation)
                 if Self.hasWatchableVideo(youtubeId) {
                     VStack {
