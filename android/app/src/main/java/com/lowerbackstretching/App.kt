@@ -41,6 +41,9 @@ class App : Application() {
     /** Swap to a real implementation (FirebaseSyncBackend, etc.) when ready. */
     val syncBackend: SyncBackend by lazy { NoopSyncBackend() }
     val sync: SyncController by lazy { SyncController(syncBackend, prefs) }
+    val wearSync: com.lowerbackstretching.sync.WearDataSyncManager by lazy {
+        com.lowerbackstretching.sync.WearDataSyncManager(this, customRoutineRepository, contentRepository)
+    }
 
     /** Scope for app-lifetime background work. Never cancelled — the process outlives it. */
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)

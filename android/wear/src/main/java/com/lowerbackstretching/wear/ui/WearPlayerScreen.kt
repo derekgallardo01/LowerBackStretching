@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,12 +21,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
+import androidx.wear.compose.material.CompactButton
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
 import com.lowerbackstretching.core.DurationUnit
 import com.lowerbackstretching.core.formatDuration
+import com.lowerbackstretching.core.model.WatchRoutine
 import com.lowerbackstretching.core.player.PlayerEngine
 import com.lowerbackstretching.wear.WatchContent
 import com.lowerbackstretching.wear.WearHaptics
@@ -33,10 +37,13 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
 
 @Composable
-fun WearPlayerScreen() {
+fun WearPlayerScreen(
+    routine: WatchRoutine? = null,
+    onExit: () -> Unit = {},
+) {
     val context = LocalContext.current
-    val routine = remember { WatchContent.loadRoutine(context) }
-    val engine = remember { PlayerEngine(routine.stretches) }
+    val activeRoutine = remember(routine) { routine ?: WatchContent.loadDefaultRoutine(context) }
+    val engine = remember(activeRoutine) { PlayerEngine(activeRoutine.stretches) }
     val snapshot by engine.state.collectAsState()
 
     // 1Hz tick driving the engine.
@@ -64,7 +71,7 @@ fun WearPlayerScreen() {
 
     Scaffold(timeText = { TimeText() }) {
         if (snapshot.finished) {
-            FinishedView()
+            FinishedView(onExit = onExit)
             return@Scaffold
         }
         val current = snapshot.current ?: return@Scaffold
@@ -72,8 +79,8 @@ fun WearPlayerScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 14.dp, vertical = 22.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+                .padding(horizontal = 14.dp, vertical = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
@@ -93,6 +100,7 @@ fun WearPlayerScreen() {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Button(
                     onClick = engine::previous,
@@ -112,14 +120,24 @@ fun WearPlayerScreen() {
 }
 
 @Composable
-private fun FinishedView() {
+private fun FinishedView(onExit: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
             Text("Nice work.", style = MaterialTheme.typography.title2)
-            Text("Done.", style = MaterialTheme.typography.body1)
+            Text("Routine complete!", style = MaterialTheme.typography.body2)
+            Spacer(modifier = Modifier.height(10.dp))
+            CompactButton(
+                onClick = onExit,
+                colors = ButtonDefaults.primaryButtonColors(),
+            ) {
+                Text("Done")
+            }
         }
     }
 }

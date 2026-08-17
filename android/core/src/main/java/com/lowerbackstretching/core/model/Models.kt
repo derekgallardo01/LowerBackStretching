@@ -28,6 +28,11 @@ data class Stretch(
      *  When null, the player surface shows a placeholder + "Watch demo on
      *  YouTube" link instead. */
     val animation: StretchAnimationSpec? = null,
+    /** URL to a short looping MP4 video demonstrating the stretch.
+     *  When present, the player renders video instead of the stick-figure
+     *  animation. Falls back to animation / placeholder if the video fails
+     *  to load or is absent. */
+    val videoUrl: String? = null,
 ) : Timed
 
 /**

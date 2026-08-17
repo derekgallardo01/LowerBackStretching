@@ -78,6 +78,7 @@ fun RoutineBuilderScreen(
                         onClick = {
                             scope.launch {
                                 vm.customRoutines.create(name = name, stretchIds = selected.toList())
+                                vm.syncRoutinesToWatch()
                                 onSaved()
                             }
                         },

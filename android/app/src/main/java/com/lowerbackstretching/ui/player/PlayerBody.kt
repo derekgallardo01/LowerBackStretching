@@ -116,6 +116,7 @@ internal fun PlayerBody(
             PipPlayerLayout(
                 animation = current.animation,
                 youtubeId = current.youtubeId,
+                videoUrl = current.videoUrl,
                 remainingSeconds = snapshot.remainingSeconds,
                 progress = snapshot.routineProgress,
                 durationUnit = unit,
@@ -196,12 +197,14 @@ internal fun PlayerBody(
                     StretchAnimation3DView(
                         animation = current.animation,
                         youtubeId = current.youtubeId,
+                        videoUrl = current.videoUrl,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 } else {
                     StretchAnimationView(
                         animation = current.animation,
                         youtubeId = current.youtubeId,
+                        videoUrl = current.videoUrl,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

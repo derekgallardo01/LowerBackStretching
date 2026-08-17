@@ -118,6 +118,18 @@ fun ProgramsScreen(
             routineName = target.name,
             canMoveUp = index > 0,
             canMoveDown = index >= 0 && index < customRoutines.size - 1,
+            onSyncToWatch = {
+                actionsTarget = null
+                vm.syncRoutinesToWatch { success, count ->
+                    scope.launch {
+                        if (success) {
+                            snackbarHost.showSnackbar("Synced $count routine(s) to Wear OS")
+                        } else {
+                            snackbarHost.showSnackbar("Could not sync to watch. Ensure watch is paired.")
+                        }
+                    }
+                }
+            },
             onShare = {
                 actionsTarget = null
                 onShareRoutine(target.id)

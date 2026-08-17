@@ -24,8 +24,8 @@ android {
         // uploaded — even if that upload is later rejected or never rolled out.
         // Burned so far: 10 and 11, both consumed by failed 1.0.8 submissions.
         // Always bump on re-upload; never reuse.
-        versionCode = 12
-        versionName = "1.0.8"
+        versionCode = 14
+        versionName = "1.0.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -156,7 +156,10 @@ dependencies {
 
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.health.connect.client)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
     implementation(libs.zxing.core)
+    implementation(libs.play.services.wearable)
 
     implementation(libs.kotlinx.serialization.json)
 

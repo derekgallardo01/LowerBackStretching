@@ -59,6 +59,7 @@ import com.lowerbackstretching.core.model.StretchAnimationSpec
 fun StretchAnimationView(
     animation: StretchAnimationSpec?,
     youtubeId: String,
+    videoUrl: String? = null,
     modifier: Modifier = Modifier,
 ) {
     val surface = MaterialTheme.colorScheme.surfaceVariant
@@ -68,7 +69,12 @@ fun StretchAnimationView(
             .clip(RoundedCornerShape(12.dp))
             .background(surface),
     ) {
-        if (animation != null && animation.poses.isNotEmpty()) {
+        if (!videoUrl.isNullOrBlank()) {
+            StretchVideoPlayer(
+                videoUrl = videoUrl,
+                modifier = Modifier.fillMaxSize(),
+            )
+        } else if (animation != null && animation.poses.isNotEmpty()) {
             AnimatedFigure(
                 spec = animation,
                 color = MaterialTheme.colorScheme.primary,

@@ -27,6 +27,7 @@ import com.lowerbackstretching.ui.components.StretchAnimationView
 internal fun PipPlayerLayout(
     animation: StretchAnimationSpec?,
     youtubeId: String,
+    videoUrl: String? = null,
     remainingSeconds: Int,
     progress: Float,
     durationUnit: DurationUnit,
@@ -35,6 +36,7 @@ internal fun PipPlayerLayout(
         StretchAnimationView(
             animation = animation,
             youtubeId = youtubeId,
+            videoUrl = videoUrl,
             modifier = Modifier.fillMaxSize(),
         )
         Column(

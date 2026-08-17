@@ -20,6 +20,7 @@ import com.lowerbackstretching.sync.SyncController
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 /**
@@ -56,7 +57,19 @@ class AppViewModel(
     val painLog: PainLogRepository get() = appCtx.painLogRepository
     val health: HealthController get() = appCtx.health
     val sync: SyncController get() = appCtx.sync
+    val wearSync: com.lowerbackstretching.sync.WearDataSyncManager get() = appCtx.wearSync
     val prefs: Prefs get() = appCtx.prefs
+
+    fun syncRoutinesToWatch(onResult: (Boolean, Int) -> Unit = { _, _ -> }) {
+        viewModelScope.launch {
+            val result = wearSync.syncAllCustomRoutines()
+            if (result.isSuccess) {
+                onResult(true, result.getOrDefault(0))
+            } else {
+                onResult(false, 0)
+            }
+        }
+    }
 
     private fun <T> sharedState(
         flow: kotlinx.coroutines.flow.Flow<T>,

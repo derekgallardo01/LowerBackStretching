@@ -48,6 +48,7 @@ import kotlin.math.sin
 fun StretchAnimation3DView(
     animation: StretchAnimationSpec?,
     youtubeId: String,
+    videoUrl: String? = null,
     modifier: Modifier = Modifier,
 ) {
     val surface = MaterialTheme.colorScheme.surfaceVariant
@@ -69,6 +70,7 @@ fun StretchAnimation3DView(
             StretchAnimationView(
                 animation = null,
                 youtubeId = youtubeId,
+                videoUrl = videoUrl,
                 modifier = Modifier.fillMaxSize(),
             )
         }

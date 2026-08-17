@@ -19,3 +19,9 @@ android/app/build/
 android/core/build/
 android/wear/build/
 release/
+
+# Google Cloud service account keys — never commit credentials.
+*-*.json
+!firebase.json
+!firestore.rules
+!firestore.indexes.json

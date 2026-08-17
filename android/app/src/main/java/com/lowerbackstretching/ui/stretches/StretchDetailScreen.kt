@@ -77,6 +77,7 @@ fun StretchDetailScreen(
             StretchAnimationView(
                 animation = stretch.animation,
                 youtubeId = stretch.youtubeId,
+                videoUrl = stretch.videoUrl,
                 modifier = Modifier.fillMaxWidth(),
             )
             Row(

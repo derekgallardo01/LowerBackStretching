@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,6 +42,7 @@ fun RoutineActionsSheet(
     onMoveUp: () -> Unit,
     onMoveDown: () -> Unit,
     onDelete: () -> Unit,
+    onSyncToWatch: (() -> Unit)? = null,
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -50,6 +52,14 @@ fun RoutineActionsSheet(
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(routineName, style = MaterialTheme.typography.titleMedium)
+            if (onSyncToWatch != null) {
+                ActionRow(
+                    icon = Icons.Filled.Sync,
+                    label = "Sync to Watch",
+                    onClick = onSyncToWatch,
+                    enabled = true,
+                )
+            }
             ActionRow(
                 icon = Icons.Filled.Share,
                 label = stringResource(R.string.action_share),

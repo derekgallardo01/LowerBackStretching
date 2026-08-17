@@ -105,6 +105,27 @@ cp content/programs.json  ios/LowerBackStretching/Resources/programs.json
 
 `difficulty` is one of `easy`, `medium`, `hard`.
 
+### Video demonstrations
+
+Stretches can include a `videoUrl` — an HTTPS URL to a short looping MP4
+(5–15 seconds, silent, portrait or landscape). When present, both the
+Android and iOS players render the video instead of the stick-figure
+animation. If the video fails to load or is absent, the app falls back
+to the `animation` or placeholder automatically.
+
+```json
+{
+  "id": "cat-cow",
+  "videoUrl": "https://cdn.example.com/stretches/cat-cow.mp4"
+}
+```
+
+Hosting recommendations:
+- Encode as H.264 MP4 for maximum compatibility
+- Keep under 2 MB per stretch (26 stretches × 2 MB = 52 MB total)
+- Host on a CDN with CORS headers allowing your app domain
+- Loop seamlessly by matching first and last frames
+
 ### Program
 
 ```json
