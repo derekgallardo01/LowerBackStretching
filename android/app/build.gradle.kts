@@ -22,10 +22,10 @@ android {
         targetSdk = 36
         // Play permanently burns a versionCode once a bundle carrying it is
         // uploaded — even if that upload is later rejected or never rolled out.
-        // Burned so far: 10 and 11, both consumed by failed 1.0.8 submissions.
+        // Burned so far: 10, 11, 14.
         // Always bump on re-upload; never reuse.
-        versionCode = 14
-        versionName = "1.0.10"
+        versionCode = 15
+        versionName = "1.0.11"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }

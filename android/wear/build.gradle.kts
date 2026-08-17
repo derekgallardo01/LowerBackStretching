@@ -20,8 +20,8 @@ android {
         targetSdk = 36
         // Standalone Wear app under the same Play listing as the phone app;
         // its versionCode must stay distinct from the phone's.
-        versionCode = 2
-        versionName = "0.1.1"
+        versionCode = 3
+        versionName = "0.1.2"
     }
 
     // Release signing — shares the phone app's upload key (same applicationId,
