@@ -24,7 +24,10 @@ object WatchRoutineStorage {
         }
     }
 
-    fun saveRoutines(context: Context, routines: List<WatchRoutine>) {
+    fun saveRoutines(
+        context: Context,
+        routines: List<WatchRoutine>,
+    ) {
         runCatching {
             val file = File(context.filesDir, FILE_NAME)
             val json = WatchRoutine.encodeList(routines)
@@ -36,8 +39,11 @@ object WatchRoutineStorage {
     fun loadFromDisk(context: Context): List<WatchRoutine> {
         return runCatching {
             val file = File(context.filesDir, FILE_NAME)
-            if (!file.exists()) emptyList()
-            else WatchRoutine.decodeList(file.readText())
+            if (!file.exists()) {
+                emptyList()
+            } else {
+                WatchRoutine.decodeList(file.readText())
+            }
         }.getOrElse { emptyList() }
     }
 }

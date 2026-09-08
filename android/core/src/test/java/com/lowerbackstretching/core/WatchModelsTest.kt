@@ -8,7 +8,6 @@ import com.lowerbackstretching.core.model.toWatchStretch
 import org.junit.Test
 
 class WatchModelsTest {
-
     @Test
     fun toWatchStretch_extractsMinimalTimedFields() {
         val fullStretch = Stretch(

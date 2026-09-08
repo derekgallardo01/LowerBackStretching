@@ -11,7 +11,6 @@ import com.lowerbackstretching.core.model.WatchRoutine
  * from the companion phone via the Wearable Data Layer.
  */
 class WearDataListenerService : WearableListenerService() {
-
     override fun onDataChanged(dataEvents: DataEventBuffer) {
         for (event in dataEvents) {
             if (event.type == DataEvent.TYPE_CHANGED) {

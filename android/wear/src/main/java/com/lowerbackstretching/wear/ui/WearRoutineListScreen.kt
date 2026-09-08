@@ -24,15 +24,11 @@ import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
-import com.lowerbackstretching.core.DurationUnit
-import com.lowerbackstretching.core.formatDuration
 import com.lowerbackstretching.core.model.WatchRoutine
 import com.lowerbackstretching.wear.WatchContent
 
 @Composable
-fun WearRoutineListScreen(
-    onSelectRoutine: (WatchRoutine) -> Unit,
-) {
+fun WearRoutineListScreen(onSelectRoutine: (WatchRoutine) -> Unit) {
     val context = LocalContext.current
     val routinesFlow = remember(context) { WatchContent.observeAllRoutines(context) }
     val routines by routinesFlow.collectAsState(initial = listOf(WatchContent.loadDefaultRoutine(context)))
