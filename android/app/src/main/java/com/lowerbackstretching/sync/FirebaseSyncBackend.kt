@@ -21,11 +21,16 @@ class FirebaseSyncBackend : SyncBackend {
 
     override suspend fun signedInUid(): String? = auth.currentUser?.uid
 
-    override suspend fun signInAnonymously(): String? = try {
-        auth.signInAnonymously().await().user?.uid
-    } catch (_: Exception) {
-        null
-    }
+    override suspend fun signInAnonymously(): String? =
+        try {
+            auth
+                .signInAnonymously()
+                .await()
+                .user
+                ?.uid
+        } catch (_: Exception) {
+            null
+        }
 
     override suspend fun signOut() {
         try {
@@ -35,10 +40,17 @@ class FirebaseSyncBackend : SyncBackend {
         }
     }
 
-    private suspend fun set(collection: String, docId: String, data: Map<String, Any?>): Boolean {
+    private suspend fun set(
+        collection: String,
+        docId: String,
+        data: Map<String, Any?>,
+    ): Boolean {
         val uid = signedInUid() ?: signInAnonymously() ?: return false
         return try {
-            db.collection("users").document(uid).collection(collection)
+            db
+                .collection("users")
+                .document(uid)
+                .collection(collection)
                 .document(docId)
                 .set(data.filterValues { it != null }, SetOptions.merge())
                 .await()
@@ -54,18 +66,20 @@ class FirebaseSyncBackend : SyncBackend {
         durationSeconds: Int,
         completedAtEpochMillis: Long,
         type: String,
-    ): Boolean = set(
-        collection = "sessions",
-        docId = completedAtEpochMillis.toString(),
-        data = mapOf(
-            "programId" to programId,
-            "dayNumber" to dayNumber,
-            "durationSeconds" to durationSeconds,
-            "completedAtEpochMillis" to completedAtEpochMillis,
-            "type" to type,
-            "platform" to "android",
-        ),
-    )
+    ): Boolean =
+        set(
+            collection = "sessions",
+            docId = completedAtEpochMillis.toString(),
+            data =
+                mapOf(
+                    "programId" to programId,
+                    "dayNumber" to dayNumber,
+                    "durationSeconds" to durationSeconds,
+                    "completedAtEpochMillis" to completedAtEpochMillis,
+                    "type" to type,
+                    "platform" to "android",
+                ),
+        )
 
     override suspend fun pushRoutine(
         localId: Long,
@@ -73,46 +87,52 @@ class FirebaseSyncBackend : SyncBackend {
         stretchIds: List<String>,
         displayOrder: Int,
         deletedAtEpochMillis: Long?,
-    ): Boolean = set(
-        collection = "routines",
-        docId = localId.toString(),
-        data = mapOf(
-            "name" to name,
-            "stretchIds" to stretchIds,
-            "displayOrder" to displayOrder,
-            "deletedAtEpochMillis" to deletedAtEpochMillis,
-            "platform" to "android",
-        ),
-    )
+    ): Boolean =
+        set(
+            collection = "routines",
+            docId = localId.toString(),
+            data =
+                mapOf(
+                    "name" to name,
+                    "stretchIds" to stretchIds,
+                    "displayOrder" to displayOrder,
+                    "deletedAtEpochMillis" to deletedAtEpochMillis,
+                    "platform" to "android",
+                ),
+        )
 
     override suspend fun pushProgramProgress(
         programId: String,
         currentDay: Int,
         updatedAtEpochMillis: Long,
-    ): Boolean = set(
-        collection = "programProgress",
-        docId = programId,
-        data = mapOf(
-            "currentDay" to currentDay,
-            "updatedAtEpochMillis" to updatedAtEpochMillis,
-            "platform" to "android",
-        ),
-    )
+    ): Boolean =
+        set(
+            collection = "programProgress",
+            docId = programId,
+            data =
+                mapOf(
+                    "currentDay" to currentDay,
+                    "updatedAtEpochMillis" to updatedAtEpochMillis,
+                    "platform" to "android",
+                ),
+        )
 
     override suspend fun pushFlexibilityTest(
         recordedAtEpochMillis: Long,
         sitAndReachCm: Float?,
         toeTouchCm: Float?,
         shoulderReachCm: Float?,
-    ): Boolean = set(
-        collection = "flexibilityTests",
-        docId = recordedAtEpochMillis.toString(),
-        data = mapOf(
-            "recordedAtEpochMillis" to recordedAtEpochMillis,
-            "sitAndReachCm" to sitAndReachCm,
-            "toeTouchCm" to toeTouchCm,
-            "shoulderReachCm" to shoulderReachCm,
-            "platform" to "android",
-        ),
-    )
+    ): Boolean =
+        set(
+            collection = "flexibilityTests",
+            docId = recordedAtEpochMillis.toString(),
+            data =
+                mapOf(
+                    "recordedAtEpochMillis" to recordedAtEpochMillis,
+                    "sitAndReachCm" to sitAndReachCm,
+                    "toeTouchCm" to toeTouchCm,
+                    "shoulderReachCm" to shoulderReachCm,
+                    "platform" to "android",
+                ),
+        )
 }
