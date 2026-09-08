@@ -96,7 +96,9 @@ class Prefs(
     val weeklyGoal: Flow<Int> = context.dataStore.data.map { it[PrefKeys.WEEKLY_GOAL] ?: GoalDefaults.WEEKLY }
     val monthlyGoal: Flow<Int> = context.dataStore.data.map { it[PrefKeys.MONTHLY_GOAL] ?: GoalDefaults.MONTHLY }
     val healthWriteEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.HEALTH_WRITE_ENABLED] ?: false }
-    val cloudSyncEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.CLOUD_SYNC_ENABLED] ?: false }
+    // Default ON: sync is anonymous session counts only, disclosed in the Data
+    // Safety form, and the Settings toggle turns it off.
+    val cloudSyncEnabled: Flow<Boolean> = context.dataStore.data.map { it[PrefKeys.CLOUD_SYNC_ENABLED] ?: true }
     val redFlagScreeningCompletedAt: Flow<Long> = context.dataStore.data.map {
         it[PrefKeys.RED_FLAG_SCREENING_COMPLETED_AT]
             ?: 0L

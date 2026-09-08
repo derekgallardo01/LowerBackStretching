@@ -24,6 +24,37 @@ final class SyncController: ObservableObject {
     var backendType: String { String(describing: type(of: backend)) }
     var hasRealBackend: Bool { !(backend is NoopSyncBackend) }
 
+    /// Current toggle state. Defaults ON: sync is anonymous session counts
+    /// only, disclosed in the privacy policy, and Settings can turn it off.
+    var isEnabled: Bool {
+        UserDefaults.standard.object(forKey: SettingsKeys.cloudSyncEnabled) == nil
+            ? true
+            : UserDefaults.standard.bool(forKey: SettingsKeys.cloudSyncEnabled)
+    }
+
+    /// Push one completed session, respecting the toggle. Signs in anonymously
+    /// on first use. Best-effort — failures are dropped; SwiftData stays the
+    /// source of truth.
+    func pushSessionIfEnabled(
+        programId: String,
+        dayNumber: Int,
+        durationSeconds: Int,
+        completedAtEpochMillis: Int64,
+        type: String
+    ) async {
+        guard hasRealBackend, isEnabled else { return }
+        if await backend.signedInUid() == nil {
+            _ = await backend.signInAnonymously()
+        }
+        _ = await backend.pushSession(
+            programId: programId,
+            dayNumber: dayNumber,
+            durationSeconds: durationSeconds,
+            completedAtEpochMillis: completedAtEpochMillis,
+            type: type
+        )
+    }
+
     /// Mirror of `SettingsKeys.cloudSyncEnabled`. Wraps the
     /// sign-in / sign-out side effects.
     func setEnabled(_ enabled: Bool) async {

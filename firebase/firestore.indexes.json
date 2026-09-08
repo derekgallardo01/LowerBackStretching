@@ -6,6 +6,13 @@
       "fields": [
         { "fieldPath": "completedAtEpochMillis", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "sessions",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "completedAtEpochMillis", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

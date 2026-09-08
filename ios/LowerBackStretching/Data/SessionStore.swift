@@ -35,5 +35,19 @@ enum SessionStore {
         UserDefaults.standard.set(EpochDay.current(), forKey: SettingsKeys.lastSessionEpochDay)
         ReminderManager.clearDelivered()
         StreakNudgeManager.clearDelivered()
+
+        // Mirror to the cloud off the player's path (no-op unless the Firebase
+        // backend is configured and the sync toggle is on).
+        let completedAtMillis = Int64(record.completedAt.timeIntervalSince1970 * 1000)
+        let sessionType = record.type
+        Task { @MainActor in
+            await SyncController.shared.pushSessionIfEnabled(
+                programId: programId,
+                dayNumber: day,
+                durationSeconds: durationSeconds,
+                completedAtEpochMillis: completedAtMillis,
+                type: sessionType
+            )
+        }
     }
 }

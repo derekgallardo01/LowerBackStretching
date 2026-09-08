@@ -10,6 +10,9 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    // Requires android/app/google-services.json (gitignored — restore from the
+    // Firebase console or the UPLOAD secrets before building).
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -24,8 +27,8 @@ android {
         // uploaded — even if that upload is later rejected or never rolled out.
         // Burned so far: 10, 11, 14.
         // Always bump on re-upload; never reuse.
-        versionCode = 15
-        versionName = "1.0.11"
+        versionCode = 16
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -132,6 +135,11 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    // Anonymous session sync (FirebaseSyncBackend).
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

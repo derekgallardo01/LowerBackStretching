@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import UserNotifications
+import FirebaseCore
 
 @main
 struct LowerBackStretchingApp: App {
@@ -9,6 +10,13 @@ struct LowerBackStretchingApp: App {
 
     init() {
         UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
+        // Firebase session sync: configure only when the config file is
+        // bundled, so builds without GoogleService-Info.plist keep the
+        // no-op backend and make no network requests.
+        if Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") != nil {
+            FirebaseApp.configure()
+            SyncController.shared.backend = FirebaseSyncBackend()
+        }
     }
 
     private let container: ModelContainer = {

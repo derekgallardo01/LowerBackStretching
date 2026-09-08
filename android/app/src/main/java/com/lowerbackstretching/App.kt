@@ -11,7 +11,7 @@ import com.lowerbackstretching.data.SessionRepository
 import com.lowerbackstretching.data.db.AppDatabase
 import com.lowerbackstretching.health.HealthController
 import com.lowerbackstretching.notifications.NotificationChannels
-import com.lowerbackstretching.sync.NoopSyncBackend
+import com.lowerbackstretching.sync.FirebaseSyncBackend
 import com.lowerbackstretching.sync.SyncBackend
 import com.lowerbackstretching.sync.SyncController
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +22,12 @@ import kotlinx.coroutines.launch
 class App : Application() {
     val database: AppDatabase by lazy { AppDatabase.get(this) }
     val contentRepository: ContentRepository by lazy { ContentRepository(this) }
-    val sessionRepository: SessionRepository by lazy { SessionRepository(database.sessionDao()) }
+    val sessionRepository: SessionRepository by lazy {
+        SessionRepository(database.sessionDao()) { session ->
+            // Mirror the completed session to the cloud off the player's path.
+            appScope.launch { sync.pushSessionIfEnabled(session) }
+        }
+    }
     val customRoutineRepository: CustomRoutineRepository by lazy {
         CustomRoutineRepository(database.customRoutineDao())
     }
@@ -38,8 +43,8 @@ class App : Application() {
     val health: HealthController by lazy { HealthController(this) }
     val prefs: Prefs by lazy { Prefs(this) }
 
-    /** Swap to a real implementation (FirebaseSyncBackend, etc.) when ready. */
-    val syncBackend: SyncBackend by lazy { NoopSyncBackend() }
+    /** Anonymous Firebase session sync (see FirebaseSyncBackend). */
+    val syncBackend: SyncBackend by lazy { FirebaseSyncBackend() }
     val sync: SyncController by lazy { SyncController(syncBackend, prefs) }
     val wearSync: com.lowerbackstretching.sync.WearDataSyncManager by lazy {
         com.lowerbackstretching.sync.WearDataSyncManager(this, customRoutineRepository, contentRepository)

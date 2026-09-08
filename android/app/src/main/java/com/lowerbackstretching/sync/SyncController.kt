@@ -1,7 +1,9 @@
 package com.lowerbackstretching.sync
 
 import com.lowerbackstretching.data.Prefs
+import com.lowerbackstretching.data.db.SessionEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 /**
  * App-wide façade that the UI talks to instead of the [SyncBackend]
@@ -36,4 +38,20 @@ class SyncController(
 
     /** True when there's a backend that can actually push. */
     val hasRealBackend: Boolean = backend !is NoopSyncBackend
+
+    /**
+     * Push one completed session, respecting the user's sync toggle. Signs in
+     * anonymously on first use. Best-effort: any failure is silently dropped —
+     * Room stays the source of truth and the player flow never blocks on this.
+     */
+    suspend fun pushSessionIfEnabled(session: SessionEntity) {
+        if (!hasRealBackend || !enabled.first()) return
+        backend.pushSession(
+            programId = session.programId,
+            dayNumber = session.dayNumber,
+            durationSeconds = session.durationSeconds,
+            completedAtEpochMillis = session.completedAtEpochMillis,
+            type = session.type,
+        )
+    }
 }

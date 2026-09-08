@@ -11,6 +11,8 @@ import java.time.LocalDate
 
 class SessionRepository(
     private val dao: SessionDao,
+    /** Fire-and-forget cloud mirror of a recorded session (wired in App). */
+    private val onRecorded: ((SessionEntity) -> Unit)? = null,
 ) {
     fun completedDays(): Flow<Set<LocalDate>> =
         dao.completedDays().map { list -> list.map { LocalDate.ofEpochDay(it) }.toSet() }
@@ -31,15 +33,16 @@ class SessionRepository(
         durationSeconds: Int,
     ): Long {
         val now = System.currentTimeMillis()
-        return dao.insert(
-            SessionEntity(
-                programId = programId,
-                dayNumber = day,
-                completedAtEpochDay = LocalDate.now().toEpochDay(),
-                completedAtEpochMillis = now,
-                durationSeconds = durationSeconds,
-                type = SyntheticProgramId.typeFor(programId).storageValue,
-            ),
+        val entity = SessionEntity(
+            programId = programId,
+            dayNumber = day,
+            completedAtEpochDay = LocalDate.now().toEpochDay(),
+            completedAtEpochMillis = now,
+            durationSeconds = durationSeconds,
+            type = SyntheticProgramId.typeFor(programId).storageValue,
         )
+        val id = dao.insert(entity)
+        onRecorded?.invoke(entity)
+        return id
     }
 }

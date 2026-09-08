@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- No INTERNET permission: the app makes no network requests. It was
-         needed for the YouTube embeds removed in 80b5baa; demonstrations are
-         now drawn on-device. Re-add it if the Firebase sync backend ever
-         replaces NoopSyncBackend. -->
+    <!-- INTERNET is required by the Firebase sync backend (anonymous session
+         sync — see FirebaseSyncBackend). The app made no network requests
+         between 80b5baa (YouTube embeds removed) and the sync launch. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />

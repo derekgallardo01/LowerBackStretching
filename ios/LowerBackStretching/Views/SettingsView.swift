@@ -14,7 +14,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKeys.ambientVolume) private var ambientVolume: Double = Double(AudioDefaults.ambientVolume)
     @AppStorage(SettingsKeys.chimeTrack) private var chimeTrackRaw: String = ChimeTrack.none.storageValue
     @AppStorage(SettingsKeys.healthWriteEnabled) private var healthWriteEnabled: Bool = false
-    @AppStorage(SettingsKeys.cloudSyncEnabled) private var cloudSyncEnabled: Bool = false
+    @AppStorage(SettingsKeys.cloudSyncEnabled) private var cloudSyncEnabled: Bool = true
     @AppStorage(SettingsKeys.streakNudgeEnabled) private var streakNudgeEnabled: Bool = true
 
     @State private var pickerDate: Date = .now

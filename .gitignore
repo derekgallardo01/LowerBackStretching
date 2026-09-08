@@ -25,3 +25,7 @@ release/
 !firebase.json
 !firestore.rules
 !firestore.indexes.json
+
+# Firebase client configs — restore from the console / CI secrets, never commit.
+GoogleService-Info.plist
+google-services.json
