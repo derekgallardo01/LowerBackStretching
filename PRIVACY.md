@@ -4,8 +4,9 @@ permalink: /PRIVACY
 
 # Privacy Policy — Lower Back Stretching
 
-**Effective date:** August 1, 2026
-**Contact:** derekgallardo01@gmail.com
+**Effective date:** September 27, 2026  
+**Operated by:** Kinetic Helix LLC, a Florida limited liability company  
+**Legal & Privacy:** legal@kinetichelix.io
 
 This policy describes what data the Lower Back Stretching mobile app ("the app") handles, where it lives, and your rights over it. Plain English; no legalese.
 
@@ -112,6 +113,7 @@ If the data practices ever change in a meaningful way (e.g. adding optional clou
 
 Questions about this policy or how the app handles data:
 
-**derekgallardo01@gmail.com**
-
-We will respond within 7 business days.
+**Kinetic Helix LLC**  
+Attn: Legal & Privacy Department  
+Email: **legal@kinetichelix.io** / **support@kinetichelix.io**  
+Location: Fort Lauderdale, FL, United States
